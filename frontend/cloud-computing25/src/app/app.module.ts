@@ -16,6 +16,8 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatCardModule} from '@angular/material/card';
 import {MatTableModule} from '@angular/material/table';
 import {MatPaginatorModule} from '@angular/material/paginator';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
+import {AuthInterceptor} from './infrastructure/auth/interceptor';
 
 @NgModule({
   declarations: [
@@ -26,7 +28,7 @@ import {MatPaginatorModule} from '@angular/material/paginator';
         AppRoutingModule,
         LayoutModule,
         AuthModule,
-
+        HttpClientModule,
         MatButtonModule,
         MatIconModule,
         MatFormFieldModule,
@@ -39,7 +41,9 @@ import {MatPaginatorModule} from '@angular/material/paginator';
         MatTableModule,
         MatPaginatorModule,
     ],
-  providers: [],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
