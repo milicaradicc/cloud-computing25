@@ -7,8 +7,8 @@ import {BehaviorSubject, Observable} from 'rxjs';
   providedIn: 'root'
 })
 export class AuthService {
-  private roleSubject = new BehaviorSubject<string | null>(null);
-  role$: Observable<string | null> = this.roleSubject.asObservable();
+  role$ = new BehaviorSubject<string | null>(null);
+  roleState: Observable<string | null> = this.role$.asObservable();
 
   constructor() {
     this.loadRole();
@@ -48,15 +48,15 @@ export class AuthService {
       const session = await fetchAuthSession();
       const idToken = session.tokens?.idToken?.toString();
       if (!idToken) {
-        this.roleSubject.next(null);
+        this.role$.next(null);
         return;
       }
 
       const decoded: any = jwtDecode(idToken);
       const role = decoded['custom:role'] || null;
-      this.roleSubject.next(role);
+      this.role$.next(role);
     } catch (err) {
-      this.roleSubject.next(null);
+      this.role$.next(null);
     }
   }
 
