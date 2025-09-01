@@ -1,12 +1,18 @@
 import { Injectable } from '@angular/core';
+import {jwtDecode} from 'jwt-decode';
 import { signUp, signIn, signOut, fetchAuthSession, getCurrentUser, confirmSignUp } from 'aws-amplify/auth';
+import {BehaviorSubject, Observable} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  private roleSubject = new BehaviorSubject<string | null>(null);
+  role$: Observable<string | null> = this.roleSubject.asObservable();
 
-  constructor() { }
+  constructor() {
+    this.loadRole();
+  }
 
   async register(user: any) {
     return await signUp({
@@ -35,6 +41,23 @@ export class AuthService {
   async getUser() {
     const user = await getCurrentUser();
     return user;
+  }
+
+  public async loadRole() {
+    try {
+      const session = await fetchAuthSession();
+      const idToken = session.tokens?.idToken?.toString();
+      if (!idToken) {
+        this.roleSubject.next(null);
+        return;
+      }
+
+      const decoded: any = jwtDecode(idToken);
+      const role = decoded['custom:role'] || null;
+      this.roleSubject.next(role);
+    } catch (err) {
+      this.roleSubject.next(null);
+    }
   }
 
   async getToken() {
