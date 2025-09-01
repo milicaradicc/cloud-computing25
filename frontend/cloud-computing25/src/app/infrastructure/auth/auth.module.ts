@@ -7,6 +7,7 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatCardModule} from '@angular/material/card';
 import {MatButton} from '@angular/material/button';
 import { LoginComponent } from './login/login.component';
+import {RouterLink} from '@angular/router';
 
 
 
@@ -22,7 +23,8 @@ import { LoginComponent } from './login/login.component';
     MatFormFieldModule,
     MatInputModule,
     MatCardModule,
-    MatButton
+    MatButton,
+    RouterLink
   ]
 })
 export class AuthModule { }
