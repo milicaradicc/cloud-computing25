@@ -18,6 +18,8 @@ import {MatTableModule} from '@angular/material/table';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {AuthInterceptor} from './infrastructure/auth/interceptor';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {ArtistsModule} from './artists/artists.module';
 
 @NgModule({
   declarations: [
@@ -40,6 +42,7 @@ import {AuthInterceptor} from './infrastructure/auth/interceptor';
         MatCardModule,
         MatTableModule,
         MatPaginatorModule,
+        ArtistsModule
     ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
