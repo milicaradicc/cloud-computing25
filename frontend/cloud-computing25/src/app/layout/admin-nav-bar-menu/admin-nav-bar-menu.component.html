@@ -1,4 +1,8 @@
-<button mat-menu-item >
-  <mat-icon>event</mat-icon>
-  <span>Admin menu item</span>
+<button mat-menu-item [routerLink]="['/upload-song']">
+  <mat-icon>music_note</mat-icon>
+  <span>Upload Song</span>
+</button>
+<button mat-menu-item [routerLink]="['/upload-album']">
+  <mat-icon>album</mat-icon>
+  <span>Upload Album</span>
 </button>
