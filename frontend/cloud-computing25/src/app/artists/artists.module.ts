@@ -9,11 +9,15 @@ import {MatSortModule} from '@angular/material/sort';
 import {MatButtonModule} from '@angular/material/button';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
+import { CreateArtistComponent } from './create-artist/create-artist.component';
+import {MatFormField, MatInput, MatLabel} from '@angular/material/input';
+import {ReactiveFormsModule} from '@angular/forms';
 
 
 @NgModule({
   declarations: [
-    ArtistsComponent
+    ArtistsComponent,
+    CreateArtistComponent
   ],
   imports: [
     CommonModule,
@@ -25,7 +29,13 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
     MatIconModule,
     MatDialogModule,
     MatSnackBarModule,
-    MatSortModule
+    MatSortModule,
+    MatFormField,
+    MatLabel,
+    MatFormField,
+    MatInput,
+    ReactiveFormsModule,
+    MatFormField
   ]
 })
 export class ArtistsModule {

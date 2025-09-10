@@ -5,6 +5,7 @@ import {MatTableDataSource} from '@angular/material/table';
 import {Artist} from '../artist.model';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {MatSort} from '@angular/material/sort';
+import {CreateArtistComponent} from '../create-artist/create-artist.component';
 
 @Component({
   selector: 'app-artists',
@@ -33,5 +34,22 @@ export class ArtistsComponent implements OnInit {
         this.dataSource = new MatTableDataSource<Artist>(artists);
       }
     })
+  }
+
+  openAddArtistDialog() {
+    const dialogRef = this.dialog.open(CreateArtistComponent, {
+      width: '400px',
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.service.add(result).subscribe({
+          next: (response) => {
+            this.refreshDataSource();
+            this.snackBar.open('Artist created successfully','OK',{duration:3000});
+          },
+        });
+      }
+    });
   }
 }
