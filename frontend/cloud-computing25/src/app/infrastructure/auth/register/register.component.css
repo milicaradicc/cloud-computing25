@@ -1,0 +1,81 @@
+.register-container {
+  max-width: 800px;
+  margin: auto;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: white;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.outer-container {
+  padding: 2em;
+}
+
+form{
+  margin:0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+mat-form-field {
+  width: 70%;
+}
+
+form > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.form-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.form-header h1 {
+  font-size: 26px;
+  color: #252629;
+  margin-bottom: 5px;
+}
+
+.submit-section {
+  text-align: center;
+}
+
+.submit-btn {
+  width: 50%;
+  padding: 10px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.photo-upload .upload-area {
+  background: #c0bfbf;
+  border: 2px dashed #9c555d;
+  border-radius: 5px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.photo-upload {
+  margin:2em;
+}
+
+.upload-area:hover {
+  background: #bb9d98;
+}
+
+.server-error {
+  color: red;
+  margin-bottom: 16px;
+  text-align: center;
+  font-weight: 500;
+}

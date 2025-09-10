@@ -1,0 +1,25 @@
+<mat-toolbar color="primary">
+  <span [routerLink]="['home']">Music Streamer</span>
+  <div class="navigation-container">
+    <div class="navigation-item" *ngIf="role==undefined">
+      <button mat-icon-button [routerLink]="['login']">
+        <mat-icon>account_circle</mat-icon>
+      </button>
+    </div>
+    <div class="navigation-item" *ngIf="role!=undefined">
+      <button mat-icon-button (click)="logout()">
+        <mat-icon>logout</mat-icon>
+      </button>
+    </div>
+    <div class="navigation-item">
+      <button *ngIf="role!=undefined" id="menu-button" mat-icon-button [matMenuTriggerFor]="menu">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <app-admin-nav-bar-menu *ngIf="role=='admin'"></app-admin-nav-bar-menu>
+        <app-user-nav-bar-menu *ngIf="role=='user'"></app-user-nav-bar-menu>
+      </mat-menu>
+    </div>
+  </div>
+</mat-toolbar>
+

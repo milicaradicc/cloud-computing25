@@ -1,0 +1,23 @@
+/* You can add global styles to this file, and also import other style files */
+
+html, body {
+  height: 100%;
+  font-family: 'Fira Sans Condensed', serif !important;
+  color:#231212;
+  background-color: #f6f6f6;
+  margin: 0;
+}
+h1, h2{
+  font-family: 'Fira Sans Condensed', serif !important;
+  font-weight: 500 !important;
+  color:#231212
+}
+
+html, body {
+  height: 100%;
+  background-color: #ECEAEA;
+}
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
