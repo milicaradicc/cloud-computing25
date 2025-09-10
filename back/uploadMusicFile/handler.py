@@ -2,12 +2,12 @@ import json
 import base64
 import boto3
 
-s3 = boto3.client('s3')
 BUCKET_NAME = "my-music-app-files"
+
+s3 = boto3.client('s3')
 
 def lambda_handler(event, context):
     try:
-        print(event)
         file_content = base64.b64decode(event['body'])
         filename = event.get("queryStringParameters", {}).get("filename", "uploaded_file")
 
