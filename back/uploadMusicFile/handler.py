@@ -20,8 +20,17 @@ def lambda_handler(event, context):
         }
 
     try:
-        file_content = base64.b64decode(event['body'])
-        filename = event.get("queryStringParameters", {}).get("filename", "uploaded_file")
+        body = json.loads(event['body'])
+
+        filename = body['filename']
+        fileBase64 = body['fileBase64']
+        title = body['title']
+        description = body['description']
+        releaseDate = body['releaseDate']
+        artists = body['artists']
+        genres = body['genres']
+
+        file_content = base64.b64decode(fileBase64)
 
         s3.put_object(
             Bucket=BUCKET_NAME,

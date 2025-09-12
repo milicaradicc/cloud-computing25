@@ -6,6 +6,7 @@ import { Album } from './album.model';
 import { Artist } from '../artists/artist.model';
 import { environment } from '../../env/environment';
 import { CreateSongDto } from './create-song-dto.model';
+import { SingleUploadDTO } from './single-upload-dto.model';
 
 @Injectable({
   providedIn: 'root'
@@ -13,8 +14,16 @@ import { CreateSongDto } from './create-song-dto.model';
 export class MusicService {
   constructor(private httpClient: HttpClient) { }
 
+  uploadSingleToLambda(song: SingleUploadDTO): Observable<any> {
+    console.log(song)
+    return this.httpClient.post<Song>(
+      environment.apiHost + `/song`,
+      song
+    );
+  }
+  
   addSong(song: FormData): Observable<Song> {
-    console.log("MusicService: addSong method called");
+    console.log(song);
     
     // Debug FormData contents
     console.log("FormData contents:");
