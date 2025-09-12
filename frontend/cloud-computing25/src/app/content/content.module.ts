@@ -17,6 +17,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker'; // za mat-da
 import { MatNativeDateModule } from '@angular/material/core'; // ili MatMomentDateModule
 import { MatTableModule } from '@angular/material/table'; // za mat-table
 import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'; 
 
 import { UploadContentComponent } from './upload-content/upload-content.component';
 
@@ -43,7 +44,8 @@ import { UploadContentComponent } from './upload-content/upload-content.componen
     MatChipsModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatTableModule
+    MatTableModule,
+    MatProgressSpinnerModule 
   ],
   exports: [UploadContentComponent]
 })
