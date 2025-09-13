@@ -63,24 +63,18 @@
           </mat-form-field>
         </div>
 
-        <!-- Cover Image Upload -->
-        <div class="cover-upload-section">
+        <!-- Cover Image Link -->
+        <div class="cover-link-section">
           <h4>Cover Image</h4>
-          <div class="image-upload-container">
-            <div class="image-upload-field">
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Cover Image (Optional)</mat-label>
-                <input matInput readonly [value]="selectedCoverImageName" placeholder="No image selected">
-                <mat-icon matSuffix>image</mat-icon>
-              </mat-form-field>
-              <input type="file" #coverImageInput accept="image/*" (change)="onCoverImageChange($event)" style="display: none;">
-            </div>
-            <button type="button" mat-stroked-button color="accent" (click)="coverImageInput.click()" class="upload-btn">
-              Choose Image
-            </button>
-            <div class="image-preview" *ngIf="coverImagePreview">
-              <img [src]="coverImagePreview" alt="Cover preview" class="preview-image">
-            </div>
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Cover Image URL (Optional)</mat-label>
+              <input matInput formControlName="coverImageUrl" placeholder="https://example.com/image.jpg" (input)="onCoverImageUrlChange($event)">
+              <mat-icon matSuffix>image</mat-icon>
+            </mat-form-field>
+          </div>
+          <div class="image-preview" *ngIf="coverImagePreview">
+            <img [src]="coverImagePreview" alt="Cover preview" class="preview-image" (error)="onImageError()">
           </div>
         </div>
 

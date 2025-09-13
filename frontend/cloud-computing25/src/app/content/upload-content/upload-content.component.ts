@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { ArtistService } from '../../artists/artist.service';
 import { MusicService } from '../music.service';
 import { Artist } from '../../artists/artist.model';
-import { FileInfo, SingleUploadDTO } from '../single-upload-dto.model';
+import { SingleUploadDTO } from '../single-upload-dto.model';
 
 @Component({
   standalone: false,
@@ -16,10 +16,9 @@ export class UploadContentComponent implements OnInit {
   availableArtists: Artist[] = [];
   availableGenres: string[] = ['Pop','Rock','Hip Hop','Rap','Electronic','Classical','Jazz','Blues','Country','Reggae'];
   selectedGenres: string[] = [];
-  selectedCoverImageName: string = '';
   coverImagePreview: string | null = null;
   selectedAudioFileName: string = '';
-  singleAudioInfo: FileInfo | null = null;
+  singleAudioInfo: any | null = null;
 
   displayedColumns: string[] = ['trackNumber', 'title', 'file', 'genres', 'artists', 'duration', 'actions'];
 
@@ -31,7 +30,7 @@ export class UploadContentComponent implements OnInit {
     this.uploadForm = this.fb.group({
       type: ['single', Validators.required],
       title: ['', Validators.required],
-      coverImage: [null],
+      coverImageUrl: [''], // Changed from coverImage to coverImageUrl
       releaseDate: [new Date()],
       description: [''],
       artists: [[], Validators.required],
@@ -61,14 +60,20 @@ export class UploadContentComponent implements OnInit {
     });
   }
 
-  onCoverImageChange(event: any) {
-    const file = event.target.files[0];
-    if (!file) return;
-    this.selectedCoverImageName = file.name;
-    this.uploadForm.patchValue({ coverImage: file });
-    const reader = new FileReader();
-    reader.onload = e => this.coverImagePreview = e.target?.result as string;
-    reader.readAsDataURL(file);
+  onCoverImageUrlChange(event: any) {
+    const url = event.target.value;
+    if (url) {
+      // Set preview immediately for quick feedback
+      this.coverImagePreview = url;
+    } else {
+      this.coverImagePreview = null;
+    }
+  }
+
+  onImageError() {
+    // If image fails to load, clear the preview
+    this.coverImagePreview = null;
+    console.warn('Failed to load image from the provided URL');
   }
 
   onSingleAudioFileChange(event: any) {
@@ -90,7 +95,7 @@ export class UploadContentComponent implements OnInit {
     audio.addEventListener('error', () => URL.revokeObjectURL(objectUrl));
   }
 
-  private extractFileInfo(file: File): FileInfo {
+  private extractFileInfo(file: File): any {
     return {
       fileName: file.name,
       fileType: file.type,
@@ -159,14 +164,21 @@ export class UploadContentComponent implements OnInit {
       const base64File = await this.convertFileToBase64(file);
 
       const dto: SingleUploadDTO = {
-        filename: file.name,
         fileBase64: base64File,
+        fileName: file.name,
+        fileSize: file.size,
+        fileType: file.type,
+        createdDate: new Date(file.lastModified),
+        modifiedDate: new Date(file.lastModified),
+        duration: this.singleAudioInfo?.duration || 0,
+
+        // this is from admin
         title: formValue.title,
         description: formValue.description,
-        releaseDate: formValue.releaseDate.toISOString(),
         artists: formValue.artists.map((a: Artist) => a.id),
         genres: formValue.genres,
-        fileInfo: this.singleAudioInfo || undefined
+        coverImage: formValue.coverImageUrl,
+        album: ''
       };
 
       this.musicService.uploadSingleToLambda(dto).subscribe({
@@ -184,6 +196,7 @@ export class UploadContentComponent implements OnInit {
       genres: formValue.genres,
       releaseDate: formValue.releaseDate,
       description: formValue.description,
+      coverImageUrl: formValue.coverImageUrl, // Add cover image URL to album data
       songs: formValue.songs.map((song: any, index: number) => ({
         ...song,
         trackNumber: index + 1
@@ -191,7 +204,7 @@ export class UploadContentComponent implements OnInit {
     };
 
     const formData = new FormData();
-    if (formValue.coverImage) formData.append('coverImage', formValue.coverImage);
+    // No longer appending cover image file since we're using URL
     formValue.songs.forEach((song: any, index: number) => {
       if (song.file) {
         formData.append(`songFile_${index}`, song.file);
