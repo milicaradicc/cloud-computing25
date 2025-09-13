@@ -24,7 +24,6 @@ def lambda_handler(event, context):
             "genres": data.get('genres', []),
             "releaseDate": data.get('releaseDate', str(datetime.now())),
             "description": data.get('description', ''),
-            "songs": data.get('songs', []),
             "fileName": data.get('fileName'),
             "fileSize": data.get('fileSize'),
             "fileType": data.get('fileType'),

@@ -12,18 +12,22 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
-import { MatChipsModule } from '@angular/material/chips'; // za mat-chip-grid
-import { MatDatepickerModule } from '@angular/material/datepicker'; // za mat-datepicker
-import { MatNativeDateModule } from '@angular/material/core'; // ili MatMomentDateModule
-import { MatTableModule } from '@angular/material/table'; // za mat-table
+import { MatChipsModule } from '@angular/material/chips'; 
+import { MatDatepickerModule } from '@angular/material/datepicker'; 
+import { MatNativeDateModule } from '@angular/material/core'; 
+import { MatTableModule } from '@angular/material/table'; 
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'; 
 
 import { UploadContentComponent } from './upload-content/upload-content.component';
+import { ContentComponent } from './content/content.component';
+import { SongCardComponent } from './song-card/song-card.component';
 
 @NgModule({
   declarations: [
-    UploadContentComponent
+    UploadContentComponent,
+    ContentComponent,
+    SongCardComponent
   ],
   imports: [
     CommonModule,

@@ -5,7 +5,6 @@ from boto3.dynamodb.conditions import Key
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table("MusicStreamingApp")
 
-
 def lambda_handler(event, context):
     try:
         artists = []

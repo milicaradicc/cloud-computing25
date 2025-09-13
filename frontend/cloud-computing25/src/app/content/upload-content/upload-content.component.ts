@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { ArtistService } from '../../artists/artist.service';
-import { MusicService } from '../music.service';
 import { Artist } from '../../artists/artist.model';
 import { SingleUploadDTO } from '../single-upload-dto.model';
+import { ContentService } from '../content.service';
 
 @Component({
   standalone: false,
@@ -25,7 +25,7 @@ export class UploadContentComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private artistService: ArtistService,
-    private musicService: MusicService
+    private musicService: ContentService
   ) {
     this.uploadForm = this.fb.group({
       type: ['single', Validators.required],
@@ -181,7 +181,7 @@ export class UploadContentComponent implements OnInit {
         album: ''
       };
 
-      this.musicService.uploadSingleToLambda(dto).subscribe({
+      this.musicService.addSong(dto).subscribe({
         next: res => console.log('Single uploaded successfully', res),
         error: err => console.error('Single upload failed', err)
       });
