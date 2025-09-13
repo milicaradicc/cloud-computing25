@@ -8,4 +8,5 @@ export interface Album {
   songs: Song[];
   artists: Artist[];
   genres?: string[];
+  id:string
 }

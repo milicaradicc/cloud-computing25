@@ -36,6 +36,7 @@ def lambda_handler(event, context):
     item = {
         "Entity type identifier": f"ALBUM#{album_id}",
         "Entity-specific identifier": "PROFILE",
+        "id": album_id,
         "entityType":"album",
         "createdDate": createdDate,
         "modifiedDate": modifiedDate,
