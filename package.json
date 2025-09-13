@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@angular/platform-browser": "^20.3.0",
+    "aws-amplify": "^6.15.6"
+  }
+}
