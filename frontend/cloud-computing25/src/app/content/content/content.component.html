@@ -1,18 +1,37 @@
-<div *ngIf="loading" class="loading-container">
+<!-- Songs -->
+<div *ngIf="loadingSongs" class="loading-container">
   <mat-spinner></mat-spinner>
   <p>Loading songs...</p>
 </div>
 
-<div *ngIf="error" class="error-container">
+<div *ngIf="errorSongs" class="error-container">
   <mat-icon>error</mat-icon>
-  <p>{{ error }}</p>
+  <p>{{ errorSongs }}</p>
 </div>
 
-<div *ngIf="!loading && !error" class="songs-container">
+<div *ngIf="!loadingSongs && !errorSongs" class="songs-container">
   <div class="songs-grid">
-    <app-song-card 
-      *ngFor="let song of songs" 
-      [song]="song">
-    </app-song-card>
+    <app-song-card *ngFor="let song of songs" [song]="song"></app-song-card>
+  </div>
+</div>
+
+<!-- Albums -->
+<div *ngIf="loadingAlbums" class="loading-container">
+  <mat-spinner></mat-spinner>
+  <p>Loading albums...</p>
+</div>
+
+<div *ngIf="errorAlbums" class="error-container">
+  <mat-icon>error</mat-icon>
+  <p>{{ errorAlbums }}</p>
+</div>
+
+<div *ngIf="!loadingAlbums && !errorAlbums" class="albums-container">
+  <div class="albums-grid">
+    <app-album-card 
+      *ngFor="let album of albums" 
+      [album]="album" 
+      [songs]="album.songs">
+    </app-album-card>
   </div>
 </div>

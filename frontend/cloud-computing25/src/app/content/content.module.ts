@@ -18,16 +18,18 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatTableModule } from '@angular/material/table'; 
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'; 
-
+import { MatListModule } from '@angular/material/list'; 
 import { UploadContentComponent } from './upload-content/upload-content.component';
 import { ContentComponent } from './content/content.component';
 import { SongCardComponent } from './song-card/song-card.component';
+import { AlbumCardComponent } from './album-card/album-card.component';
 
 @NgModule({
   declarations: [
     UploadContentComponent,
     ContentComponent,
-    SongCardComponent
+    SongCardComponent,
+    AlbumCardComponent
   ],
   imports: [
     CommonModule,
@@ -49,7 +51,8 @@ import { SongCardComponent } from './song-card/song-card.component';
     MatDatepickerModule,
     MatNativeDateModule,
     MatTableModule,
-    MatProgressSpinnerModule 
+    MatProgressSpinnerModule,
+    MatListModule 
   ],
   exports: [UploadContentComponent]
 })
