@@ -3,7 +3,8 @@ import { Song } from "./song.model";
 
 export interface Album {
   title: string;
-  coverImage: File;
+  description?: string;
+  coverImage: string;
   releaseDate: Date;
   songs: Song[];
   artists: Artist[];

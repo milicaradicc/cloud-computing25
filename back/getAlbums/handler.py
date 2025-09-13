@@ -16,20 +16,20 @@ def decimal_default(obj):
 
 def lambda_handler(event, context):
     try:
-        songs = []
+        albums = []
         last_evaluated_key = None
 
         while True:
             if last_evaluated_key:
                 response = table.query(
                     IndexName="entityType-index",
-                    KeyConditionExpression=Key('entityType').eq('song'),
+                    KeyConditionExpression=Key('entityType').eq('album'),
                     ExclusiveStartKey=last_evaluated_key
                 )
             else:
                 response = table.query(
                     IndexName="entityType-index",
-                    KeyConditionExpression=Key('entityType').eq('song')
+                    KeyConditionExpression=Key('entityType').eq('album')
                 )
 
             items = response.get('Items', [])
@@ -61,7 +61,7 @@ def lambda_handler(event, context):
                                     artist_detail[key] = [i.get('S', '') for i in value['L']]
                             artists_details.append(artist_detail)
 
-                song = {
+                album = {
                     "id": item.get('Entity type identifier', '').replace('SONG#', ''),
                     "title": item['title'],
                     "artists": artists_details,
@@ -69,17 +69,14 @@ def lambda_handler(event, context):
                     "description": item.get('description', ''),
                     "coverImage": item.get('coverImage'),
                     "album": item.get('album'),
-                    "duration": item.get('duration'),
-                    "releaseDate": item.get('releaseDate'),
-                    "type": item.get('type', 'single')
                 }
-                songs.append(song)
+                albums.append(album)
 
             last_evaluated_key = response.get('LastEvaluatedKey')
             if not last_evaluated_key:
                 break
 
-        print(f"Found {len(songs)} songs")
+        print(f"Found {len(albums)} songs")
 
         return {
             'statusCode': 200,
@@ -87,7 +84,7 @@ def lambda_handler(event, context):
                 "Access-Control-Allow-Origin": "*",
                 "Content-Type": "application/json"
             },
-            'body': json.dumps(songs, default=decimal_default)  # ⇐ OVDE DODATO
+            'body': json.dumps(albums, default=decimal_default)  # ⇐ OVDE DODATO
         }
 
     except Exception as e:
