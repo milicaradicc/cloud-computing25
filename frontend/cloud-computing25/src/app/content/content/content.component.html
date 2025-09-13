@@ -1,0 +1,18 @@
+<div *ngIf="loading" class="loading-container">
+  <mat-spinner></mat-spinner>
+  <p>Loading songs...</p>
+</div>
+
+<div *ngIf="error" class="error-container">
+  <mat-icon>error</mat-icon>
+  <p>{{ error }}</p>
+</div>
+
+<div *ngIf="!loading && !error" class="songs-container">
+  <div class="songs-grid">
+    <app-song-card 
+      *ngFor="let song of songs" 
+      [song]="song">
+    </app-song-card>
+  </div>
+</div>

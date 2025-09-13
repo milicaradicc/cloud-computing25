@@ -21,12 +21,10 @@ import {AuthInterceptor} from './infrastructure/auth/interceptor';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ArtistsModule} from './artists/artists.module';
 import { ContentModule } from './content/content.module';
-import { SongCardComponent } from './song-card/song-card.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    SongCardComponent,
   ],
     imports: [
         BrowserModule,
