@@ -1,10 +1,20 @@
 import json
 import boto3
 from boto3.dynamodb.conditions import Key
+from decimal import Decimal
 
 dynamodb = boto3.resource('dynamodb')
 client = boto3.client('dynamodb')
 table = dynamodb.Table("MusicStreamingApp")
+
+# Helper za konverziju Decimala
+def decimal_default(obj):
+    if isinstance(obj, Decimal):
+        # Ako znaš da su uvek ceo broj (npr. trajanje u sekundama), koristi int
+        if obj % 1 == 0:
+            return int(obj)
+        return float(obj)
+    raise TypeError
 
 def lambda_handler(event, context):
     try:
@@ -25,39 +35,45 @@ def lambda_handler(event, context):
                 )
 
             items = response.get('Items', [])
-
             for item in items:
                 artist_ids = item.get('artists', [])
-
                 artists_details = []
+
                 if artist_ids:
                     for i in range(0, len(artist_ids), 100):
                         batch_ids = artist_ids[i:i+100]
                         keys = [
                             {
-                                "Entity type identifier": {"S": aid},
+                                "Entity type identifier": {"S": f"ARTIST#{aid}"},
                                 "Entity-specific identifier": {"S": "PROFILE"}
                             }
                             for aid in batch_ids
                         ]
                         batch_response = client.batch_get_item(
-                            RequestItems={
-                                table.name: {
-                                    "Keys": keys
-                                }
-                            }
+                            RequestItems={table.name: {"Keys": keys}}
                         )
-                        artists_details.extend(
-                            [{k: v['S'] for k, v in artist.items()} for artist in batch_response['Responses'].get(table.name, [])]
-                        )
+                        for artist in batch_response['Responses'].get(table.name, []):
+                            artist_detail = {}
+                            for key, value in artist.items():
+                                if 'S' in value:
+                                    artist_detail[key] = value['S']
+                                elif 'SS' in value:
+                                    artist_detail[key] = value['SS']
+                                elif 'L' in value:
+                                    artist_detail[key] = [i.get('S', '') for i in value['L']]
+                            artists_details.append(artist_detail)
 
                 song = {
+                    "id": item.get('Entity type identifier', '').replace('SONG#', ''),
                     "title": item['title'],
-                    "artists": artists_details,  # full artist objects
+                    "artists": artists_details,
                     "genres": item.get('genres', []),
                     "description": item.get('description', ''),
                     "coverImage": item.get('coverImage'),
                     "album": item.get('album'),
+                    "duration": item.get('duration'),
+                    "releaseDate": item.get('releaseDate'),
+                    "type": item.get('type', 'single')
                 }
                 songs.append(song)
 
@@ -65,17 +81,27 @@ def lambda_handler(event, context):
             if not last_evaluated_key:
                 break
 
+        print(f"Found {len(songs)} songs")
+
         return {
             'statusCode': 200,
-            "headers": {"Access-Control-Allow-Origin": "*"},
-            'body': json.dumps(songs)
+            "headers": {
+                "Access-Control-Allow-Origin": "*",
+                "Content-Type": "application/json"
+            },
+            'body': json.dumps(songs, default=decimal_default)  # ⇐ OVDE DODATO
         }
 
     except Exception as e:
         import traceback
-        print(traceback.format_exc())
+        error_trace = traceback.format_exc()
+        print(f"Error occurred: {error_trace}")
+
         return {
             'statusCode': 500,
-            "headers": {"Access-Control-Allow-Origin": "*"},
-            'body': json.dumps({"error": str(e)})
+            "headers": {
+                "Access-Control-Allow-Origin": "*",
+                "Content-Type": "application/json"
+            },
+            'body': json.dumps({"error": str(e), "trace": error_trace})
         }
