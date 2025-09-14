@@ -1,0 +1,49 @@
+<mat-card class="album-card" [class.no-image]="!album.coverImage">
+  <div class="album-header">
+    <div class="album-image-container">
+      <img *ngIf="album.coverImage"
+           [src]="album.coverImage"
+           [alt]="album.title + ' cover'"
+           class="album-cover"
+           (error)="onCoverError()">
+      
+      <div *ngIf="!album.coverImage" class="album-placeholder">
+        <mat-icon class="album-icon">album</mat-icon>
+        <span class="placeholder-text">No Cover</span>
+      </div>
+    </div>
+    
+    <div class="album-info">
+      <h2 class="album-title">{{ album.title }}</h2>
+      <p *ngIf="album.description" class="album-description">{{ album.description }}</p>
+      <p *ngIf="getArtistNames()" class="album-artists">
+        <mat-icon class="detail-icon">person</mat-icon>
+        {{ getArtistNames() }}
+      </p>
+      <p *ngIf="getGenres()" class="album-genres">
+        <mat-icon class="detail-icon">category</mat-icon>
+        {{ getGenres() }}
+      </p>
+    </div>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <div class="album-songs" *ngIf="songs?.length">
+    <h3>Songs:</h3>
+    <mat-list>
+      <mat-list-item *ngFor="let song of songs">
+        <div matLine class="song-title">{{ song.title }}</div>
+      </mat-list-item>
+    </mat-list>
+  </div>
+
+  <mat-card-actions>
+    <button style="color: #764ba2;" mat-stroked-button color="primary" (click)="playAlbum()" title="Play Album">
+      <mat-icon>play_arrow</mat-icon> Play Album
+    </button>
+    <button mat-icon-button title="Add Album to Favorites">
+      <mat-icon>favorite_border</mat-icon>
+    </button>
+  </mat-card-actions>
+</mat-card>

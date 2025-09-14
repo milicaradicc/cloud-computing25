@@ -20,13 +20,15 @@ import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {AuthInterceptor} from './infrastructure/auth/interceptor';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ArtistsModule} from './artists/artists.module';
+import { ContentModule } from './content/content.module';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
     imports: [
         BrowserModule,
+        BrowserAnimationsModule,
         AppRoutingModule,
         LayoutModule,
         AuthModule,
@@ -42,7 +44,8 @@ import {ArtistsModule} from './artists/artists.module';
         MatCardModule,
         MatTableModule,
         MatPaginatorModule,
-        ArtistsModule
+        ArtistsModule,
+        ContentModule
     ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },

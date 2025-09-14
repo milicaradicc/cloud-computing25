@@ -1,4 +1,8 @@
-<button mat-menu-item routerLink="artists">
+<button mat-menu-item [routerLink]="['/upload']">
+  <mat-icon>music_note</mat-icon>
+  <span>Upload Content</span>
+</button>
+<button mat-menu-item [routerLink]="['/artists']">
   <mat-icon>people_outline</mat-icon>
   <span>Artists</span>
 </button>
