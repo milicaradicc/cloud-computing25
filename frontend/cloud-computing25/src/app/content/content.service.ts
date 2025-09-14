@@ -34,4 +34,8 @@ export class ContentService {
   getAllAlbums(): Observable<Album[]> {
     return this.httpClient.get<Album[]>(environment.apiHost + `/albums`);
   }
+
+  getSong(songId:number):Observable<Song> {
+    return this.httpClient.get<Song>(environment.apiHost + `/song/`+songId);
+  }
 }
