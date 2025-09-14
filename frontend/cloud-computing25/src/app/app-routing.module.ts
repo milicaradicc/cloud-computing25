@@ -9,6 +9,8 @@ import { UploadContentComponent } from './content/upload-content/upload-content.
 import { ContentComponent } from './content/content/content.component';
 
 const routes: Routes = [
+  {path: '', component: HomeComponent},
+  {path: '', redirectTo: '', pathMatch: 'full'},
   {path: 'home', component: ContentComponent},
   {path: '', redirectTo: '/home', pathMatch: 'full'},
   {path: 'register', component: RegisterComponent},
