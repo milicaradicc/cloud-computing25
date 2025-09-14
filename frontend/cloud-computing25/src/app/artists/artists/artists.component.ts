@@ -31,6 +31,7 @@ export class ArtistsComponent implements OnInit {
     this.service.getAll().subscribe({
       next: (artists: Artist[]) => {
         artists.sort((a, b) => a.name.localeCompare(b.name));
+        console.log(artists)
         this.dataSource = new MatTableDataSource<Artist>(artists);
       }
     })

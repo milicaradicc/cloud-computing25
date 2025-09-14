@@ -7,10 +7,9 @@ import {ArtistsComponent} from './artists/artists/artists.component';
 import {AuthGuard} from './infrastructure/auth/auth.guard';
 import { UploadContentComponent } from './content/upload-content/upload-content.component';
 import { ContentComponent } from './content/content/content.component';
+import { DiscoverContentComponent } from './content/discover-content/discover-content.component';
 
 const routes: Routes = [
-  {path: '', component: HomeComponent},
-  {path: '', redirectTo: '', pathMatch: 'full'},
   {path: 'home', component: ContentComponent},
   {path: '', redirectTo: '/home', pathMatch: 'full'},
   {path: 'register', component: RegisterComponent},
@@ -19,6 +18,8 @@ const routes: Routes = [
     data: {role: ['admin']}},
   {path: 'upload', component: UploadContentComponent, canActivate: [AuthGuard],
     data: {role: ['admin']}},
+  {path: 'discover/filter', component: DiscoverContentComponent, canActivate: [AuthGuard],
+  data: {role: ['user']}},
 ];
 
 @NgModule({

@@ -23,13 +23,15 @@ import { UploadContentComponent } from './upload-content/upload-content.componen
 import { ContentComponent } from './content/content.component';
 import { SongCardComponent } from './song-card/song-card.component';
 import { AlbumCardComponent } from './album-card/album-card.component';
+import { DiscoverContentComponent } from './discover-content/discover-content.component';
 
 @NgModule({
   declarations: [
     UploadContentComponent,
     ContentComponent,
     SongCardComponent,
-    AlbumCardComponent
+    AlbumCardComponent,
+    DiscoverContentComponent
   ],
   imports: [
     CommonModule,
