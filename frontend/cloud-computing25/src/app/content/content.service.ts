@@ -20,7 +20,7 @@ export class ContentService {
     );
   }
 
-  addAlbum(album: AlbumUploadDTO): Observable<Album> {
+  addAlbum(album: AlbumUploadDTO): Observable<any> {
     return this.httpClient.post<Album>(
       environment.apiHost + `/albums`,
       album
