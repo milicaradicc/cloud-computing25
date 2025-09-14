@@ -57,8 +57,8 @@ export class UploadContentComponent implements OnInit {
       genres: [[], Validators.required],
       audioFile: [null, Validators.required],
       audioInfo: [null],
-      description: [''],         
-      coverImageUrl: ['']  
+      description: [''],
+      coverImageUrl: ['']
     });
   }
 
@@ -187,8 +187,7 @@ export class UploadContentComponent implements OnInit {
     this.musicService.addAlbum(albumDto).subscribe({
       next:  albumRes => {
         console.log('Album uploaded successfully', albumRes);
-        const albumId = albumRes.id;
-        // Add songs for the album
+        const albumId = albumRes.album.id;
         this.songs.controls.forEach(async (songCtrl) => {
           const songControl = songCtrl as FormGroup;
           const songFile: File = songControl.value.audioFile;
@@ -205,11 +204,11 @@ export class UploadContentComponent implements OnInit {
             modifiedDate: new Date(songFile.lastModified),
             duration: songControl.value.audioInfo?.duration || 0,
             title: songControl.value.title,
-            description: songControl.value.description,       
+            description: songControl.value.description,
             artists: songControl.value.artists.map((a: Artist) => a.id),
             genres: songControl.value.genres,
-            coverImage: songControl.value.coverImageUrl || formValue.coverImageUrl, 
-            album: albumId  
+            coverImage: songControl.value.coverImageUrl || formValue.coverImageUrl,
+            album: albumId
           };
 
           this.musicService.addSong(songDto).subscribe({
