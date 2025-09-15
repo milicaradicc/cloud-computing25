@@ -71,7 +71,8 @@ def lambda_handler(event, context):
                     "album": item.get('album'),
                     "duration": item.get('duration'),
                     "releaseDate": item.get('releaseDate'),
-                    "type": item.get('type', 'single')
+                    "type": item.get('type', 'single'),
+                    "fileName": item.get('fileName', '')
                 }
                 songs.append(song)
 

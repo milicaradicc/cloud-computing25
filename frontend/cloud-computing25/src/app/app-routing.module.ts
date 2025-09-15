@@ -9,6 +9,7 @@ import { UploadContentComponent } from './content/upload-content/upload-content.
 import { ContentComponent } from './content/content/content.component';
 import { DiscoverContentComponent } from './content/discover-content/discover-content.component';
 import { ArtistPageComponent } from './artists/artist-page/artist-page.component';
+import {SongDetailsComponent} from './content/song-details/song-details.component';
 
 const routes: Routes = [
   {path: 'home', component: ContentComponent},
@@ -22,6 +23,7 @@ const routes: Routes = [
   {path: 'discover/filter', component: DiscoverContentComponent, canActivate: [AuthGuard],
   data: {role: ['user']}},
   { path: 'artist/:id', component: ArtistPageComponent }, 
+  {path:'song-details/:id',component:SongDetailsComponent},
 ];
 
 @NgModule({

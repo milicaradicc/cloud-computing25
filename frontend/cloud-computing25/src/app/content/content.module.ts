@@ -25,6 +25,7 @@ import { SongCardComponent } from './song-card/song-card.component';
 import { AlbumCardComponent } from './album-card/album-card.component';
 import { DiscoverContentComponent } from './discover-content/discover-content.component';
 import { AlbumPageComponent } from './album-page/album-page.component';
+import { SongDetailsComponent } from './song-details/song-details.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { AlbumPageComponent } from './album-page/album-page.component';
     SongCardComponent,
     AlbumCardComponent,
     DiscoverContentComponent,
-    AlbumPageComponent
+    AlbumPageComponent,
+    SongDetailsComponent
   ],
   imports: [
     CommonModule,

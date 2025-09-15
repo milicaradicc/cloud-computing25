@@ -20,7 +20,7 @@ export class ContentService {
     );
   }
 
-  addAlbum(album: AlbumUploadDTO): Observable<Album> {
+  addAlbum(album: AlbumUploadDTO): Observable<any> {
     return this.httpClient.post<Album>(
       environment.apiHost + `/albums`,
       album
@@ -33,5 +33,9 @@ export class ContentService {
 
   getAllAlbums(): Observable<Album[]> {
     return this.httpClient.get<Album[]>(environment.apiHost + `/albums`);
+  }
+
+  getSong(songId:number):Observable<Song> {
+    return this.httpClient.get<Song>(environment.apiHost + `/song/`+songId);
   }
 }
