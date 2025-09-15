@@ -23,7 +23,9 @@
         <mat-icon>group</mat-icon>
       </h2>
       <div *ngIf="artists.length > 0; else noArtists" class="artists-list-grid">
-        <mat-card *ngFor="let artist of artists" class="artist-card">
+        <mat-card *ngFor="let artist of artists" 
+          class="artist-card"
+          [routerLink]="['/artist', artist.id]">
           <div class="artist-image-container" 
               [ngStyle]="{'background-image': artist.profileImage ? 'url(' + artist.profileImage + ')' : 'none'}">
             <mat-icon *ngIf="!artist.profileImage" class="artist-placeholder-icon">person</mat-icon>

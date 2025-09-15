@@ -8,6 +8,7 @@ import {AuthGuard} from './infrastructure/auth/auth.guard';
 import { UploadContentComponent } from './content/upload-content/upload-content.component';
 import { ContentComponent } from './content/content/content.component';
 import { DiscoverContentComponent } from './content/discover-content/discover-content.component';
+import { ArtistPageComponent } from './artists/artist-page/artist-page.component';
 
 const routes: Routes = [
   {path: 'home', component: ContentComponent},
@@ -20,6 +21,7 @@ const routes: Routes = [
     data: {role: ['admin']}},
   {path: 'discover/filter', component: DiscoverContentComponent, canActivate: [AuthGuard],
   data: {role: ['user']}},
+  { path: 'artist/:id', component: ArtistPageComponent }, 
 ];
 
 @NgModule({

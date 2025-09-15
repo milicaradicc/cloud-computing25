@@ -24,6 +24,7 @@ import { ContentComponent } from './content/content.component';
 import { SongCardComponent } from './song-card/song-card.component';
 import { AlbumCardComponent } from './album-card/album-card.component';
 import { DiscoverContentComponent } from './discover-content/discover-content.component';
+import { AlbumPageComponent } from './album-page/album-page.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { DiscoverContentComponent } from './discover-content/discover-content.co
     ContentComponent,
     SongCardComponent,
     AlbumCardComponent,
-    DiscoverContentComponent
+    DiscoverContentComponent,
+    AlbumPageComponent
   ],
   imports: [
     CommonModule,
@@ -56,6 +58,6 @@ import { DiscoverContentComponent } from './discover-content/discover-content.co
     MatProgressSpinnerModule,
     MatListModule 
   ],
-  exports: [UploadContentComponent]
+  exports: [UploadContentComponent, AlbumCardComponent]
 })
 export class ContentModule { }

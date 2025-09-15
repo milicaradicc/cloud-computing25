@@ -1,6 +1,6 @@
 .discover-container {
   padding: 2rem;
-  max-width: 1200px;
+  max-width: 100%;
   margin: 0 auto;
   min-height: 100%;
   background: linear-gradient(135deg, #1a1a2e 0%, #162447 100%);
@@ -119,6 +119,13 @@ h2.section-title {
   justify-content: center;
   width: 100%;
   height: 100%;
+  cursor: pointer;
+  transition: color 0.2s, transform 0.2s;
+}
+
+.artist-placeholder-icon:hover {
+  color: #a259d6;   
+  transform: scale(1.2); 
 }
 
 .albums-list-grid {
