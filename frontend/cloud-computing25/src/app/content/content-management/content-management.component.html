@@ -1,0 +1,133 @@
+<div class="admin-management-container">
+      <mat-card class="management-card">
+        <mat-card-header>
+          <mat-card-title>Admin Management</mat-card-title>
+          <mat-card-subtitle>Manage Albums and Songs</mat-card-subtitle>
+        </mat-card-header>
+        
+        <mat-card-content>
+          <mat-tab-group>
+            <!-- Albums Tab -->
+            <mat-tab label="Albums ({{albums.length}})">
+              <div class="content-section">
+                <div class="search-bar">
+                  <mat-form-field appearance="outline" class="search-field">
+                    <mat-label>Search Albums</mat-label>
+                    <input matInput [(ngModel)]="albumSearchTerm" (input)="filterAlbums()" placeholder="Search by title, artist, or genre">
+                    <mat-icon matSuffix>search</mat-icon>
+                  </mat-form-field>
+                </div>
+                
+                <div class="items-grid">
+                  <mat-card *ngFor="let album of filteredAlbums" class="item-card">
+                    <div class="item-header">
+                      <img [src]="album.coverImage || 'assets/default-album.png'" 
+                           alt="Album cover" 
+                           class="cover-image">
+                      <div class="item-info">
+                        <h3 class="item-title">{{album.title}}</h3>
+                        <p class="item-artists">
+                          <span *ngFor="let artist of album.artists; let last = last">
+                            {{artist.name}}<span *ngIf="!last">, </span>
+                          </span>
+                        </p>
+                        <p class="item-genres">
+                          <mat-chip-listbox>
+                            <mat-chip *ngFor="let genre of album.genres">{{genre}}</mat-chip>
+                          </mat-chip-listbox>
+                        </p>
+                        <p class="item-date">Released: {{album.releaseDate | date}}</p>
+                      </div>
+                    </div>
+                    
+                    <mat-card-actions class="item-actions">
+                      <button mat-icon-button 
+                              color="primary" 
+                              matTooltip="View Details"
+                              (click)="viewAlbumDetails(album)">
+                        <mat-icon>visibility</mat-icon>
+                      </button>
+                      <button mat-icon-button 
+                              color="accent" 
+                              matTooltip="Edit Album"
+                              (click)="editAlbum(album)">
+                        <mat-icon>edit</mat-icon>
+                      </button>
+                      <button mat-icon-button 
+                              color="warn" 
+                              matTooltip="Delete Album"
+                              (click)="deleteAlbum(album)"
+                              [disabled]="album.deleted">
+                        <mat-icon *ngIf="!album.deleted">delete</mat-icon>
+                        <mat-spinner *ngIf="album.deleted" diameter="20"></mat-spinner>
+                      </button>
+                    </mat-card-actions>
+                  </mat-card>
+                </div>
+              </div>
+            </mat-tab>
+            
+            <!-- Songs Tab -->
+            <mat-tab label="Songs ({{songs.length}})">
+              <div class="content-section">
+                <div class="search-bar">
+                  <mat-form-field appearance="outline" class="search-field">
+                    <mat-label>Search Songs</mat-label>
+                    <input matInput [(ngModel)]="songSearchTerm" (input)="filterSongs()" placeholder="Search by title, artist, or album">
+                    <mat-icon matSuffix>search</mat-icon>
+                  </mat-form-field>
+                </div>
+                
+                <div class="items-list">
+                  <mat-card *ngFor="let song of filteredSongs" class="song-item-card">
+                    <div class="song-item-content">
+                      <img [src]="song.coverImage || 'assets/default-song.png'" 
+                           alt="Song cover" 
+                           class="song-cover">
+                      <div class="song-info">
+                        <h4 class="song-title">{{song.title}}</h4>
+                        <p class="song-artists">
+                          <span *ngFor="let artist of song.artists; let last = last">
+                            {{artist.name}}<span *ngIf="!last">, </span>
+                          </span>
+                        </p>
+                        <p class="song-album">Album: {{song.album || 'Single'}}</p>
+                        <p class="song-duration" *ngIf="song.duration">
+                          Duration: {{formatDuration(song.duration)}}
+                        </p>
+                        <mat-chip-listbox class="song-genres">
+                          <mat-chip *ngFor="let genre of song.genres">{{genre}}</mat-chip>
+                        </mat-chip-listbox>
+                      </div>
+                    </div>
+                    
+                    <mat-card-actions class="song-actions">
+                      <button mat-icon-button 
+                              color="primary" 
+                              matTooltip="Play Song"
+                              (click)="playSong(song)">
+                        <mat-icon>play_arrow</mat-icon>
+                      </button>
+                      <button mat-icon-button 
+                              color="accent" 
+                              matTooltip="Edit Song"
+                              (click)="editSong(song)">
+                        <mat-icon>edit</mat-icon>
+                      </button>
+                      <button mat-icon-button 
+                              color="warn" 
+                              matTooltip="Delete Song"
+                              (click)="deleteSong(song)"
+                              [disabled]="song.deleted">
+                        <mat-icon *ngIf="!song.deleted">delete</mat-icon>
+                        <mat-spinner *ngIf="song.deleted" diameter="20"></mat-spinner>
+                      </button>
+                    </mat-card-actions>
+                  </mat-card>
+                </div>
+              </div>
+            </mat-tab>
+          </mat-tab-group>
+        </mat-card-content>
+      </mat-card>
+    </div>

@@ -8,6 +8,7 @@ import {AuthGuard} from './infrastructure/auth/auth.guard';
 import { UploadContentComponent } from './content/upload-content/upload-content.component';
 import { ContentComponent } from './content/content/content.component';
 import {SongDetailsComponent} from './content/song-details/song-details.component';
+import { ContentManagementComponent } from './content/content-management/content-management.component';
 
 const routes: Routes = [
   {path: 'home', component: ContentComponent},
@@ -15,6 +16,8 @@ const routes: Routes = [
   {path: 'register', component: RegisterComponent},
   {path: 'login', component: LoginComponent},
   {path: 'artists', component: ArtistsComponent, canActivate: [AuthGuard],
+    data: {role: ['admin']}},
+  {path: 'management', component: ContentManagementComponent, canActivate: [AuthGuard],
     data: {role: ['admin']}},
   {path: 'upload', component: UploadContentComponent, canActivate: [AuthGuard],
     data: {role: ['admin']}},

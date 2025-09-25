@@ -35,7 +35,23 @@ export class ContentService {
     return this.httpClient.get<Album[]>(environment.apiHost + `/albums`);
   }
 
-  getSong(songId:number):Observable<Song> {
-    return this.httpClient.get<Song>(environment.apiHost + `/song/`+songId);
+  getSong(songId: number): Observable<Song> {
+    return this.httpClient.get<Song>(environment.apiHost + `/song/` + songId);
+  }
+
+  deleteAlbum(albumId: string): Observable<any> {
+    return this.httpClient.delete(environment.apiHost + `/albums/${albumId}`);
+  }
+
+  deleteSong(songId: string): Observable<any> {
+    return this.httpClient.delete(environment.apiHost + `/song/${songId}`);
+  }
+
+  updateAlbum(albumId: string, album: Partial<Album>): Observable<any> {
+    return this.httpClient.put(environment.apiHost + `/albums/${albumId}`, album);
+  }
+
+  updateSong(songId: string, song: Partial<Song>): Observable<any> {
+    return this.httpClient.put(environment.apiHost + `/song/${songId}`, song);
   }
 }

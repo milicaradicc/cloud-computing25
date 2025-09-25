@@ -9,5 +9,7 @@ export interface Album {
   songs: Song[];
   artists: Artist[];
   genres?: string[];
-  id:string
+  Id:string;
+  Genre:string,
+  deleted:boolean
 }

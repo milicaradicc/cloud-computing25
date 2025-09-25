@@ -10,4 +10,5 @@ export interface Song {
   album?: string;
   duration?:number,
   fileName:string,
+  deleted:boolean,
 }

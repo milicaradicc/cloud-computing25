@@ -19,11 +19,16 @@ import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'; 
 import { MatListModule } from '@angular/material/list'; 
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatTooltipModule } from '@angular/material/tooltip';
+
 import { UploadContentComponent } from './upload-content/upload-content.component';
 import { ContentComponent } from './content/content.component';
 import { SongCardComponent } from './song-card/song-card.component';
 import { AlbumCardComponent } from './album-card/album-card.component';
 import { SongDetailsComponent } from './song-details/song-details.component';
+import { ContentManagementComponent, ConfirmDeleteDialog } from './content-management/content-management.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +36,8 @@ import { SongDetailsComponent } from './song-details/song-details.component';
     ContentComponent,
     SongCardComponent,
     AlbumCardComponent,
-    SongDetailsComponent
+    SongDetailsComponent,
+    ContentManagementComponent,
   ],
   imports: [
     CommonModule,
@@ -54,7 +60,13 @@ import { SongDetailsComponent } from './song-details/song-details.component';
     MatNativeDateModule,
     MatTableModule,
     MatProgressSpinnerModule,
-    MatListModule 
+    MatListModule,
+    MatDialogModule,
+    MatTabsModule,
+    MatTooltipModule,
+    MatDialogModule,
+
+    ConfirmDeleteDialog
   ],
   exports: [UploadContentComponent]
 })
