@@ -43,8 +43,14 @@ export class ContentService {
     return this.httpClient.delete(environment.apiHost + `/albums/${albumId}`);
   }
 
-  deleteSong(songId: string): Observable<any> {
-    return this.httpClient.delete(environment.apiHost + `/song/${songId}`);
+  deleteSong(song: Song): Observable<any> {
+    console.log(song);
+    const album = song.Album;
+    const id = song.Id;
+    console.log(album,id)
+    return this.httpClient.delete(
+      environment.apiHost + `/song?Album=${song.Album}&Id=${song.Id}`
+    );
   }
 
   updateAlbum(albumId: string, album: Partial<Album>): Observable<any> {

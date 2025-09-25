@@ -1,13 +1,13 @@
 import { Artist } from "../artists/artist.model";
 
 export interface Song {
-  id:string,
+  Id:string,
   title: string;
   genres?: string[];
   coverImage?: string;
   artists: Artist[];
   description?: string;
-  album?: string;
+  Album?: string;
   duration?:number,
   fileName:string,
   deleted:boolean,

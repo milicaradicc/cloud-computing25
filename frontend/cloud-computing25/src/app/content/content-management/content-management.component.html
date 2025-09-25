@@ -1,8 +1,6 @@
 <div class="admin-management-container">
       <mat-card class="management-card">
         <mat-card-header>
-          <mat-card-title>Admin Management</mat-card-title>
-          <mat-card-subtitle>Manage Albums and Songs</mat-card-subtitle>
         </mat-card-header>
         
         <mat-card-content>
@@ -41,12 +39,6 @@
                     </div>
                     
                     <mat-card-actions class="item-actions">
-                      <button mat-icon-button 
-                              color="primary" 
-                              matTooltip="View Details"
-                              (click)="viewAlbumDetails(album)">
-                        <mat-icon>visibility</mat-icon>
-                      </button>
                       <button mat-icon-button 
                               color="accent" 
                               matTooltip="Edit Album"
@@ -91,7 +83,7 @@
                             {{artist.name}}<span *ngIf="!last">, </span>
                           </span>
                         </p>
-                        <p class="song-album">Album: {{song.album || 'Single'}}</p>
+                        <p class="song-album">Album: {{song.Album || 'Single'}}</p>
                         <p class="song-duration" *ngIf="song.duration">
                           Duration: {{formatDuration(song.duration)}}
                         </p>
@@ -102,12 +94,6 @@
                     </div>
                     
                     <mat-card-actions class="song-actions">
-                      <button mat-icon-button 
-                              color="primary" 
-                              matTooltip="Play Song"
-                              (click)="playSong(song)">
-                        <mat-icon>play_arrow</mat-icon>
-                      </button>
                       <button mat-icon-button 
                               color="accent" 
                               matTooltip="Edit Song"

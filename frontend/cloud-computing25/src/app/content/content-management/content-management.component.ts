@@ -85,7 +85,7 @@ albums: Album[] = [];
     this.filteredSongs = this.songs.filter(song =>
       song.title.toLowerCase().includes(searchTerm) ||
       song.artists.some(artist => artist.name.toLowerCase().includes(searchTerm)) ||
-      song.album?.toLowerCase().includes(searchTerm) ||
+      song.Album?.toLowerCase().includes(searchTerm) ||
       song.genres?.some(genre => genre.toLowerCase().includes(searchTerm))
     );
   }
@@ -130,9 +130,9 @@ albums: Album[] = [];
       if (result) {
         song.deleted = true;
         
-        this.contentService.deleteSong(song.id).subscribe({
+        this.contentService.deleteSong(song).subscribe({
           next: () => {
-            this.songs = this.songs.filter(s => s.id !== song.id);
+            this.songs = this.songs.filter(s => s.Id !== song.Id);
             this.filterSongs();
             this.showMessage('Song deleted successfully');
           },
