@@ -14,17 +14,12 @@ export class ContentService {
   constructor(private httpClient: HttpClient) { }
 
   addSong(song: SingleUploadDTO): Observable<any> {
-    return this.httpClient.post<Song>(
-      environment.apiHost + `/song`,
-      song
+    return this.httpClient.post<Song>(environment.apiHost + `/song`, song
     );
   }
 
   addAlbum(album: AlbumUploadDTO): Observable<any> {
-    return this.httpClient.post<Album>(
-      environment.apiHost + `/albums`,
-      album
-    );
+    return this.httpClient.post<Album>(environment.apiHost + `/albums`,album);
   }
 
   getAllSongs(): Observable<Song[]> {
@@ -39,18 +34,12 @@ export class ContentService {
     return this.httpClient.get<Song>(environment.apiHost + `/song/` + songId);
   }
 
-  deleteAlbum(albumId: string): Observable<any> {
-    return this.httpClient.delete(environment.apiHost + `/albums/${albumId}`);
+  deleteAlbum(album: Album): Observable<any> {
+    return this.httpClient.delete(environment.apiHost + `/albums?Genre=${album.Genre}&Id=${album.Id}`);
   }
 
   deleteSong(song: Song): Observable<any> {
-    console.log(song);
-    const album = song.Album;
-    const id = song.Id;
-    console.log(album,id)
-    return this.httpClient.delete(
-      environment.apiHost + `/song?Album=${song.Album}&Id=${song.Id}`
-    );
+    return this.httpClient.delete(environment.apiHost + `/song?Album=${song.Album}&Id=${song.Id}`);
   }
 
   updateAlbum(albumId: string, album: Partial<Album>): Observable<any> {
