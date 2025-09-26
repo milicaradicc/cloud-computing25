@@ -32,12 +32,14 @@ def lambda_handler(event, context):
 
     try:
         # 1️⃣ Soft delete artist
+        print(genre, artist_id)
         artist_table.update_item(
             Key={"Genre": genre, "Id": artist_id},
             UpdateExpression="SET deleted = :val",
-            ExpressionAttributeValues={":val": True},
+            ExpressionAttributeValues={":val": "true"},
             ConditionExpression="attribute_exists(Id)"
         )
+        print("Artist deleted successfully")
 
         # 2️⃣ Dohvati albume preko invertovanog indexa
         albums = artist_album_table.query(
@@ -63,7 +65,7 @@ def lambda_handler(event, context):
                 album_table.update_item(
                     Key={'Genre': album['Genre'], 'Id': album_id},
                     UpdateExpression='SET deleted = :val',
-                    ExpressionAttributeValues={':val': True}
+                    ExpressionAttributeValues={':val': "true"}
                 )
 
                 # Soft delete pesama u albumu preko invertovanog indexa
@@ -89,7 +91,7 @@ def lambda_handler(event, context):
                             song_table.update_item(
                                 Key={'Album': album_id, 'Id': s['SongId']},
                                 UpdateExpression='SET deleted = :val',
-                                ExpressionAttributeValues={':val': True}
+                                ExpressionAttributeValues={':val': "true"}
                             )
 
                         # --- Pravi delete iz invertovanog indexa ---
