@@ -12,11 +12,21 @@ export class ArtistService {
 
   constructor(private httpClient: HttpClient) { }
 
-  getAll() : Observable<Artist[]> {
-    return this.httpClient.get<Artist[]>(environment.apiHost + `/artists`);
+  getAll(): Observable<Artist[]> {
+    return this.httpClient.get<Artist[]>(`${environment.apiHost}/artists`);
   }
 
-  add(artist:CreateArtistDto) : Observable<Artist> {
-    return this.httpClient.post<Artist>(environment.apiHost + "/artists", artist);
+  add(artist: CreateArtistDto): Observable<Artist> {
+    return this.httpClient.post<Artist>(`${environment.apiHost}/artists`, artist);
+  }
+
+  update(id: string, artist: CreateArtistDto): Observable<Artist> {
+    return this.httpClient.put<Artist>(`${environment.apiHost}/artists/${id}`, artist);
+  }
+
+  delete(artist: Artist): Observable<any> {
+    console.log(artist.Genre,artist.Id)
+    return this.httpClient.delete(`${environment.apiHost}/artists?Genre=${artist.Genre}&Id=${artist.Id}`);
   }
 }
+
