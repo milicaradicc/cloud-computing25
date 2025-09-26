@@ -165,7 +165,7 @@ export class UploadContentComponent implements OnInit {
 
         const dto: SingleUploadDTO = {
           fileBase64: base64File,
-          fileName: file.name,
+          fileName: crypto.randomUUID(),
           fileSize: file.size,
           fileType: file.type,
           createdDate: new Date(file.lastModified),
@@ -214,7 +214,7 @@ export class UploadContentComponent implements OnInit {
 
           const songDto: SingleUploadDTO = {
             fileBase64: base64File,
-            fileName: songFile.name,
+            fileName: crypto.randomUUID(),
             fileSize: songFile.size,
             fileType: songFile.type,
             createdDate: new Date(songFile.lastModified),

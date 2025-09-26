@@ -50,7 +50,8 @@ def lambda_handler(event, context):
         "artistId": artist_id,
         "name": name,
         "biography": biography,
-        "genres": genres
+        "genres": genres,
+        "deleted":"false"
     }
 
     try:

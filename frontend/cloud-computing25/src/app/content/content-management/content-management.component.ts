@@ -134,6 +134,16 @@ albums: Album[] = [];
           next: () => {
             this.songs = this.songs.filter(s => s.Id !== song.Id);
             this.filterSongs();
+
+            // 🔄 Refresh albuma
+            this.contentService.getAllAlbums().subscribe({
+              next: (albums) => {
+                this.albums = albums;
+                this.filteredAlbums = [...albums];
+              },
+              error: (err) => console.error('Error refreshing albums:', err)
+            });
+
             this.showMessage('Song deleted successfully');
           },
           error: (error) => {
@@ -147,23 +157,15 @@ albums: Album[] = [];
   }
 
   viewAlbumDetails(album: Album): void {
-    // Implementation for viewing album details
     console.log('View album details:', album);
   }
 
   editAlbum(album: Album): void {
-    // Implementation for editing album
     console.log('Edit album:', album);
   }
 
   editSong(song: Song): void {
-    // Implementation for editing song
     console.log('Edit song:', song);
-  }
-
-  playSong(song: Song): void {
-    // Implementation for playing song
-    console.log('Play song:', song);
   }
 
   formatDuration(seconds: number): string {

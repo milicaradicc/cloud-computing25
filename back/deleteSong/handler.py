@@ -54,10 +54,12 @@ def lambda_handler(event, context):
                 KeyConditionExpression=Key("Id").eq(album_id)
             )
 
+            print("ovo je odgovor: ", album_response)
+
             for album_item in album_response.get("Items", []):
                 # Update-uj album koristeći originalni PK (Genre)
                 album_table.update_item(
-                    Key={"Genre": album_item["Genre"]},
+                    Key={"Genre": album_item["Genre"], "Id": album_item["Id"]},
                     UpdateExpression="SET deleted = :val",
                     ExpressionAttributeValues={":val": "true"}
                 )
