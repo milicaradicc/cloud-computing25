@@ -32,23 +32,24 @@ def lambda_handler(event, context):
 
     try:
         # 1️⃣ Soft delete artist
-        print(genre, artist_id)
         artist_table.update_item(
             Key={"Genre": genre, "Id": artist_id},
             UpdateExpression="SET deleted = :val",
             ExpressionAttributeValues={":val": "true"},
             ConditionExpression="attribute_exists(Id)"
         )
-        print("Artist deleted successfully")
+        print(f"Artist {artist_id} marked deleted")
 
-        # 2️⃣ Dohvati albume preko invertovanog indexa
+        # 2️⃣ Dohvati albume iz invertovanog indexa
         albums = artist_album_table.query(
             KeyConditionExpression=Key('ArtistId').eq(artist_id)
         )['Items']
 
         for artist_album in albums:
             album_id = artist_album['AlbumId']
-            album = album_table.get_item(Key={'Genre': genre, 'Id': album_id}).get('Item')
+            album = album_table.get_item(
+                Key={'Genre': artist_album["AlbumGenre"], 'Id': album_id}
+            ).get('Item')
             if not album:
                 continue
 
@@ -68,42 +69,53 @@ def lambda_handler(event, context):
                     ExpressionAttributeValues={':val': "true"}
                 )
 
-                # Soft delete pesama u albumu preko invertovanog indexa
-                songs = artist_song_table.query(
-                    KeyConditionExpression=Key('ArtistId').eq(artist_id)
-                )['Items']
+            # 3️⃣ UVEK očisti pesme iz invertovanog indexa
+            songs = artist_song_table.query(
+                KeyConditionExpression=Key('ArtistId').eq(artist_id)
+            )['Items']
 
-                for s in songs:
-                    if s['AlbumId'] == album_id:
-                        song_item = song_table.get_item(Key={'Album': album_id, 'Id': s['SongId']}).get('Item')
-                        if not song_item:
-                            continue
+            for s in songs:
+                if s['AlbumId'] != album_id:
+                    continue
 
-                        if len(song_item.get('artists', [])) > 1:
-                            song_item['artists'].remove(artist_id)
-                            song_table.update_item(
-                                Key={'Album': album_id, 'Id': s['SongId']},
-                                UpdateExpression='SET artists = :a',
-                                ExpressionAttributeValues={':a': song_item['artists']}
-                            )
-                        else:
-                            # Soft delete pesme
-                            song_table.update_item(
-                                Key={'Album': album_id, 'Id': s['SongId']},
-                                UpdateExpression='SET deleted = :val',
-                                ExpressionAttributeValues={':val': "true"}
-                            )
+                song_item = song_table.get_item(
+                    Key={'Album': album_id, 'Id': s['SongId']}
+                ).get('Item')
+                if not song_item:
+                    continue
 
-                        # --- Pravi delete iz invertovanog indexa ---
-                        artist_song_table.delete_item(Key={'ArtistId': artist_id, 'SongId': s['SongId']})
+                if len(song_item.get('artists', [])) > 1:
+                    # samo ukloni artista iz liste
+                    song_item['artists'].remove(artist_id)
+                    song_table.update_item(
+                        Key={'Album': album_id, 'Id': s['SongId']},
+                        UpdateExpression='SET artists = :a',
+                        ExpressionAttributeValues={':a': song_item['artists']}
+                    )
+                else:
+                    # soft delete pesme
+                    song_table.update_item(
+                        Key={'Album': album_id, 'Id': s['SongId']},
+                        UpdateExpression='SET deleted = :val',
+                        ExpressionAttributeValues={':val': "true"}
+                    )
+
+                # --- Pravi delete iz invertovanog indexa pesme ---
+                artist_song_table.delete_item(
+                    Key={'ArtistId': artist_id, 'SongId': s['SongId']}
+                )
 
             # --- Pravi delete iz invertovanog indexa albuma ---
-            artist_album_table.delete_item(Key={'ArtistId': artist_id, 'AlbumId': album_id})
+            artist_album_table.delete_item(
+                Key={'ArtistId': artist_id, 'AlbumId': album_id}
+            )
 
         return {
             "statusCode": 200,
             "headers": {"Access-Control-Allow-Origin": "*"},
-            "body": json.dumps({"message": f"Artist {artist_id} marked deleted. Album and song cleanup done."})
+            "body": json.dumps({
+                "message": f"Artist {artist_id} marked deleted. Albums and songs cleaned up."
+            })
         }
 
     except dynamodb.meta.client.exceptions.ConditionalCheckFailedException:
@@ -114,6 +126,7 @@ def lambda_handler(event, context):
         }
 
     except Exception as e:
+        print("Error:", str(e))
         return {
             "statusCode": 500,
             "headers": {"Access-Control-Allow-Origin": "*"},
