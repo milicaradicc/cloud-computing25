@@ -5,6 +5,8 @@ import { ContentService } from '../content.service';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatButtonModule } from '@angular/material/button';
+import { UpdateAlbumComponent } from '../update-album/update-album.component';
+import { UpdateSongComponent } from '../update-song/update-song.component';
 
 @Component({
   selector: 'app-content-management',
@@ -150,11 +152,32 @@ albums: Album[] = [];
   }
 
   editAlbum(album: Album): void {
-    console.log('Edit album:', album);
+    const dialogRef = this.dialog.open(UpdateAlbumComponent, {
+      width: '600px',
+      data: { album }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.showMessage('Album updated successfully');
+        this.loadData();
+      }
+    });
   }
 
+
   editSong(song: Song): void {
-    console.log('Edit song:', song);
+    const dialogRef = this.dialog.open(UpdateSongComponent, {
+      width: '600px',
+      data: { song }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.showMessage('Song updated successfully');
+        this.loadData();
+      }
+    });
   }
 
   formatDuration(seconds: number): string {

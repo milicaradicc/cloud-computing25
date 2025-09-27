@@ -75,6 +75,7 @@ export class UploadContentComponent implements OnInit {
       next: artists => this.availableArtists = artists,
       error: err => console.error('Error loading artists:', err)
     });
+    console.log('Available artists:', this.availableArtists);
   }
 
   onCoverImageUrlChange(event: any) {

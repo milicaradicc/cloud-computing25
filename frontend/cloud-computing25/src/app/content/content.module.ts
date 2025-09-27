@@ -29,6 +29,8 @@ import { SongCardComponent } from './song-card/song-card.component';
 import { AlbumCardComponent } from './album-card/album-card.component';
 import { SongDetailsComponent } from './song-details/song-details.component';
 import { ContentManagementComponent, ConfirmDeleteDialog } from './content-management/content-management.component';
+import { UpdateAlbumComponent } from './update-album/update-album.component';
+import { UpdateSongComponent } from './update-song/update-song.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +40,8 @@ import { ContentManagementComponent, ConfirmDeleteDialog } from './content-manag
     AlbumCardComponent,
     SongDetailsComponent,
     ContentManagementComponent,
+    UpdateAlbumComponent,
+    UpdateSongComponent,
   ],
   imports: [
     CommonModule,

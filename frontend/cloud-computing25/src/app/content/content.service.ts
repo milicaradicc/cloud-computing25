@@ -42,11 +42,11 @@ export class ContentService {
     return this.httpClient.delete(environment.apiHost + `/song?Album=${song.Album}&Id=${song.Id}`);
   }
 
-  updateAlbum(albumId: string, album: Partial<Album>): Observable<any> {
-    return this.httpClient.put(environment.apiHost + `/albums/${albumId}`, album);
+  updateAlbum(album: Album): Observable<any> {
+    return this.httpClient.put(environment.apiHost + `/albums/${album.Id}`, album);
   }
 
-  updateSong(songId: string, song: Partial<Song>): Observable<any> {
-    return this.httpClient.put(environment.apiHost + `/song/${songId}`, song);
+  updateSong(song: Song): Observable<any> {
+    return this.httpClient.put(environment.apiHost + `/song/${song.Id}`, song);
   }
 }

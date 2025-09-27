@@ -6,8 +6,6 @@ table_name = "Artists"
 dynamodb = boto3.resource("dynamodb")
 
 def lambda_handler(event, context):
-    print("Event received:", event)
-    
     claims = event.get("requestContext", {}).get("authorizer", {}).get("claims", {})
     print("Claims:", claims)
     role = claims.get("custom:role")

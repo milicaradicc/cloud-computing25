@@ -15,8 +15,17 @@ table = dynamodb.Table(TABLE_NAME)
 
 
 def lambda_handler(event, context):
+    claims = event.get("requestContext", {}).get("authorizer", {}).get("claims", {})
+    print("Claims:", claims)
+    role = claims.get("custom:role")
+
+    if role != "admin":
+        return {
+            "statusCode": 403,
+            'headers': {'Access-Control-Allow-Origin': '*'},
+            "body": json.dumps({"message":"Forbidden: Insufficient permissions"})
+        }
     try:
-        # Parsiranje DTO sa frontenda
         body = json.loads(event.get('body', '{}'))
         album_title = body['title']
         genres = body.get('genres', [])

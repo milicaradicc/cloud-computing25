@@ -4,6 +4,7 @@ import {Artist} from './artist.model';
 import {environment} from '../../env/environment';
 import {HttpClient} from '@angular/common/http';
 import {CreateArtistDto} from './create-artist-dto.model';
+import { tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,13 @@ export class ArtistService {
   constructor(private httpClient: HttpClient) { }
 
   getAll(): Observable<Artist[]> {
-    return this.httpClient.get<Artist[]>(`${environment.apiHost}/artists`);
+    return this.httpClient.get<Artist[]>(`${environment.apiHost}/artists`).pipe(
+      tap(artists => {
+        artists.forEach(artist => {
+          console.log('Artist:', artist);
+        });
+      })
+    );
   }
 
   add(artist: CreateArtistDto): Observable<Artist> {
@@ -25,7 +32,6 @@ export class ArtistService {
   }
 
   delete(artist: Artist): Observable<any> {
-    console.log(artist.Genre,artist.Id)
     return this.httpClient.delete(`${environment.apiHost}/artists?Genre=${artist.Genre}&Id=${artist.Id}`);
   }
 }
