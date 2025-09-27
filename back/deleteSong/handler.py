@@ -7,7 +7,6 @@ song_table = dynamodb.Table("Song")
 album_table = dynamodb.Table("Album")
 
 def lambda_handler(event, context):
-    # Provera role
     claims = event.get("requestContext", {}).get("authorizer", {}).get("claims", {})
     role = claims.get("custom:role")
     if role != "admin":
@@ -17,7 +16,6 @@ def lambda_handler(event, context):
             "body": json.dumps({"message": "Forbidden"})
         }
 
-    # Query parametri
     params = event.get("queryStringParameters") or {}
     album_id = params.get("Album")
     song_id = params.get("Id")

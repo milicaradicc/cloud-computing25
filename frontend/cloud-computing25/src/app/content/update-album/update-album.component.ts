@@ -39,17 +39,10 @@ export class UpdateAlbumComponent implements OnInit {
   ngOnInit(): void {
     this.artistService.getAll().subscribe(artists => {
       this.allArtists = artists;
-      console.log('All artists:', this.allArtists);
-
       const selectedArtists = this.data.album.artists || [];
-      
-      console.log('Selected artists:', selectedArtists);
-
       this.form.patchValue({
         artists: selectedArtists
       });
-
-      console.log('Prefilled artists:', selectedArtists);
     });
   }
 

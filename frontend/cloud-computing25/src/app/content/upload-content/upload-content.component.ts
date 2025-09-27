@@ -176,7 +176,7 @@ export class UploadContentComponent implements OnInit {
           duration: this.singleAudioInfo?.duration || 0,
           title: formValue.title,
           description: formValue.description,
-          artists: formValue.artists, // This should be correct for single
+          artists: formValue.artists,
           genres: formValue.genres,
           coverImage: formValue.coverImageUrl,
           album: albumId

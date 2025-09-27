@@ -1,1 +1,52 @@
-<p>update-song works!</p>
+<h2 mat-dialog-title>Update Song</h2>
+<mat-dialog-content [formGroup]="form">
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Title</mat-label>
+    <input matInput formControlName="title" required>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Description</mat-label>
+    <textarea matInput formControlName="description" rows="3"></textarea>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Cover Image URL</mat-label>
+    <input matInput formControlName="coverImage">
+    <mat-icon matSuffix>image</mat-icon>
+  </mat-form-field>
+  <div class="image-preview" *ngIf="form.value.coverImage">
+    <img [src]="form.value.coverImage" alt="Cover preview" class="preview-image">
+  </div>
+
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Artists</mat-label>
+    <mat-select formControlName="artists" multiple>
+      <mat-option *ngFor="let artist of allArtists" [value]="artist.Id">
+        {{ artist.name }}
+      </mat-option>
+    </mat-select>
+    <mat-error *ngIf="form.get('artists')?.hasError('required')">
+      At least one artist is required
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Genres</mat-label>
+    <mat-select formControlName="genres" multiple>
+      <mat-option *ngFor="let genre of allGenres" [value]="genre">
+        {{ genre }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <div class="audio-section">
+    <p>Current Audio: {{ audioInfo?.fileName }} ({{ formatFileSize(audioInfo?.fileSize) }}, {{ formatDuration(audioInfo?.duration) }})</p>
+    <input type="file" (change)="onFileChange($event)">
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-raised-button color="primary" (click)="save()">Save</button>
+</mat-dialog-actions>
