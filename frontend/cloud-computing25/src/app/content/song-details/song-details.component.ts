@@ -27,7 +27,7 @@ export class SongDetailsComponent implements OnInit, OnDestroy {
   isRatingLoading = false;
   
   isLoadingSong = true;
-  id = "";
+  id = ""; // song
   
   private subscriptions = new Subscription();
 
@@ -82,7 +82,7 @@ export class SongDetailsComponent implements OnInit, OnDestroy {
       const ratingSubscription = this.contentService.getSongRating(this.id, user.userId).subscribe({
         next: (rating: Rating) => {
           this.currentRating = rating?.rating ?? 0;
-          console.log('Current rating:', this.currentRating); // Debug log
+          console.log('Current rating:', this.currentRating); 
         },
         error: (error) => {
           console.warn('No rating found or error loading rating:', error);
@@ -98,10 +98,8 @@ export class SongDetailsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    // Clean up subscriptions
     this.subscriptions.unsubscribe();
     
-    // Pause audio if playing
     if (this.audioPlayer?.nativeElement) {
       this.audioPlayer.nativeElement.pause();
     }
@@ -121,16 +119,6 @@ export class SongDetailsComponent implements OnInit, OnDestroy {
       this.audioPlayer.nativeElement.play();
     }
     this.isPlaying = !this.isPlaying;
-  }
-
-  previousTrack() {
-    // Implement previous track logic
-    console.log('Previous track');
-  }
-
-  nextTrack() {
-    // Implement next track logic
-    console.log('Next track');
   }
 
   setVolume(event: any) {
@@ -181,7 +169,6 @@ export class SongDetailsComponent implements OnInit, OnDestroy {
     this.currentTime = newTime;
   }
 
-  // Rating methods
   onStarHover(rating: number) {
     this.hoveredRating = rating;
   }
@@ -190,30 +177,41 @@ export class SongDetailsComponent implements OnInit, OnDestroy {
     this.hoveredRating = 0;
   }
 
-  onStarClick(rating: number) {
+  async onStarClick(rating: number) {
     if (!this.song || this.isRatingLoading) return;
 
     this.isRatingLoading = true;
-    
-    const ratingData: Rating = {
-      targetId: this.song.Id,
-      rating: rating,
-    };
 
-    const ratingSubscription = this.contentService.rateSong(ratingData).subscribe({
-      next: (response) => {
-        this.currentRating = rating;
-        this.snackBar.open('Rating submitted successfully!', 'OK', {duration: 3000});
-        this.isRatingLoading = false;
-      },
-      error: (error) => {
-        this.snackBar.open('Error submitting rating', 'OK', {duration: 5000});
-        this.isRatingLoading = false;
-        console.error('Rating error:', error);
-      }
-    });
-    
-    this.subscriptions.add(ratingSubscription);
+    try {
+      const user = await this.authService.getUser();
+
+      const ratingData: Rating = {
+        userId: user.userId,
+        targetId: this.id,
+        rating: rating,
+        ratedAt: Date.now()
+      };
+
+      console.log(ratingData);
+
+      const ratingSubscription = this.contentService.rateSong(ratingData).subscribe({
+        next: (response) => {
+          this.currentRating = rating;
+          this.snackBar.open('Rating submitted successfully!', 'OK', { duration: 3000 });
+          this.isRatingLoading = false;
+        },
+        error: (error) => {
+          this.snackBar.open('Error submitting rating', 'OK', { duration: 5000 });
+          this.isRatingLoading = false;
+          console.error('Rating error:', error);
+        }
+      });
+
+      this.subscriptions.add(ratingSubscription);
+    } catch (error) {
+      this.isRatingLoading = false;
+      console.error("Error getting user:", error);
+    }
   }
 
   getStarClass(starNumber: number): string {

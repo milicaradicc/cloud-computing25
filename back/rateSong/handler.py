@@ -1,39 +1,55 @@
 import json
 import boto3
-from boto3.dynamodb.conditions import Key
-from decimal import Decimal
 
-table_name = "Album"
-dynamodb = boto3.resource("dynamodb")
-table = dynamodb.Table(table_name)
-
-class DecimalEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, Decimal):
-            # možeš da biraš: int ili float
-            if obj % 1 == 0:
-                return int(obj)
-            else:
-                return float(obj)
-        return super(DecimalEncoder, self).default(obj)
+dynamodb = boto3.resource('dynamodb')
+RATING_TABLE = 'Rating'
+rating_table = dynamodb.Table(RATING_TABLE)
 
 def lambda_handler(event, context):
+    headers = {
+        "Access-Control-Allow-Origin": "*"
+    }
+
+    claims = event.get("requestContext", {}).get("authorizer", {}).get("claims", {})
+    role = claims.get("custom:role")
+    if role != "admin":
+        return {
+            "statusCode": 403,
+            "headers": headers,
+            "body": json.dumps({"message":"Forbidden: Insufficient permissions"})
+        }
+
     try:
-        response = table.query(
-            IndexName="deleted-index",
-            KeyConditionExpression=Key("deleted").eq("false")
+        body = json.loads(event.get('body', '{}'))
+        song_id = event['pathParameters']['songId']
+        user_id = body.get('userId')
+        rating_value = body.get('rating')
+
+        if not user_id or rating_value is None:
+            return {
+                "statusCode": 400,
+                "headers": headers,
+                "body": json.dumps({"message": "userId and rating are required"})
+            }
+
+        rating_table.put_item(
+            Item={
+                "User": user_id,
+                "Song": song_id,
+                "rating": rating_value
+            }
         )
-        items = response.get("Items", [])
 
         return {
             "statusCode": 200,
-            "headers": {"Access-Control-Allow-Origin": "*"},
-            "body": json.dumps(items, cls=DecimalEncoder)
+            "headers": headers,
+            "body": json.dumps({"message": "Rating saved successfully"})
         }
 
     except Exception as e:
+        print("Error saving rating:", str(e))
         return {
             "statusCode": 500,
-            "headers": {"Access-Control-Allow-Origin": "*"},
+            "headers": headers,
             "body": json.dumps({"error": str(e)})
         }

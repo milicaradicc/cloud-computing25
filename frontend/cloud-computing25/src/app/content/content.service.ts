@@ -52,14 +52,9 @@ export class ContentService {
   }
 
   rateSong(rating: Rating): Observable<any> {
-    return this.httpClient.put(environment.apiHost + `/song/${rating.targetId}/rating`, rating);
+    return this.httpClient.post(environment.apiHost + `/song/${rating.targetId}/rating`, rating);
   }
 
-  rateAlbum(rating: Rating): Observable<any> {
-    return this.httpClient.put(environment.apiHost + `/albums/${rating.targetId}/rating`, rating);
-  }
-
-  // GET /songs/{songId}/rating?userId={userId}
   getSongRating(songId:string,userId:string): Observable<Rating>{
     return this.httpClient.get<Rating>(environment.apiHost + `/song/${songId}/rating?userId=${userId}`);
   }
