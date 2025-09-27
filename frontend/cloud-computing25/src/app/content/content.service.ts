@@ -14,17 +14,12 @@ export class ContentService {
   constructor(private httpClient: HttpClient) { }
 
   addSong(song: SingleUploadDTO): Observable<any> {
-    return this.httpClient.post<Song>(
-      environment.apiHost + `/song`,
-      song
+    return this.httpClient.post<Song>(environment.apiHost + `/song`, song
     );
   }
 
   addAlbum(album: AlbumUploadDTO): Observable<any> {
-    return this.httpClient.post<Album>(
-      environment.apiHost + `/albums`,
-      album
-    );
+    return this.httpClient.post<Album>(environment.apiHost + `/albums`,album);
   }
 
   getAllSongs(): Observable<Song[]> {
@@ -35,7 +30,23 @@ export class ContentService {
     return this.httpClient.get<Album[]>(environment.apiHost + `/albums`);
   }
 
-  getSong(songId:number):Observable<Song> {
-    return this.httpClient.get<Song>(environment.apiHost + `/song/`+songId);
+  getSong(songId: number): Observable<Song> {
+    return this.httpClient.get<Song>(environment.apiHost + `/song/` + songId);
+  }
+
+  deleteAlbum(album: Album): Observable<any> {
+    return this.httpClient.delete(environment.apiHost + `/albums?Genre=${album.Genre}&Id=${album.Id}`);
+  }
+
+  deleteSong(song: Song): Observable<any> {
+    return this.httpClient.delete(environment.apiHost + `/song?Album=${song.Album}&Id=${song.Id}`);
+  }
+
+  updateAlbum(album: Album): Observable<any> {
+    return this.httpClient.put(environment.apiHost + `/albums/${album.Id}`, album);
+  }
+
+  updateSong(song: Song): Observable<any> {
+    return this.httpClient.put(environment.apiHost + `/song/${song.Id}`, song);
   }
 }

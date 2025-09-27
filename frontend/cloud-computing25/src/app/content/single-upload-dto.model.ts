@@ -1,3 +1,5 @@
+import { Artist } from "../artists/artist.model";
+
 export interface SingleUploadDTO {
   fileName: string;
   fileType: string;
@@ -8,7 +10,7 @@ export interface SingleUploadDTO {
   fileBase64: string;
   title: string;
   description?: string;
-  artists: number[];
+  artists: Artist[];
   genres: string[];
   album: string,
   coverImage: string

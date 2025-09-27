@@ -34,11 +34,12 @@
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Artists</mat-label>
           <mat-select formControlName="artists" multiple required>
-            <mat-option *ngFor="let artist of availableArtists" [value]="artist">
+            <mat-option *ngFor="let artist of availableArtists" [value]="artist.Id">
               {{ artist.name }}
             </mat-option>
           </mat-select>
         </mat-form-field>
+
 
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Genres</mat-label>
@@ -87,7 +88,7 @@
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Artists</mat-label>
                 <mat-select formControlName="artists" multiple>
-                  <mat-option *ngFor="let artist of availableArtists" [value]="artist">{{ artist.name }}</mat-option>
+                  <mat-option *ngFor="let artist of availableArtists" [value]="artist.Id">{{ artist.name }}</mat-option>
                 </mat-select>
               </mat-form-field>
 

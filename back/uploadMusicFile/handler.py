@@ -1,17 +1,23 @@
 import json
 import base64
+import uuid
+from datetime import datetime
 import boto3
 
+# Konstante
 BUCKET_NAME = "my-music-app-files"
+TABLE_NAME = "Song"  # nova tabela sa Album kao partition i Id kao sort
 
+# AWS resursi
 s3 = boto3.client('s3')
-lambda_client = boto3.client('lambda')
+dynamodb = boto3.resource('dynamodb')
+table = dynamodb.Table(TABLE_NAME)
 
 
 def lambda_handler(event, context):
     try:
-        # Dobijamo DTO sa frontenda
-        body = json.loads(event['body'])
+        # Parsiranje DTO sa frontenda
+        body = json.loads(event.get('body', '{}'))
         filename = body['fileName']
         fileBase64 = body['fileBase64']
 
@@ -24,23 +30,42 @@ def lambda_handler(event, context):
         )
         print(f"Uploaded {filename} to S3 bucket {BUCKET_NAME}")
 
-        response = lambda_client.invoke(
-            FunctionName="arn:aws:lambda:eu-north-1:138881450188:function:uploadMusicDynamo",
-            InvocationType="RequestResponse",  # synchronous
-            Payload=json.dumps(body)
-        )
+        # Generisanje jedinstvenog ID-a pesme
+        song_id = str(uuid.uuid4())
 
-        # Pročitamo odgovor druge Lambda
-        response_payload = json.loads(response['Payload'].read())
-        print("Response from uploadMusicDynamo:", response_payload)
+        # Kreiranje DynamoDB item-a
+        item = {
+            "Album": body.get('album', 'Unknown'),  # partition key
+            "Id": song_id,                           # sort key
+            "title": body['title'],
+            "type": body.get('type', 'single'),
+            "artists": body['artists'],
+            "genres": body.get('genres', []),
+            "releaseDate": body.get('releaseDate', str(datetime.now())),
+            "description": body.get('description', ''),
+            "fileName": filename,
+            "fileSize": body.get('fileSize'),
+            "fileType": body.get('fileType'),
+            "coverImage": body.get('coverImage'),
+            "createdDate": body.get('createdDate', str(datetime.now())),
+            "modifiedDate": body.get('modifiedDate', str(datetime.now())),
+            "duration": body.get('duration'),
+            "deleted":"false"
+        }
 
+        # Upis u DynamoDB
+        table.put_item(Item=item)
+        print(f"Saved metadata for {filename} to DynamoDB table {TABLE_NAME}")
+
+        # Vraćanje uspešnog odgovora
         return {
-            "statusCode": 200,
+            "statusCode": 201,
             "headers": {"Access-Control-Allow-Origin": "*"},
             "body": json.dumps({
-                "message": f"File '{filename}' uploaded successfully.",
-                "dynamoResponse": response_payload
-            })
+                "message": f"File '{filename}' uploaded and metadata saved successfully.",
+                "songId": song_id,
+                "item": item
+            }, default=str)
         }
 
     except Exception as e:
