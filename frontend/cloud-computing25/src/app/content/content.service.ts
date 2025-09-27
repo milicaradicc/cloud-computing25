@@ -6,6 +6,7 @@ import { Album } from './album.model';
 import { environment } from '../../env/environment';
 import { SingleUploadDTO } from './single-upload-dto.model';
 import { AlbumUploadDTO } from './album-upload-dto.model';
+import { Rating } from './rating.model';
 
 @Injectable({
   providedIn: 'root'
@@ -30,7 +31,7 @@ export class ContentService {
     return this.httpClient.get<Album[]>(environment.apiHost + `/albums`);
   }
 
-  getSong(songId: number): Observable<Song> {
+  getSong(songId: string): Observable<Song> {
     return this.httpClient.get<Song>(environment.apiHost + `/song/` + songId);
   }
 
@@ -48,5 +49,13 @@ export class ContentService {
 
   updateSong(song: Song): Observable<any> {
     return this.httpClient.put(environment.apiHost + `/song/${song.Id}`, song);
+  }
+
+  rateSong(rating: Rating): Observable<any> {
+    return this.httpClient.post(environment.apiHost + `/song/${rating.targetId}/rating`, rating);
+  }
+
+  getSongRating(songId:string,userId:string): Observable<Rating>{
+    return this.httpClient.get<Rating>(environment.apiHost + `/song/${songId}/rating?userId=${userId}`);
   }
 }

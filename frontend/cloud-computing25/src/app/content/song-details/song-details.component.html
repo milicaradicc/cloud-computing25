@@ -24,6 +24,30 @@
         </p>
       </div>
 
+      <!-- Star Rating Section -->
+      <div class="rating-section">
+        <label class="rating-label">Rate this song:</label>
+        <div class="star-rating" [class.loading]="isRatingLoading">
+          <button 
+            *ngFor="let star of getStarArray()" 
+            class="star-button"
+            [class]="getStarClass(star)"
+            (click)="onStarClick(star)"
+            (mouseenter)="onStarHover(star)"
+            (mouseleave)="onStarLeave()"
+            [disabled]="isRatingLoading"
+            [attr.aria-label]="'Rate ' + star + ' out of 5 stars'"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+          </button>
+        </div>
+        <div class="rating-info" *ngIf="currentRating > 0">
+          <span class="current-rating">Your rating: {{ currentRating }}/5</span>
+        </div>
+      </div>
+
       <div class="progress-container">
         <div class="progress-bar" (click)="seekTo($event)">
           <div
