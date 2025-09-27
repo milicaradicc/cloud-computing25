@@ -3,7 +3,10 @@ import {ActivatedRoute} from '@angular/router';
 import {ContentService} from '../content.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {Song} from '../song.model';
+import {Rating} from '../rating.model';
 import {environment} from '../../../env/environment';
+import { AuthService } from '../../infrastructure/auth/auth.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-song-details',
@@ -12,40 +15,101 @@ import {environment} from '../../../env/environment';
   styleUrl: './song-details.component.css'
 })
 export class SongDetailsComponent implements OnInit, OnDestroy {
-  snackBar:MatSnackBar = inject(MatSnackBar)
+  snackBar: MatSnackBar = inject(MatSnackBar)
   song: Song | null = null;
   @ViewChild('audioPlayer') audioPlayer!: ElementRef<HTMLAudioElement>;
   isPlaying = false;
   currentTime = 0;
   volume = 70;
+  
+  currentRating = 0;
+  hoveredRating = 0;
+  isRatingLoading = false;
+  
+  isLoadingSong = true;
+  id = "";
+  
+  private subscriptions = new Subscription();
 
   constructor(
     private route: ActivatedRoute,
-    private contentService: ContentService,){}
+    private contentService: ContentService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
-    this.route.params.subscribe((params) => {
-      const id = params['id'];
-      this.contentService.getSong(id).subscribe({
-        next: (song:Song) => {
-          this.song=song;
-          console.log(song);
+    const routeSubscription = this.route.params.subscribe(params => {
+      this.id = params['id'];
+      
+      if (this.id) {
+        this.loadSongDetails(this.id);
+      } else {
+        this.snackBar.open('No song ID provided', 'OK', { duration: 3000 });
+      }
+    });
+    
+    this.subscriptions.add(routeSubscription);
+  }
+
+  private loadSongDetails(id: string): void {
+    this.isLoadingSong = true;
+    this.song = null;
+    
+    const songSubscription = this.contentService.getSong(id).subscribe({
+      next: (song: Song) => {
+        console.log('Received song data:', song);
+        this.song = song;
+        this.isLoadingSong = false;
+        
+        this.loadSongRating();
+      },
+      error: (error) => {
+        console.error('Error fetching song:', error);
+        this.snackBar.open('Error loading song details', 'OK', { duration: 5000 });
+        this.isLoadingSong = false;
+      }
+    });
+    
+    this.subscriptions.add(songSubscription);
+  }
+
+  private async loadSongRating(): Promise<void> {
+    if (!this.song) return;
+    
+    try {
+      const user = await this.authService.getUser();
+      
+      const ratingSubscription = this.contentService.getSongRating(this.id, user.userId).subscribe({
+        next: (rating: Rating) => {
+          this.currentRating = rating?.rating ?? 0;
+          console.log('Current rating:', this.currentRating); // Debug log
         },
-        error: (err) => {
-          this.snackBar.open('Error fetching song','OK',{duration:5000});
+        error: (error) => {
+          console.warn('No rating found or error loading rating:', error);
+          this.currentRating = 0;
         }
       });
-    })
+      
+      this.subscriptions.add(ratingSubscription);
+    } catch (error) {
+      console.error('Error getting user for rating:', error);
+      this.currentRating = 0;
+    }
   }
 
   ngOnDestroy() {
+    // Clean up subscriptions
+    this.subscriptions.unsubscribe();
+    
+    // Pause audio if playing
     if (this.audioPlayer?.nativeElement) {
       this.audioPlayer.nativeElement.pause();
     }
   }
 
   getAudioUrl(): string {
-    return environment.s3BucketLink+this.song?.fileName;
+    if (!this.song?.fileName) return '';
+    return environment.s3BucketLink + this.song.fileName;
   }
 
   togglePlayPause() {
@@ -115,5 +179,49 @@ export class SongDetailsComponent implements OnInit, OnDestroy {
 
     this.audioPlayer.nativeElement.currentTime = newTime;
     this.currentTime = newTime;
+  }
+
+  // Rating methods
+  onStarHover(rating: number) {
+    this.hoveredRating = rating;
+  }
+
+  onStarLeave() {
+    this.hoveredRating = 0;
+  }
+
+  onStarClick(rating: number) {
+    if (!this.song || this.isRatingLoading) return;
+
+    this.isRatingLoading = true;
+    
+    const ratingData: Rating = {
+      targetId: this.song.Id,
+      rating: rating,
+    };
+
+    const ratingSubscription = this.contentService.rateSong(ratingData).subscribe({
+      next: (response) => {
+        this.currentRating = rating;
+        this.snackBar.open('Rating submitted successfully!', 'OK', {duration: 3000});
+        this.isRatingLoading = false;
+      },
+      error: (error) => {
+        this.snackBar.open('Error submitting rating', 'OK', {duration: 5000});
+        this.isRatingLoading = false;
+        console.error('Rating error:', error);
+      }
+    });
+    
+    this.subscriptions.add(ratingSubscription);
+  }
+
+  getStarClass(starNumber: number): string {
+    const displayRating = this.hoveredRating || this.currentRating;
+    return starNumber <= displayRating ? 'star-filled' : 'star-empty';
+  }
+
+  getStarArray(): number[] {
+    return [1, 2, 3, 4, 5];
   }
 }
