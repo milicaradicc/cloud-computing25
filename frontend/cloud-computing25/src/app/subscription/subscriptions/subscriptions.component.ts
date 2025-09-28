@@ -68,7 +68,8 @@ export class SubscriptionsComponent implements OnInit {
         this.subscriptions = this.subscriptions.filter(s => s.id !== sub.id);
         this.snackBar.open('Subscription deleted.', 'Close', { duration: 2000 });
       },
-      error: () => {
+      error: (err) => {
+        console.log(err)
         this.snackBar.open('Error while deleting subscription.', 'Close', { duration: 2000 });
       }
     });

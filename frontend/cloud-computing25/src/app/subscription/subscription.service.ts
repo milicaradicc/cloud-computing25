@@ -22,7 +22,7 @@ export class SubscriptionService {
   }
 
   delete(subscription: Subscription): Observable<any> {
-    return this.httpClient.delete(`${environment.apiHost}/subscriptions?Genre=${subscription.id}`);
+    return this.httpClient.delete(`${environment.apiHost}/subscriptions/`+subscription.id);
   }
 }
 
