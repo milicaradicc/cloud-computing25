@@ -1,8 +1,9 @@
 import json
 import boto3
 import uuid
+import time  # <--- importujemo modul
 
-table_name = "Subscription"
+table_name = "Subscriptions"
 dynamodb = boto3.resource("dynamodb")
 
 def lambda_handler(event, context):
@@ -28,10 +29,12 @@ def lambda_handler(event, context):
 
     userId = body.get("userId")
     targetId = body.get("targetId")
-    type = body.get("type")
-    createdAt = body.get("createdAt")
+    targetType = body.get("type")
+    targetName = body.get("targetName")
 
-    if not userId or not targetId or not type:
+    print(userId, targetId, targetType)
+    if not userId or not targetId or not targetType:
+        print("Missing required fields")
         return {
             "statusCode": 400,
             "headers": {"Access-Control-Allow-Origin": "*"},
@@ -39,14 +42,16 @@ def lambda_handler(event, context):
         }
 
     subscription_id = str(uuid.uuid4())
+    createdAt = int(time.time())  # <--- timestamp u sekundama
 
     item = {
-        "Target#": type + str(targetId),
+        "Target": targetType + "#" + str(targetId),
         "User": userId,
-        "id":subscription_id,
-        "type":type,
+        "id": subscription_id,
+        "type": targetType,
         "createdAt": createdAt,
-        "deleted":"false"
+        "targetName": targetName,
+        "deleted": "false"
     }
 
     try:
