@@ -1,5 +1,6 @@
 import json
 import boto3
+from boto3.dynamodb.conditions import Key, Attr
 
 table_name = "Subscriptions"
 dynamodb = boto3.resource("dynamodb")
@@ -28,9 +29,8 @@ def lambda_handler(event, context):
         table = dynamodb.Table(table_name)
         response = table.query(
             IndexName="User-index",
-            KeyConditionExpression="#usr = :uid",
-            ExpressionAttributeNames={"#usr": "User"},
-            ExpressionAttributeValues={":uid": userId}
+            KeyConditionExpression=Key("User").eq(userId),
+            FilterExpression=Attr("deleted").eq("false")
         )
 
         items = response.get("Items", [])
