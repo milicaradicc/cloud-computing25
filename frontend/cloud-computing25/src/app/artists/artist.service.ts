@@ -14,13 +14,7 @@ export class ArtistService {
   constructor(private httpClient: HttpClient) { }
 
   getAll(): Observable<Artist[]> {
-    return this.httpClient.get<Artist[]>(`${environment.apiHost}/artists`).pipe(
-      tap(artists => {
-        artists.forEach(artist => {
-          console.log('Artist:', artist);
-        });
-      })
-    );
+    return this.httpClient.get<Artist[]>(`${environment.apiHost}/artists`);
   }
 
   add(artist: CreateArtistDto): Observable<Artist> {
