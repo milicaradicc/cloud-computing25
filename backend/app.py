@@ -6,6 +6,10 @@ from backend.backend_stack import BackendStack
 
 
 app = cdk.App()
-BackendStack(app, "BackendStack")
+
+account = app.node.try_get_context("myapp:account")
+region = app.node.try_get_context("myapp:region")
+
+BackendStack(app, "BackendStack", env=cdk.Environment(account=account, region=region))
 
 app.synth()
