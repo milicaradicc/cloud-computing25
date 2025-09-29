@@ -31,6 +31,7 @@ import { SongDetailsComponent } from './song-details/song-details.component';
 import { ContentManagementComponent, ConfirmDeleteDialog } from './content-management/content-management.component';
 import { UpdateAlbumComponent } from './update-album/update-album.component';
 import { UpdateSongComponent } from './update-song/update-song.component';
+import { DiscoverContentComponent } from './discover-content/discover-content.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +43,8 @@ import { UpdateSongComponent } from './update-song/update-song.component';
     ContentManagementComponent,
     UpdateAlbumComponent,
     UpdateSongComponent,
+    DiscoverContentComponent,
+    AlbumCardComponent
   ],
   imports: [
     CommonModule,
@@ -72,6 +75,6 @@ import { UpdateSongComponent } from './update-song/update-song.component';
 
     ConfirmDeleteDialog
   ],
-  exports: [UploadContentComponent]
+  exports: [UploadContentComponent,AlbumCardComponent]
 })
 export class ContentModule { }

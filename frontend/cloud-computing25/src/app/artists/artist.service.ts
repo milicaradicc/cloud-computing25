@@ -4,7 +4,7 @@ import {Artist} from './artist.model';
 import {environment} from '../../env/environment';
 import {HttpClient} from '@angular/common/http';
 import {CreateArtistDto} from './create-artist-dto.model';
-import { tap } from 'rxjs/operators';
+import { ArtistWithAlbums } from './artist-albums.model';
 
 @Injectable({
   providedIn: 'root'
@@ -27,6 +27,12 @@ export class ArtistService {
 
   delete(artist: Artist): Observable<any> {
     return this.httpClient.delete(`${environment.apiHost}/artists?Genre=${artist.Genre}&Id=${artist.Id}`);
+  }
+
+  get(artistId: string): Observable<ArtistWithAlbums> {
+    return this.httpClient.get<ArtistWithAlbums>(
+      `${environment.apiHost}/artists/${artistId}`
+    );
   }
 }
 

@@ -31,7 +31,7 @@ export class ArtistPageComponent implements OnInit {
 
   loadArtistWithAlbums(id: string): void {
     this.loading = true;
-    this.artistService.getArtistById(id).subscribe({
+    this.artistService.get(id).subscribe({
       next: (data) => {
         this.artist = data.artist;
         this.albums = data.albums || [];
@@ -48,14 +48,14 @@ export class ArtistPageComponent implements OnInit {
   }
 
   isFavorite(artist: Artist): boolean {
-    return this.favoriteArtists.includes(artist.id);
+    return this.favoriteArtists.includes(artist.Id);
   }
 
   toggleFavorite(artist: Artist): void {
     if (this.isFavorite(artist)) {
-      this.favoriteArtists = this.favoriteArtists.filter(id => id !== artist.id);
+      this.favoriteArtists = this.favoriteArtists.filter(id => id !== artist.Id);
     } else {
-      this.favoriteArtists.push(artist.id);
+      this.favoriteArtists.push(artist.Id);
     }
   }
 }

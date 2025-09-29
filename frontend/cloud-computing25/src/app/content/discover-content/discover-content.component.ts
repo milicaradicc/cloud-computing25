@@ -22,7 +22,9 @@ export class DiscoverContentComponent implements OnInit {
     songs: [],
     artists: [],
     genres: [],
-    id: ''
+    Id: '',
+    Genre: '',
+    deleted: false
   };
   selectedArtist: string | null = null;
 

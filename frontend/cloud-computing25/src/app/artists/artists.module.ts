@@ -16,7 +16,6 @@ import { ArtistPageComponent } from './artist-page/artist-page.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ContentModule } from '../content/content.module';
 
-
 @NgModule({
   declarations: [
     ArtistsComponent,
