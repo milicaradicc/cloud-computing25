@@ -195,7 +195,7 @@ export class UploadContentComponent implements OnInit {
     });
 
     return;
-  }
+  } else{
 
   // ----- Album Upload -----
   const albumDto: AlbumUploadDTO = {
@@ -250,6 +250,7 @@ export class UploadContentComponent implements OnInit {
     },
     error: err => console.error('Album upload failed', err)
   });
+}
 }
 
   private convertFileToBase64(file: File): Promise<string> {

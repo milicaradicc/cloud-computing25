@@ -23,9 +23,10 @@ def lambda_handler(event, context):
         fileBase64 = body['fileBase64']
         artists = body.get('artists', [])
         genres = body.get('genres', [])
-        single = body.get('single', False)
+        single = body.get('single')
         album_id = body.get('album', 'Unknown')
 
+        # Upload pesme u S3
         s3.put_object(Bucket=BUCKET_NAME, Key=filename, Body=base64.b64decode(fileBase64))
         print(f"Uploaded {filename} to S3 bucket {BUCKET_NAME}")
 
@@ -50,7 +51,7 @@ def lambda_handler(event, context):
         }
         song_table.put_item(Item=item)
 
-        # Artist -> song mapping
+        # Artist → Song mapping
         for artist_id in artists:
             artist_song_table.put_item(Item={
                 "ArtistId": artist_id,
@@ -59,7 +60,8 @@ def lambda_handler(event, context):
                 "createdDate": str(datetime.now())
             })
 
-        # publish to SNS (event-driven)
+        # Publish SNS event SAMO ako je single
+        print(f"Single: {single}")
         if single:
             sns.publish(
                 TopicArn=SNS_TOPIC_ARN,

@@ -25,8 +25,12 @@ def lambda_handler(event, context):
             resp = subs_table.query(
                 KeyConditionExpression=Key("Target").eq("genre#" + genre)
             )
-            print("Subscriptions:", resp.get("Items", []))
-            for sub in resp.get("Items", []):
+            subs = resp.get("Items", [])
+            print(f"Subscriptions for genre {genre}:", subs)
+            for sub in subs:
+                # 👇 skipuj obrisane subscription-e
+                if sub.get("deleted", "false") == "true":
+                    continue
                 email = sub.get("email")
                 if email:
                     send_email(email, album)
@@ -36,7 +40,11 @@ def lambda_handler(event, context):
             resp = subs_table.query(
                 KeyConditionExpression=Key("Target").eq("artist#" + artist)
             )
-            for sub in resp.get("Items", []):
+            subs = resp.get("Items", [])
+            print(f"Subscriptions for artist {artist}:", subs)
+            for sub in subs:
+                if sub.get("deleted", "false") == "true":
+                    continue
                 email = sub.get("email")
                 if email:
                     send_email(email, album)
