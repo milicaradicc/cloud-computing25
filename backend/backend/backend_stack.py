@@ -13,6 +13,8 @@ from aws_cdk import (
     aws_dynamodb as dynamodb,
 )
 
+from backend.cognito_setup import setup_cognito
+
 
 class BackendStack(Stack):
 
@@ -79,6 +81,8 @@ class BackendStack(Stack):
             ),
             removal_policy=RemovalPolicy.DESTROY
         )
+
+        user_pool, user_pool_client = setup_cognito(self)
 
         # # lambde
         # # 1. create artist
