@@ -1,6 +1,7 @@
 import { platformBrowser } from '@angular/platform-browser';
 import { AppModule } from './app/app.module';
 import { Amplify } from 'aws-amplify';
+import {environment} from './env/environment';
 
 platformBrowser().bootstrapModule(AppModule, {
   ngZoneEventCoalescing: true,
@@ -10,8 +11,8 @@ platformBrowser().bootstrapModule(AppModule, {
 Amplify.configure({
   Auth: {
     Cognito: {
-      userPoolId: 'eu-north-1_iEH9Htkfr',
-      userPoolClientId: 'peenc0kbbl2ab010di3boavf8',
+      userPoolId: environment.userPoolId,
+      userPoolClientId: environment.userPoolClientId,
     },
   },
 });
