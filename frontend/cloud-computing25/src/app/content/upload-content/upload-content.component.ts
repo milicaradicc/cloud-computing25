@@ -5,6 +5,7 @@ import { Artist } from '../../artists/artist.model';
 import { SingleUploadDTO } from '../single-upload-dto.model';
 import { ContentService } from '../content.service';
 import { AlbumUploadDTO } from '../album-upload-dto.model';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   standalone: false,
@@ -15,7 +16,10 @@ import { AlbumUploadDTO } from '../album-upload-dto.model';
 export class UploadContentComponent implements OnInit {
   uploadForm: FormGroup;
   availableArtists: Artist[] = [];
-  availableGenres: string[] = ['Pop','Rock','Hip Hop','Rap','Electronic','Classical','Jazz','Blues','Country','Reggae'];
+  availableGenres: string[] = [
+    'Pop', 'Rock', 'Hip Hop', 'Rap', 'Electronic', 
+    'Classical', 'Jazz', 'Blues', 'Country', 'Reggae'
+  ];
   coverImagePreview: string | null = null;
   selectedAudioFileName: string = '';
   singleAudioInfo: any | null = null;
@@ -23,7 +27,8 @@ export class UploadContentComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private artistService: ArtistService,
-    private musicService: ContentService
+    private musicService: ContentService,
+    private snackBar: MatSnackBar
   ) {
     this.uploadForm = this.fb.group({
       type: ['single', Validators.required],
@@ -45,6 +50,8 @@ export class UploadContentComponent implements OnInit {
       if (type === 'single') this.songs.clear();
     });
   }
+
+  // ----------- FormArray Getters -----------
 
   get songs(): FormArray {
     return this.uploadForm.get('songs') as FormArray;
@@ -70,12 +77,18 @@ export class UploadContentComponent implements OnInit {
     this.songs.removeAt(index);
   }
 
+  // ----------- Load Artists -----------
+
   private loadArtists(): void {
     this.artistService.getAll().subscribe({
       next: artists => this.availableArtists = artists,
       error: err => console.error('Error loading artists:', err)
     });
+
+    console.log('Available artists:', this.availableArtists);
   }
+
+  // ----------- Cover Image Handling -----------
 
   onCoverImageUrlChange(event: any) {
     const url = event.target.value;
@@ -87,9 +100,12 @@ export class UploadContentComponent implements OnInit {
     console.warn('Failed to load image from the provided URL');
   }
 
+  // ----------- Audio File Handling -----------
+
   onSingleAudioFileChange(event: any) {
     const file = event.target.files[0];
     if (!file) return;
+
     this.selectedAudioFileName = file.name;
     this.singleAudioInfo = this.extractFileInfo(file);
     this.uploadForm.patchValue({ singleFile: file });
@@ -135,6 +151,8 @@ export class UploadContentComponent implements OnInit {
     };
   }
 
+  // ----------- Form Submission -----------
+
   async submit() {
     if (this.uploadForm.invalid) {
       console.error('Form invalid');
@@ -144,50 +162,84 @@ export class UploadContentComponent implements OnInit {
     const formValue = this.uploadForm.value;
 
     if (formValue.type === 'single') {
-      const file: File = formValue.singleFile;
-      if (!file) return;
-
-      const base64File = await this.convertFileToBase64(file);
-
-      const dto: SingleUploadDTO = {
-        fileBase64: base64File,
-        fileName: file.name,
-        fileSize: file.size,
-        fileType: file.type,
-        createdDate: new Date(file.lastModified),
-        modifiedDate: new Date(file.lastModified),
-        duration: this.singleAudioInfo?.duration || 0,
-        title: formValue.title,
-        description: formValue.description,
-        artists: formValue.artists.map((a: Artist) => a.id),
-        genres: formValue.genres,
-        coverImage: formValue.coverImageUrl,
-        album: ''
-      };
-
-      this.musicService.addSong(dto).subscribe({
-        next: res => console.log('Single uploaded successfully', res),
-        error: err => console.error('Single upload failed', err)
-      });
-
-      return;
+      await this.uploadSingle(formValue);
+    } else {
+      await this.uploadAlbum(formValue);
     }
 
-    // ----- Album Upload -----
+    this.snackBar.open('Your files are uploading!', 'OK', { duration: 3000 });
+  }
+
+  private async uploadSingle(formValue: any) {
+    const file: File = formValue.singleFile;
+    if (!file) return;
+
+    const base64File = await this.convertFileToBase64(file);
+
     const albumDto: AlbumUploadDTO = {
       createdDate: new Date(),
       modifiedDate: new Date(),
       title: formValue.title,
       description: formValue.description,
-      artists: formValue.artists.map((a: Artist) => a.id),
+      artists: formValue.artists,
       genres: formValue.genres,
       coverImage: formValue.coverImageUrl,
+      single: true
     };
 
+    console.log('Album DTO:', albumDto);
+
     this.musicService.addAlbum(albumDto).subscribe({
-      next:  albumRes => {
-        console.log('Album uploaded successfully', albumRes);
-        const albumId = albumRes.album.id;
+      next: albumRes => {
+        const albumId = albumRes.item.Id;
+
+        const dto: SingleUploadDTO = {
+          fileBase64: base64File,
+          fileName: crypto.randomUUID(),
+          fileSize: file.size,
+          fileType: file.type,
+          createdDate: new Date(file.lastModified),
+          modifiedDate: new Date(file.lastModified),
+          duration: this.singleAudioInfo?.duration || 0,
+          title: formValue.title,
+          description: formValue.description,
+          artists: formValue.artists,
+          genres: formValue.genres,
+          coverImage: formValue.coverImageUrl,
+          album: albumId,
+          single: true
+        };
+
+        console.log('Single DTO:', dto);
+
+        this.musicService.addSong(dto).subscribe({
+          next: res => console.log('Single uploaded successfully', res),
+          error: err => console.error('Single upload failed', err)
+        });
+      },
+      error: err => console.error('Album creation for single failed', err)
+    });
+  }
+
+  private async uploadAlbum(formValue: any) {
+    const albumDto: AlbumUploadDTO = {
+      createdDate: new Date(),
+      modifiedDate: new Date(),
+      title: formValue.title,
+      description: formValue.description,
+      artists: formValue.artists,
+      genres: formValue.genres,
+      coverImage: formValue.coverImageUrl,
+      single: false
+    };
+
+    console.log('Album DTO:', albumDto);
+
+    this.musicService.addAlbum(albumDto).subscribe({
+      next: albumRes => {
+        console.log('Album created:', albumRes);
+        const albumId = albumRes.item.Id;
+
         this.songs.controls.forEach(async (songCtrl) => {
           const songControl = songCtrl as FormGroup;
           const songFile: File = songControl.value.audioFile;
@@ -197,7 +249,7 @@ export class UploadContentComponent implements OnInit {
 
           const songDto: SingleUploadDTO = {
             fileBase64: base64File,
-            fileName: songFile.name,
+            fileName: crypto.randomUUID(),
             fileSize: songFile.size,
             fileType: songFile.type,
             createdDate: new Date(songFile.lastModified),
@@ -205,11 +257,14 @@ export class UploadContentComponent implements OnInit {
             duration: songControl.value.audioInfo?.duration || 0,
             title: songControl.value.title,
             description: songControl.value.description,
-            artists: songControl.value.artists.map((a: Artist) => a.id),
+            artists: songControl.value.artists,
             genres: songControl.value.genres,
             coverImage: songControl.value.coverImageUrl || formValue.coverImageUrl,
-            album: albumId
+            album: albumId,
+            single: false
           };
+
+          console.log('Song DTO:', songDto);
 
           this.musicService.addSong(songDto).subscribe({
             next: res => console.log(`Song ${songDto.title} uploaded`, res),
@@ -220,6 +275,8 @@ export class UploadContentComponent implements OnInit {
       error: err => console.error('Album upload failed', err)
     });
   }
+
+  // ----------- Helpers -----------
 
   private convertFileToBase64(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -234,14 +291,14 @@ export class UploadContentComponent implements OnInit {
     if (!seconds) return '--:--';
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2,'0')}`;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
   }
 
   formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
-    const sizes = ['Bytes','KB','MB','GB'];
-    const i = Math.floor(Math.log(bytes)/Math.log(k));
-    return parseFloat((bytes/Math.pow(k,i)).toFixed(2)) + ' ' + sizes[i];
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
 }

@@ -1,0 +1,25 @@
+# Node modules (Angular frontend)
+front/node_modules/
+front/dist/
+front/out-tsc/
+front/.angular/cache/
+
+# Angular environment files
+front/src/environments/*.ts
+!front/src/environments/environment.prod.ts
+
+# Backend Lambda (Node.js)
+back/node_modules/
+back/.serverless/
+back/.webpack/
+
+# IDE/editor files
+.idea/
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Optional logs
+*.log

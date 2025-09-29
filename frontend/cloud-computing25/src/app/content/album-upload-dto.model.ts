@@ -5,5 +5,6 @@ export interface AlbumUploadDTO {
   description?: string;
   artists: number[];
   genres: string[];
-  coverImage: string
+  coverImage: string,
+  single: boolean
 }

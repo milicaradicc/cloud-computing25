@@ -18,7 +18,7 @@ export class ArtistsComponent implements OnInit {
               private dialog: MatDialog) {}
 
   dataSource: MatTableDataSource<Artist> = new MatTableDataSource<Artist>([]);
-  displayedColumns: string[] = ['name', 'biography','genres'];
+  displayedColumns: string[] = ['name', 'biography','genres','actions']; 
   snackBar:MatSnackBar = inject(MatSnackBar);
   @ViewChild(MatSort) sort!: MatSort;
 
@@ -52,5 +52,33 @@ export class ArtistsComponent implements OnInit {
         });
       }
     });
+  }
+  openEditArtistDialog(artist: Artist) {
+    const dialogRef = this.dialog.open(CreateArtistComponent, {
+      width: '400px',
+      data: artist 
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.service.update(artist.Id, result).subscribe({
+          next: () => {
+            this.refreshDataSource();
+            this.snackBar.open('Artist updated successfully','OK',{duration:3000});
+          }
+        });
+      }
+    });
+  }
+
+  deleteArtist(artist: Artist) {
+    if(confirm(`Are you sure you want to delete ${artist.name}?`)) {
+      this.service.delete(artist).subscribe({
+        next: () => {
+          this.refreshDataSource();
+          this.snackBar.open('Artist deleted successfully','OK',{duration:3000});
+        }
+      });
+    }
   }
 }

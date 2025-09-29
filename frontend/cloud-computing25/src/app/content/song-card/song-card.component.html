@@ -1,4 +1,4 @@
-<mat-card class="song-card" [class.no-image]="!getCoverUrl()" [routerLink]="['/song-details',song.id]">
+<mat-card class="song-card" [class.no-image]="!getCoverUrl()" [routerLink]="['/song-details',song.Id]">
   <div class="image-container">
     <img *ngIf="getCoverUrl()"
          [src]="getCoverUrl()"
@@ -22,9 +22,9 @@
           <span>{{ getArtistNames() }}</span>
         </p>
 
-        <p *ngIf="song.album" class="album">
+        <p *ngIf="song.Album" class="album">
           <mat-icon class="detail-icon">album</mat-icon>
-          <span>{{ song.album }}</span>
+          <span>{{ song.Album }}</span>
         </p>
 
         <p *ngIf="getGenres()" class="genres">

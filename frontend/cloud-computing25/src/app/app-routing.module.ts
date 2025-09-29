@@ -10,13 +10,19 @@ import { ContentComponent } from './content/content/content.component';
 import { DiscoverContentComponent } from './content/discover-content/discover-content.component';
 import { ArtistPageComponent } from './artists/artist-page/artist-page.component';
 import {SongDetailsComponent} from './content/song-details/song-details.component';
+import { ContentManagementComponent } from './content/content-management/content-management.component';
+import { SubscriptionsComponent } from './subscription/subscriptions/subscriptions.component';
 
 const routes: Routes = [
   {path: 'home', component: ContentComponent},
+  {path: 'subscriptions', component: SubscriptionsComponent, canActivate: [AuthGuard],
+    data: {role: ['user']}},
   {path: '', redirectTo: '/home', pathMatch: 'full'},
   {path: 'register', component: RegisterComponent},
   {path: 'login', component: LoginComponent},
   {path: 'artists', component: ArtistsComponent, canActivate: [AuthGuard],
+    data: {role: ['admin']}},
+  {path: 'management', component: ContentManagementComponent, canActivate: [AuthGuard],
     data: {role: ['admin']}},
   {path: 'upload', component: UploadContentComponent, canActivate: [AuthGuard],
     data: {role: ['admin']}},
