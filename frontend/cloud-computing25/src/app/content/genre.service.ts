@@ -1,12 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { Song } from './song.model';
-import { Album } from './album.model';
 import { environment } from '../../env/environment';
-import { SingleUploadDTO } from './single-upload-dto.model';
-import { AlbumUploadDTO } from './album-upload-dto.model';
-import { FilterResult } from './filtered-content.model';
+import { FilterResult } from './models/filtered-content.model';
 
 @Injectable({
   providedIn: 'root'

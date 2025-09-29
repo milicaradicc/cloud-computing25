@@ -1,4 +1,4 @@
-import { Album } from "../content/album.model";
+import { Album } from "../content/models/album.model";
 import { Artist } from "./artist.model";
 
 export interface ArtistWithAlbums {

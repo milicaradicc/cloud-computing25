@@ -14,7 +14,7 @@ import { ContentManagementComponent } from './content/content-management/content
 import { SubscriptionsComponent } from './subscription/subscriptions/subscriptions.component';
 
 const routes: Routes = [
-  {path: 'home', component: ContentComponent},
+  {path: 'home', component: DiscoverContentComponent}, // ContentComponent
   {path: 'subscriptions', component: SubscriptionsComponent, canActivate: [AuthGuard],
     data: {role: ['user']}},
   {path: '', redirectTo: '/home', pathMatch: 'full'},

@@ -1,10 +1,11 @@
 import json
 import boto3
-from boto3.dynamodb.conditions import Attr
+from boto3.dynamodb.conditions import Key
 from decimal import Decimal
 
 dynamodb = boto3.resource('dynamodb')
-table = dynamodb.Table("MusicStreamingApp")
+artists_table = dynamodb.Table("Artists")
+albums_table = dynamodb.Table("Album")
 
 def decimal_default(obj):
     if isinstance(obj, Decimal):
@@ -15,7 +16,6 @@ def decimal_default(obj):
 
 def lambda_handler(event, context):
     try:
-        # Uzmi query parametre
         query_params = event.get('queryStringParameters') or {}
         genre = query_params.get('genre')
 
@@ -29,51 +29,33 @@ def lambda_handler(event, context):
                 'body': json.dumps({"message": "Missing 'genre' query parameter"})
             }
 
-        albums = []
+        artists_response = artists_table.query(
+            KeyConditionExpression=Key('Genre').eq(genre)
+        )
         artists = []
-        last_evaluated_key = None
+        for item in artists_response.get('Items', []):
+            artist = {
+                "id": item.get("Id"),
+                "name": item.get("name", ""),
+                "genres": item.get("genres", []),
+                "biography": item.get("biography", "")
+            }
+            artists.append(artist)
 
-        # Paginate dok ne pokupimo sve rezultate
-        while True:
-            if last_evaluated_key:
-                response = table.scan(
-                    FilterExpression=Attr('genres').contains(genre),
-                    ExclusiveStartKey=last_evaluated_key
-                )
-            else:
-                response = table.scan(
-                    FilterExpression=Attr('genres').contains(genre)
-                )
-
-            items = response.get('Items', [])
-
-            for item in items:
-                if 'entityType' not in item:
-                    continue
-
-                if item['entityType'] == 'album':
-                    album = {
-                        "id": item.get("albumId") or item.get("Entity type identifier"),
-                        "title": item.get("title", ""),
-                        "genres": item.get("genres", []),
-                        "artists": item.get("artists", []),
-                        "description": item.get("description", ""),
-                        "coverImage": item.get("coverImage", None)
-                    }
-                    albums.append(album)
-
-                elif item['entityType'] == 'artist':
-                    artist = {
-                        "id": item.get("artistId") or item.get("Entity type identifier"),
-                        "name": item.get("name", ""),
-                        "genres": item.get("genres", []),
-                        "biography": item.get("biography", "")
-                    }
-                    artists.append(artist)
-
-            last_evaluated_key = response.get('LastEvaluatedKey')
-            if not last_evaluated_key:
-                break
+        albums_response = albums_table.query(
+            KeyConditionExpression=Key('Genre').eq(genre)
+        )
+        albums = []
+        for item in albums_response.get('Items', []):
+            album = {
+                "id": item.get("Id"),
+                "title": item.get("title", ""),
+                "genres": item.get("genres", []),
+                "artists": item.get("artists", []),
+                "description": item.get("description", ""),
+                "coverImage": item.get("coverImage", None)
+            }
+            albums.append(album)
 
         result = {
             "albums": albums,

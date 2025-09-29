@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ArtistService } from '../artist.service';
 import { Artist } from '../artist.model';
-import { Album } from '../../content/album.model';
+import { Album } from '../../content/models/album.model';
 
 @Component({
   selector: 'app-artist-page',
