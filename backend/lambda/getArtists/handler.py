@@ -2,8 +2,9 @@ import json
 import boto3
 from boto3.dynamodb.conditions import Key
 from decimal import Decimal
+import os
 
-table_name = "Artists"
+table_name = os.environ["TABLE_NAME"]
 dynamodb = boto3.resource("dynamodb")
 table = dynamodb.Table(table_name)
 
@@ -23,7 +24,7 @@ def lambda_handler(event, context):
             KeyConditionExpression=Key("deleted").eq("false")
         )
         items = response.get("Items", [])
-
+        print(items)
         return {
             "statusCode": 200,
             "headers": {"Access-Control-Allow-Origin": "*"},
