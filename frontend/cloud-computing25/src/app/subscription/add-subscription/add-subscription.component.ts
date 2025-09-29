@@ -77,7 +77,8 @@ export class AddSubscriptionComponent implements OnInit {
       userId: user.userId,
       targetId: value.targetId,
       type: value.type,
-      targetName: targetName
+      targetName: targetName,
+      email:user.username
     };
 
     this.dialogRef.close(subscriptionDto);

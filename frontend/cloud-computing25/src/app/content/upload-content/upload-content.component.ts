@@ -158,6 +158,7 @@ export class UploadContentComponent implements OnInit {
       artists: formValue.artists, 
       genres: formValue.genres,
       coverImage: formValue.coverImageUrl,
+      single: true
     };
 
     console.log('Album DTO:', albumDto);
@@ -179,7 +180,8 @@ export class UploadContentComponent implements OnInit {
           artists: formValue.artists,
           genres: formValue.genres,
           coverImage: formValue.coverImageUrl,
-          album: albumId
+          album: albumId,
+          single: true
         };
 
         console.log('Single DTO:', dto);
@@ -204,6 +206,7 @@ export class UploadContentComponent implements OnInit {
     artists: formValue.artists, 
     genres: formValue.genres,
     coverImage: formValue.coverImageUrl,
+    single: false
   };
 
   console.log('Album DTO:', albumDto);
@@ -230,10 +233,11 @@ export class UploadContentComponent implements OnInit {
           duration: songControl.value.audioInfo?.duration || 0,
           title: songControl.value.title,
           description: songControl.value.description,
-          artists: songControl.value.artists, // FIXED: Use song's artists, not album's
+          artists: songControl.value.artists, 
           genres: songControl.value.genres,
           coverImage: songControl.value.coverImageUrl || formValue.coverImageUrl,
-          album: albumId
+          album: albumId,
+          single: false
         };
 
         console.log('Song DTO:', songDto);

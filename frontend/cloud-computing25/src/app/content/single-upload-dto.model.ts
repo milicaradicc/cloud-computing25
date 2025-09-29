@@ -13,5 +13,6 @@ export interface SingleUploadDTO {
   artists: Artist[];
   genres: string[];
   album: string,
-  coverImage: string
+  coverImage: string;
+  single: boolean
 }
