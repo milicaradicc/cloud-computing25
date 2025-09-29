@@ -15,6 +15,7 @@ import {ReactiveFormsModule} from '@angular/forms';
 import { ArtistPageComponent } from './artist-page/artist-page.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ContentModule } from '../content/content.module';
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { ContentModule } from '../content/content.module';
     MatInput,
     ReactiveFormsModule,
     MatFormField,
-    ContentModule
+    ContentModule,
+    MatSelectModule
   ]
 })
 export class ArtistsModule {

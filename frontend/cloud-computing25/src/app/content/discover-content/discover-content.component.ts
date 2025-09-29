@@ -10,7 +10,10 @@ import { ContentService } from '../content.service';
   styleUrls: ['./discover-content.component.css']
 })
 export class DiscoverContentComponent implements OnInit {
-  genres: string[] = [];
+  genres: string[] = [
+    'Pop', 'Rock', 'Hip Hop', 'Rap', 'Electronic', 
+    'Classical', 'Jazz', 'Blues', 'Country', 'Reggae'
+  ];
   albums: any[] = [];
   artists: any[] = [];
   selectedGenre: string | null = null;

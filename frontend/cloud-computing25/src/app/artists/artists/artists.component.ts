@@ -11,7 +11,7 @@ import {CreateArtistComponent} from '../create-artist/create-artist.component';
   selector: 'app-artists',
   standalone: false,
   templateUrl: './artists.component.html',
-  styleUrl: './artists.component.css'
+  styleUrl: './artists.component.css',
 })
 export class ArtistsComponent implements OnInit {
   constructor(private service:ArtistService,

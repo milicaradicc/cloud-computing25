@@ -3,9 +3,8 @@
   max-width: 100%;
   margin: 0 auto;
   min-height: 100%;
-  background: linear-gradient(135deg, #1a1a2e 0%, #162447 100%);
+  background: #191414;
   border-radius: 0;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
   color: #f0f0f0;
 }
 
