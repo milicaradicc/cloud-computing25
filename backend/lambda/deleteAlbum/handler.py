@@ -6,7 +6,6 @@ from boto3.dynamodb.conditions import Key, Attr
 
 songs_table_name = os.environ["SONGS_TABLE"]
 albums_table_name = os.environ["ALBUMS_TABLE"]
-bucket_name = os.environ["BUCKET_NAME"]
 
 dynamodb = boto3.resource("dynamodb")
 songs_table = dynamodb.Table(songs_table_name)
