@@ -1,0 +1,146 @@
+.admin-management-container {
+    padding: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.management-card {
+    min-height: 80vh;
+}
+
+.content-section {
+    padding: 20px 0;
+}
+
+.search-bar {
+    margin-bottom: 20px;
+}
+
+.search-field {
+    width: 100%;
+    max-width: 400px;
+}
+
+.items-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 20px;
+}
+
+.item-card {
+    height: fit-content;
+}
+
+.item-header {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.cover-image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.item-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.item-title {
+    margin: 0 0 5px 0;
+    font-size: 16px;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.item-artists, .item-date {
+    margin: 5px 0;
+    color: #666;
+    font-size: 14px;
+}
+
+.item-genres mat-chip-listbox {
+    margin: 5px 0;
+}
+
+.item-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 5px;
+}
+
+.items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.song-item-card {
+    padding: 15px;
+}
+
+.song-item-content {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.song-cover {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+.song-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.song-title {
+    margin: 0 0 5px 0;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.song-artists, .song-album, .song-duration {
+    margin: 3px 0;
+    color: #666;
+    font-size: 14px;
+}
+
+.song-genres {
+    margin: 5px 0;
+}
+
+.song-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 5px;
+    margin: 0;
+}
+
+mat-spinner {
+    margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+    .items-grid {
+    grid-template-columns: 1fr;
+    }
+    
+    .item-header, .song-item-content {
+    flex-direction: column;
+    text-align: center;
+    }
+    
+    .cover-image, .song-cover {
+    align-self: center;
+    }
+}

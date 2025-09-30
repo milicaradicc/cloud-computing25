@@ -1,0 +1,58 @@
+<h2 mat-dialog-title>Update Album</h2>
+
+<mat-dialog-content [formGroup]="form" class="update-form">
+  <!-- Title -->
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Title</mat-label>
+    <input matInput formControlName="title" />
+    <mat-error *ngIf="form.get('title')?.hasError('required')">
+      Title is required
+    </mat-error>
+  </mat-form-field>
+
+  <!-- Description -->
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Description</mat-label>
+    <textarea matInput rows="3" formControlName="description"></textarea>
+  </mat-form-field>
+
+  <!-- Cover image -->
+  <div class="cover-preview">
+    <img [src]="form.get('coverImage')?.value || 'assets/placeholder.png'" 
+         alt="Album cover" />
+  </div>
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Cover Image URL</mat-label>
+    <input matInput formControlName="coverImage" />
+  </mat-form-field>
+
+  <!-- Artists -->
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Artists</mat-label>
+    <mat-select formControlName="artists" multiple>
+      <mat-option *ngFor="let artist of allArtists" [value]="artist.Id">
+        {{ artist.name }}
+      </mat-option>
+    </mat-select>
+    <mat-error *ngIf="form.get('artists')?.hasError('required')">
+      At least one artist is required
+    </mat-error>
+  </mat-form-field>
+
+  <!-- Genres -->
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Genres</mat-label>
+    <mat-select formControlName="genres" multiple>
+      <mat-option *ngFor="let genre of allGenres" [value]="genre">
+        {{ genre }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="dialogRef.close()">Cancel</button>
+  <button mat-flat-button color="primary" (click)="save()" [disabled]="form.invalid">
+    Save
+  </button>
+</mat-dialog-actions>

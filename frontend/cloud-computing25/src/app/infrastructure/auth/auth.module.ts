@@ -8,6 +8,7 @@ import {MatCardModule} from '@angular/material/card';
 import {MatButton} from '@angular/material/button';
 import { LoginComponent } from './login/login.component';
 import {RouterLink} from '@angular/router';
+import {MatCheckbox} from "@angular/material/checkbox";
 
 
 
@@ -16,15 +17,16 @@ import {RouterLink} from '@angular/router';
     RegisterComponent,
     LoginComponent
   ],
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatFormField,
-    MatFormFieldModule,
-    MatInputModule,
-    MatCardModule,
-    MatButton,
-    RouterLink
-  ]
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatFormField,
+        MatFormFieldModule,
+        MatInputModule,
+        MatCardModule,
+        MatButton,
+        RouterLink,
+        MatCheckbox
+    ]
 })
 export class AuthModule { }

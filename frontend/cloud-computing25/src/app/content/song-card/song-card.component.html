@@ -1,41 +1,41 @@
-<mat-card class="song-card" [class.no-image]="!getCoverUrl()">
+<mat-card class="song-card" [class.no-image]="!getCoverUrl()" [routerLink]="['/song-details',song.Id]">
   <div class="image-container">
-    <img *ngIf="getCoverUrl()" 
-         [src]="getCoverUrl()" 
-         [alt]="song.title + ' cover'" 
+    <img *ngIf="getCoverUrl()"
+         [src]="getCoverUrl()"
+         [alt]="song.title + ' cover'"
          class="cover-image"
          (error)="onImageError($event)">
-    
+
     <div *ngIf="!getCoverUrl()" class="placeholder-image">
       <mat-icon class="music-icon">music_note</mat-icon>
       <span class="placeholder-text">No Cover</span>
     </div>
   </div>
-  
+
   <mat-card-content>
     <div class="song-info">
       <h3 class="song-title" [title]="song.title">{{ song.title }}</h3>
-      
+
       <div class="song-details">
         <p *ngIf="getArtistNames()" class="artists">
           <mat-icon class="detail-icon">person</mat-icon>
           <span>{{ getArtistNames() }}</span>
         </p>
-        
-        <p *ngIf="song.album" class="album">
+
+        <p *ngIf="song.Album" class="album">
           <mat-icon class="detail-icon">album</mat-icon>
-          <span>{{ song.album }}</span>
+          <span>{{ song.Album }}</span>
         </p>
-        
+
         <p *ngIf="getGenres()" class="genres">
           <mat-icon class="detail-icon">category</mat-icon>
           <span>{{ getGenres() }}</span>
         </p>
       </div>
-      
+
       <p *ngIf="song.description" class="description">{{ song.description }}</p>
     </div>
-    
+
     <div class="card-actions">
       <button mat-icon-button class="play-btn" [title]="'Play ' + song.title">
         <mat-icon>play_arrow</mat-icon>

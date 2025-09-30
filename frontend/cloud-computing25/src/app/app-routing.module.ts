@@ -7,18 +7,26 @@ import {ArtistsComponent} from './artists/artists/artists.component';
 import {AuthGuard} from './infrastructure/auth/auth.guard';
 import { UploadContentComponent } from './content/upload-content/upload-content.component';
 import { ContentComponent } from './content/content/content.component';
+import {SongDetailsComponent} from './content/song-details/song-details.component';
+import { ContentManagementComponent } from './content/content-management/content-management.component';
+import { SubscriptionsComponent } from './subscription/subscriptions/subscriptions.component';
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
   {path: '', redirectTo: '', pathMatch: 'full'},
   {path: 'home', component: ContentComponent},
+  {path: 'subscriptions', component: SubscriptionsComponent, canActivate: [AuthGuard],
+    data: {role: ['user']}},
   {path: '', redirectTo: '/home', pathMatch: 'full'},
   {path: 'register', component: RegisterComponent},
   {path: 'login', component: LoginComponent},
   {path: 'artists', component: ArtistsComponent, canActivate: [AuthGuard],
     data: {role: ['admin']}},
+  {path: 'management', component: ContentManagementComponent, canActivate: [AuthGuard],
+    data: {role: ['admin']}},
   {path: 'upload', component: UploadContentComponent, canActivate: [AuthGuard],
     data: {role: ['admin']}},
+  {path:'song-details/:id',component:SongDetailsComponent},
 ];
 
 @NgModule({
