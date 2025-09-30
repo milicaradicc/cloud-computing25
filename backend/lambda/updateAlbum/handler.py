@@ -1,16 +1,18 @@
 import json
 import base64
+import os
 from datetime import datetime
 import boto3
 from boto3.dynamodb.conditions import Key
 
-ALBUM_TABLE = "Album"
-ARTIST_ALBUM_TABLE = "ArtistAlbum"
+TABLE_NAME = os.environ["ALBUM_TABLE"]
+ARTIST_ALBUM_TABLE = os.environ["ARTISTS_ALBUM_TABLE"]
 
 s3 = boto3.client('s3')
 dynamodb = boto3.resource('dynamodb')
-album_table = dynamodb.Table(ALBUM_TABLE)
-artist_album_table = dynamodb.Table(ARTIST_ALBUM_TABLE)
+album_table = dynamodb.Table(TABLE_NAME)
+sns = boto3.client("sns")
+artist_album_table = dynamodb.Table("ArtistAlbum")
 
 def lambda_handler(event, context):
     claims = event.get("requestContext", {}).get("authorizer", {}).get("claims", {})
@@ -47,8 +49,6 @@ def lambda_handler(event, context):
                 "body": json.dumps({"message": "Album must have at least one genre"})
             }
 
-        print(f"Updating album '{album_title}' in DynamoDB table {ALBUM_TABLE}")
-        print(genre)
         response = album_table.get_item(
             Key={
                 'Genre': genre,
@@ -67,7 +67,6 @@ def lambda_handler(event, context):
         existing_album = response['Item']
         old_artists = existing_album.get('artists', [])
 
-        # Ako trenutni Genre nije u novim genres, postavi prvi iz genres
         if genre not in genres:
             genre = genres[0]
 
@@ -86,10 +85,7 @@ def lambda_handler(event, context):
         }
 
         album_table.put_item(Item=updated_item)
-        print(f"Updated album '{album_title}' in DynamoDB table {ALBUM_TABLE}")
 
-        # Ažuriraj ArtistAlbum veze
-        # Ukloni sve stare veze
         for old_artist_id in old_artists:
             try:
                 artist_album_table.delete_item(
@@ -102,7 +98,6 @@ def lambda_handler(event, context):
             except Exception as e:
                 print(f"Could not remove artist {old_artist_id}: {e}")
 
-        # Dodaj nove veze
         for artist_id in artists:
             try:
                 artist_album_table.put_item(Item={

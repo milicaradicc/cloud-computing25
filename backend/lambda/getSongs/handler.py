@@ -1,11 +1,13 @@
 import json
+import os
+
 import boto3
 from boto3.dynamodb.conditions import Key
 from decimal import Decimal
 
-table_name = "Song"
+songs_table_name = os.environ["SONGS_TABLE"]
 dynamodb = boto3.resource("dynamodb")
-table = dynamodb.Table(table_name)
+songs_table = dynamodb.Table(songs_table_name)
 
 class DecimalEncoder(json.JSONEncoder):
     def default(self, obj):
@@ -17,8 +19,17 @@ class DecimalEncoder(json.JSONEncoder):
         return super(DecimalEncoder, self).default(obj)
 
 def lambda_handler(event, context):
+    claims = event.get("requestContext", {}).get("authorizer", {}).get("claims", {})
+    role = claims.get("custom:role")
+    print(role)
+    if role != "admin" and role != "user":
+        return {
+            "statusCode": 403,
+            "headers": {"Access-Control-Allow-Origin": "*"},
+            "body": json.dumps({"message": "Forbidden"})
+        }
     try:
-        response = table.query(
+        response = songs_table.query(
             IndexName="deleted-index",
             KeyConditionExpression=Key("deleted").eq("false")
         )

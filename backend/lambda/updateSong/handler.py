@@ -1,17 +1,22 @@
 import json
 import base64
+import os
+
 import boto3
 from datetime import datetime
 from decimal import Decimal
 
-BUCKET_NAME = "my-music-app-files"
-SONG_TABLE = "Song"
-ARTIST_SONG_TABLE = "ArtistSong"
 
 s3 = boto3.client('s3')
-dynamodb = boto3.resource('dynamodb')
-song_table = dynamodb.Table(SONG_TABLE)
-artist_song_table = dynamodb.Table(ARTIST_SONG_TABLE)
+songs_table_name = os.environ["SONGS_TABLE"]
+albums_table_name = os.environ["ALBUMS_TABLE"]
+bucket_name = os.environ["BUCKET_NAME"]
+artist_song_table_name = os.environ["ARTIST_SONG_TABLE"]
+
+dynamodb = boto3.resource("dynamodb")
+songs_table = dynamodb.Table(songs_table_name)
+albums_table = dynamodb.Table(albums_table_name)
+artist_song_table = dynamodb.Table(artist_song_table_name)
 
 def convert_to_dynamodb_types(obj):
     if isinstance(obj, dict):
@@ -24,6 +29,7 @@ def convert_to_dynamodb_types(obj):
         return Decimal(obj)
     else:
         return obj
+
 
 def lambda_handler(event, context):
     claims = event.get("requestContext", {}).get("authorizer", {}).get("claims", {})
@@ -49,7 +55,7 @@ def lambda_handler(event, context):
         song_id = str(body['Id'])
         album = str(body['Album'])
 
-        response = song_table.get_item(
+        response = songs_table.get_item(
             Key={'Album': album, 'Id': song_id}
         )
 
@@ -78,7 +84,7 @@ def lambda_handler(event, context):
                     content_type = 'audio/flac'
 
                 s3.put_object(
-                    Bucket=BUCKET_NAME,
+                    Bucket=bucket_name,
                     Key=filename,
                     Body=file_content,
                     ContentType=content_type
@@ -113,7 +119,7 @@ def lambda_handler(event, context):
 
         item = convert_to_dynamodb_types(item)
 
-        song_table.put_item(Item=item)
+        songs_table.put_item(Item=item)
 
         new_artists = body.get('artists')
         if new_artists is not None:
@@ -139,7 +145,7 @@ def lambda_handler(event, context):
                 item['artists'] = [str(artist_id) for artist_id in new_artists]
 
                 item = convert_to_dynamodb_types(item)
-                song_table.put_item(Item=item)
+                songs_table.put_item(Item=item)
 
             except Exception as e:
                 print(f"Artist update error: {str(e)}")

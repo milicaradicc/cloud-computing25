@@ -1,16 +1,17 @@
 import json
+import os
+
 import boto3
 from boto3.dynamodb.conditions import Key
 from decimal import Decimal
 
-table_name = "Album"
-dynamodb = boto3.resource("dynamodb")
-table = dynamodb.Table(table_name)
+TABLE_NAME = os.environ["ALBUM_TABLE"]
+dynamodb = boto3.resource('dynamodb')
+table = dynamodb.Table(TABLE_NAME)
 
 class DecimalEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, Decimal):
-            # možeš da biraš: int ili float
             if obj % 1 == 0:
                 return int(obj)
             else:
@@ -18,6 +19,15 @@ class DecimalEncoder(json.JSONEncoder):
         return super(DecimalEncoder, self).default(obj)
 
 def lambda_handler(event, context):
+    claims = event.get("requestContext", {}).get("authorizer", {}).get("claims", {})
+    role = claims.get("custom:role")
+    print(role)
+    if role != "admin" and role != "user":
+        return {
+            "statusCode": 403,
+            "headers": {"Access-Control-Allow-Origin": "*"},
+            "body": json.dumps({"message": "Forbidden"})
+        }
     try:
         response = table.query(
             IndexName="deleted-index",

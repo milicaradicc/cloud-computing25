@@ -1,10 +1,16 @@
 import json
+import os
+
 import boto3
 from boto3.dynamodb.conditions import Key, Attr
 
+songs_table_name = os.environ["SONGS_TABLE"]
+albums_table_name = os.environ["ALBUMS_TABLE"]
+bucket_name = os.environ["BUCKET_NAME"]
+
 dynamodb = boto3.resource("dynamodb")
-song_table = dynamodb.Table("Song")
-album_table = dynamodb.Table("Album")
+songs_table = dynamodb.Table(songs_table_name)
+albums_table = dynamodb.Table(albums_table_name)
 
 def lambda_handler(event, context):
     claims = event.get("requestContext", {}).get("authorizer", {}).get("claims", {})
@@ -28,35 +34,27 @@ def lambda_handler(event, context):
         }
 
     try:
-        # 1️⃣ Označi pesmu kao deleted
-        song_table.update_item(
+        songs_table.update_item(
             Key={"Album": album_id, "Id": song_id},
             UpdateExpression="SET deleted = :val",
             ExpressionAttributeValues={":val": "true"},
             ConditionExpression="attribute_exists(Id)"
         )
 
-        # 2️⃣ Proveri da li ima još neobrisanih pesama
-        response = song_table.query(
-            IndexName="Album-index",  # GSI za query po albumu
+        response = songs_table.query(
+            IndexName="Album-index",
             KeyConditionExpression=Key("Album").eq(album_id),
             FilterExpression=Attr("deleted").eq("false")
         )
 
-        print("ovo je odgovor: ", response)
-
         if response['Count'] == 0:
-            # 3️⃣ Ako nema više pesama, query-uj album po Id preko GSI
-            album_response = album_table.query(
+            album_response = albums_table.query(
                 IndexName="Id-index",
                 KeyConditionExpression=Key("Id").eq(album_id)
             )
 
-            print("ovo je odgovor: ", album_response)
-
             for album_item in album_response.get("Items", []):
-                # Update-uj album koristeći originalni PK (Genre)
-                album_table.update_item(
+                albums_table.update_item(
                     Key={"Genre": album_item["Genre"], "Id": album_item["Id"]},
                     UpdateExpression="SET deleted = :val",
                     ExpressionAttributeValues={":val": "true"}

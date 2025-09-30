@@ -40,7 +40,6 @@
           </mat-select>
         </mat-form-field>
 
-
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Genres</mat-label>
           <mat-select formControlName="genres" multiple>
@@ -53,14 +52,17 @@
           <textarea matInput formControlName="description" rows="3"></textarea>
         </mat-form-field>
 
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Cover Image</mat-label>
-          <input type="file" (change)="onCoverFileChange($event)" accept="image/*">
-        </mat-form-field>
+        <!-- Cover Image Upload (Choose File Button) -->
+        <div class="file-upload-section">
+          <input type="file" #coverFileInput accept="image/*" (change)="onCoverFileChange($event)" hidden>
+          <button type="button" mat-stroked-button (click)="coverFileInput.click()">Choose Cover Image</button>
+          <span *ngIf="coverFile">{{ coverFile.name }}</span>
+        </div>
 
         <div class="image-preview" *ngIf="coverImagePreview">
           <img [src]="coverImagePreview" alt="Cover preview" class="preview-image" (error)="onImageError()">
         </div>
+        <h1></h1>
 
         <!-- Single Audio Upload -->
         <div *ngIf="uploadForm.value.type === 'single'" class="audio-upload-section">
@@ -114,7 +116,13 @@
                 <img [src]="song.value.coverImageUrl" alt="Song Cover preview" class="preview-image" (error)="song.value.coverImageUrl=null">
               </div>
 
-              <input type="file" (change)="onAlbumSongFileChange($event, i)">
+              <!-- Audio File Upload for Song (Choose File Button) -->
+              <div class="file-upload-section">
+                <input type="file" #songFileInput accept=".mp3,.wav,.flac,.m4a,.ogg" (change)="onAlbumSongFileChange($event, i)" hidden>
+                <button type="button" mat-stroked-button (click)="songFileInput.click()">Choose Audio File</button>
+                <span *ngIf="song.value.audioFile">{{ song.value.audioFile.name }}</span>
+              </div>
+
               <div *ngIf="song.value.audioInfo">
                 Duration: {{ formatDuration(song.value.audioInfo.duration) }}, Size: {{ formatFileSize(song.value.audioInfo.fileSize) }}
               </div>
