@@ -5,7 +5,7 @@ import boto3
 from boto3.dynamodb.conditions import Key
 from decimal import Decimal
 
-TABLE_NAME = os.environ["ALBUM_TABLE"]
+TABLE_NAME = os.environ["ALBUMS_TABLE"]
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table(TABLE_NAME)
 
