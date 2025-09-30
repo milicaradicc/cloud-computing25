@@ -78,15 +78,18 @@ class SongsConstruct(Construct):
             [],
             {
                 "SONGS_TABLE": table.table_name,
+                "ALBUMS_TABLE": albums_table.table_name,
+                "ARTIST_SONG_TABLE": artist_song_table.table_name,
                 "BUCKET_NAME": bucket.bucket_name,
-                "ARTIST_SONG_TABLE": artist_song_table.table_name
             }
         )
         table.grant_read_write_data(update_song_lambda)
-        bucket.grant_read_write(update_song_lambda)
+        albums_table.grant_read_write_data(update_song_lambda)
         artist_song_table.grant_read_write_data(update_song_lambda)
+        bucket.grant_read_write(update_song_lambda)
 
-        songs_api_resource.add_method(
+        song_id_resource = songs_api_resource.add_resource("{id}")
+        song_id_resource.add_method(
             "PUT",
             apigateway.LambdaIntegration(update_song_lambda, proxy=True),
             authorizer=authorizer,
@@ -109,7 +112,6 @@ class SongsConstruct(Construct):
         albums_table.grant_read_write_data(delete_song_lambda)
 
         # /songs/{id} → DELETE
-        song_id_resource = songs_api_resource.add_resource("{id}")
         song_id_resource.add_method(
             "DELETE",
             apigateway.LambdaIntegration(delete_song_lambda, proxy=True),
