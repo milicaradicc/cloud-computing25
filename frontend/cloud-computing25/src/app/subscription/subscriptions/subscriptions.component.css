@@ -1,0 +1,14 @@
+.subscriptions-container {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 16px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.actions {
+  margin-top: 20px;
+  text-align: right;
+}

@@ -11,5 +11,5 @@ export interface Album {
   genres?: string[];
   Id:string;
   Genre:string,
-  deleted:boolean
+  deleted:boolean,
 }
