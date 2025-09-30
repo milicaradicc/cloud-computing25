@@ -50,6 +50,12 @@ class BackendStack(Stack):
             projection_type=dynamodb.ProjectionType.ALL
         )
 
+        songs_table.add_global_secondary_index(
+            index_name="Id-index",
+            partition_key=dynamodb.Attribute(name="Id", type=dynamodb.AttributeType.STRING),
+            projection_type=dynamodb.ProjectionType.ALL
+        )
+
         # ALBUMS TABLE AND GSI
         albums_table = dynamodb.Table(
             self, "Albums",

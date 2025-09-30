@@ -105,8 +105,8 @@ class SongsConstruct(Construct):
                 "ALBUMS_TABLE": albums_table.table_name
             }
         )
-        table.grant_write_data(delete_song_lambda)
-        albums_table.grant_write_data(delete_song_lambda)
+        table.grant_read_write_data(delete_song_lambda)
+        albums_table.grant_read_write_data(delete_song_lambda)
 
         # /songs/{id} → DELETE
         song_id_resource = songs_api_resource.add_resource("{id}")
