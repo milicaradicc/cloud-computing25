@@ -28,7 +28,7 @@ export class RegisterComponent {
       givenName: ['', Validators.required],
       familyName: ['', Validators.required],
       birthdate: ['', Validators.required],
-      role: ['user']
+      isAdmin: [false, Validators.required],
     }, { validators: passwordMatchValidator });
   }
 
@@ -37,7 +37,8 @@ export class RegisterComponent {
     this.loading = true;
 
     if (this.registerForm.valid) {
-      const { username, email, password, givenName, familyName, birthdate, role } = this.registerForm.value;
+      const { username, email, password, givenName, familyName, birthdate, isAdmin } = this.registerForm.value;
+      const role:string=isAdmin?'admin':'user';
       const user = { username, email, password, givenName, familyName, birthdate, role };
       try {
         await this.authService.register(user);

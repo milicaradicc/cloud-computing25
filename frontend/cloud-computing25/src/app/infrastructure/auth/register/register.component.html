@@ -57,6 +57,10 @@
             <input matInput type="date" formControlName="birthdate">
           </mat-form-field>
 
+          <mat-checkbox formControlName="isAdmin">
+            Register as Admin
+          </mat-checkbox>
+          
           <div *ngIf="registerError" class="server-error">
             {{ registerError }}
           </div>
