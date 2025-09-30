@@ -5,14 +5,12 @@ from datetime import datetime
 import boto3
 from boto3.dynamodb.conditions import Key
 
-TABLE_NAME = os.environ["ALBUM_TABLE"]
-ARTIST_ALBUM_TABLE = os.environ["ARTISTS_ALBUM_TABLE"]
+TABLE_NAME = os.environ["ALBUMS_TABLE"]
+ARTIST_ALBUM_TABLE = os.environ["ARTIST_ALBUM_TABLE"]
 
-s3 = boto3.client('s3')
 dynamodb = boto3.resource('dynamodb')
 album_table = dynamodb.Table(TABLE_NAME)
-sns = boto3.client("sns")
-artist_album_table = dynamodb.Table("ArtistAlbum")
+artist_album_table = dynamodb.Table(ARTIST_ALBUM_TABLE)
 
 def lambda_handler(event, context):
     claims = event.get("requestContext", {}).get("authorizer", {}).get("claims", {})

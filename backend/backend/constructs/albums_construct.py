@@ -79,16 +79,16 @@ class AlbumConstruct(Construct):
             [],
             {
                 "ALBUMS_TABLE": albums_table.table_name,
-                "BUCKET_NAME": bucket.bucket_name,
                 "ARTIST_ALBUM_TABLE": artist_album_table.table_name
             }
         )
-        # Changed from grant_write_data to grant_read_write_data
+
         albums_table.grant_read_write_data(update_album_lambda)
-        bucket.grant_read_write(update_album_lambda)
         artist_album_table.grant_read_write_data(update_album_lambda)
 
-        albums_api_resource.add_method(
+        # /albums/{id} → PUT
+        album_id_resource = albums_api_resource.add_resource("{id}")
+        album_id_resource.add_method(
             "PUT",
             apigateway.LambdaIntegration(update_album_lambda, proxy=True),
             authorizer=authorizer,
@@ -112,7 +112,6 @@ class AlbumConstruct(Construct):
         albums_table.grant_read_write_data(delete_album_lambda)
 
         # /albums/{id} → DELETE
-        album_id_resource = albums_api_resource.add_resource("{id}")
         album_id_resource.add_method(
             "DELETE",
             apigateway.LambdaIntegration(delete_album_lambda, proxy=True),

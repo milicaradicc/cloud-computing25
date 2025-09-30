@@ -214,6 +214,7 @@ export class UploadContentComponent implements OnInit {
 
     return;
   }
+  this.uploadAlbum(formValue)
 }
 
   private async uploadAlbum(formValue: any) {
