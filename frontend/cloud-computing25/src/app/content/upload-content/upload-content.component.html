@@ -54,10 +54,10 @@
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Cover Image URL</mat-label>
-          <input matInput formControlName="coverImageUrl" (input)="onCoverImageUrlChange($event)">
-          <mat-icon matSuffix>image</mat-icon>
+          <mat-label>Cover Image</mat-label>
+          <input type="file" (change)="onCoverFileChange($event)" accept="image/*">
         </mat-form-field>
+
         <div class="image-preview" *ngIf="coverImagePreview">
           <img [src]="coverImagePreview" alt="Cover preview" class="preview-image" (error)="onImageError()">
         </div>

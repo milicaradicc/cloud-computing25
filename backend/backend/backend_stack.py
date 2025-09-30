@@ -1,27 +1,11 @@
 from constructs import Construct
-from aws_cdk import (
-    Duration,
-    Stack,
-    aws_iam as iam,
-    aws_sqs as sqs,
-    aws_sns as sns,
-    aws_sns_subscriptions as subs,
-    aws_lambda as _lambda,
-    aws_apigateway as apigw,
-    aws_s3 as s3,
-    RemovalPolicy,
-    aws_dynamodb as dynamodb,
-    aws_apigateway as apigateway
-)
-
+from aws_cdk import Stack, RemovalPolicy, aws_dynamodb as dynamodb, aws_s3 as s3, aws_apigateway as apigateway
 from backend.utils.cognito_setup import setup_cognito
-from backend.utils.create_lambda import create_lambda_function
-from backend.utils.create_lambda_role import create_lambda_role
-
+from backend.constructs.artists_construct import ArtistsConstruct
 
 class BackendStack(Stack):
 
-    def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
+    def __init__(self, scope: Construct, construct_id: str, **kwargs):
         super().__init__(scope, construct_id, **kwargs)
 
         music_bucket = s3.Bucket(
@@ -30,51 +14,16 @@ class BackendStack(Stack):
             removal_policy=RemovalPolicy.DESTROY
         )
 
-        songs_table = dynamodb.Table(
-            self, "Songs",
-            partition_key=dynamodb.Attribute(
-                name="Album",
-                type=dynamodb.AttributeType.STRING
-            ),
-            sort_key=dynamodb.Attribute(
-                name="Id",
-                type=dynamodb.AttributeType.STRING
-            ),
-            removal_policy=RemovalPolicy.DESTROY
-        )
-
-        albums_table = dynamodb.Table(
-            self, "Albums",
-            partition_key=dynamodb.Attribute(
-                name="Genre",
-                type=dynamodb.AttributeType.STRING
-            ),
-            sort_key=dynamodb.Attribute(
-                name="Id",
-                type=dynamodb.AttributeType.STRING
-            ),
-            removal_policy=RemovalPolicy.DESTROY
-        )
-
         artists_table = dynamodb.Table(
             self, "Artists",
-            partition_key=dynamodb.Attribute(
-                name="Genre",
-                type=dynamodb.AttributeType.STRING
-            ),
-            sort_key=dynamodb.Attribute(
-                name="Id",
-                type=dynamodb.AttributeType.STRING
-            ),
+            partition_key=dynamodb.Attribute(name="Genre", type=dynamodb.AttributeType.STRING),
+            sort_key=dynamodb.Attribute(name="Id", type=dynamodb.AttributeType.STRING),
             removal_policy=RemovalPolicy.DESTROY
         )
 
         artists_table.add_global_secondary_index(
             index_name="deleted-index",
-            partition_key=dynamodb.Attribute(
-                name="deleted",
-                type=dynamodb.AttributeType.STRING
-            ),
+            partition_key=dynamodb.Attribute(name="deleted", type=dynamodb.AttributeType.STRING),
             projection_type=dynamodb.ProjectionType.ALL
         )
 
@@ -83,11 +32,7 @@ class BackendStack(Stack):
         api = apigateway.RestApi(
             self, "MusicStreamingApi",
             rest_api_name="MusicStreamingApi",
-            deploy_options=apigateway.StageOptions(
-                stage_name="dev",
-                throttling_rate_limit=100,
-                throttling_burst_limit=200,
-            ),
+            deploy_options=apigateway.StageOptions(stage_name="dev", throttling_rate_limit=100, throttling_burst_limit=200),
             default_cors_preflight_options=apigateway.CorsOptions(
                 allow_origins=apigateway.Cors.ALL_ORIGINS,
                 allow_methods=apigateway.Cors.ALL_METHODS,
@@ -99,28 +44,5 @@ class BackendStack(Stack):
             cognito_user_pools=[user_pool],
         )
 
-
-        #Artists api
-        artists_api_resource = api.root.add_resource("artists")
-
-        create_artist_lambda = create_lambda_function(self,"CreateArtistLambda","handler.lambda_handler","lambda/createArtist",[],{'TABLE_NAME': artists_table.table_name})
-        artists_table.grant_write_data(create_artist_lambda)
-
-        create_artist_integration = apigateway.LambdaIntegration(create_artist_lambda, proxy=True)
-
-        artists_api_resource.add_method(
-            "POST",
-            create_artist_integration,
-            authorizer=authorizer,
-            authorization_type=apigateway.AuthorizationType.COGNITO
-        )
-
-        get_artists_lambda = create_lambda_function(self,"GetArtistsLambda","handler.lambda_handler","lambda/getArtists",[],{'TABLE_NAME': artists_table.table_name})
-        artists_table.grant_read_data(get_artists_lambda)
-
-        get_artists_integration = apigateway.LambdaIntegration(get_artists_lambda, proxy=True)
-
-        artists_api_resource.add_method(
-            "GET",
-            get_artists_integration,
-        )
+        # Artists API construct
+        ArtistsConstruct(self, "ArtistsConstruct", api, artists_table, authorizer)

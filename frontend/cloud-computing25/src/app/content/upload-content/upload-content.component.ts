@@ -19,6 +19,7 @@ export class UploadContentComponent implements OnInit {
   coverImagePreview: string | null = null;
   selectedAudioFileName: string = '';
   singleAudioInfo: any | null = null;
+  coverFile: File | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -78,9 +79,20 @@ export class UploadContentComponent implements OnInit {
     console.log('Available artists:', this.availableArtists);
   }
 
-  onCoverImageUrlChange(event: any) {
-    const url = event.target.value;
-    this.coverImagePreview = url || null;
+  // ----------- Cover Image Handling -----------
+
+  onCoverFileChange(event: any) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    this.coverFile = file;
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      this.coverImagePreview = e.target.result; // za prikaz u UI
+    };
+    reader.readAsDataURL(file);
+
+    this.uploadForm.patchValue({ coverImageUrl: file.name }); // ili možeš čuvati ime
   }
 
   onImageError() {
@@ -150,6 +162,11 @@ export class UploadContentComponent implements OnInit {
 
     const base64File = await this.convertFileToBase64(file);
 
+    let coverBase64: string | null = null;
+    if (this.coverFile) {
+      coverBase64 = await this.convertFileToBase64(this.coverFile);
+    }
+
     const albumDto: AlbumUploadDTO = {
       createdDate: new Date(),
       modifiedDate: new Date(),
@@ -157,10 +174,12 @@ export class UploadContentComponent implements OnInit {
       description: formValue.description,
       artists: formValue.artists, 
       genres: formValue.genres,
-      coverImage: formValue.coverImageUrl,
+      coverFileBase64: coverBase64 ?? undefined,
+      coverFileName: this.coverFile?.name,
+      single: true
     };
 
-    console.log('Album DTO:', albumDto);
+    console.log('Album DTO (single):', albumDto);
 
     this.musicService.addAlbum(albumDto).subscribe({
       next: albumRes => {
@@ -178,8 +197,9 @@ export class UploadContentComponent implements OnInit {
           description: formValue.description,
           artists: formValue.artists,
           genres: formValue.genres,
-          coverImage: formValue.coverImageUrl,
-          album: albumId
+          coverImage: this.coverFile?.name ?? "",   
+          album: albumId,
+          single: true
         };
 
         console.log('Single DTO:', dto);
@@ -194,17 +214,26 @@ export class UploadContentComponent implements OnInit {
 
     return;
   }
+}
 
-  // ----- Album Upload -----
-  const albumDto: AlbumUploadDTO = {
-    createdDate: new Date(),
-    modifiedDate: new Date(),
-    title: formValue.title,
-    description: formValue.description,
-    artists: formValue.artists, 
-    genres: formValue.genres,
-    coverImage: formValue.coverImageUrl,
-  };
+  private async uploadAlbum(formValue: any) {
+    let coverBase64: string | null = null;
+
+    if (this.coverFile) {
+      coverBase64 = await this.convertFileToBase64(this.coverFile);
+    }
+
+    const albumDto: AlbumUploadDTO = {
+      createdDate: new Date(),
+      modifiedDate: new Date(),
+      title: formValue.title,
+      description: formValue.description,
+      artists: formValue.artists,
+      genres: formValue.genres,
+      coverFileBase64: coverBase64 ?? undefined,
+      coverFileName: this.coverFile?.name,
+      single: false
+    };
 
   console.log('Album DTO:', albumDto);
 
@@ -233,7 +262,8 @@ export class UploadContentComponent implements OnInit {
           artists: songControl.value.artists, // FIXED: Use song's artists, not album's
           genres: songControl.value.genres,
           coverImage: songControl.value.coverImageUrl || formValue.coverImageUrl,
-          album: albumId
+          album: albumId,
+          single: false
         };
 
         console.log('Song DTO:', songDto);
