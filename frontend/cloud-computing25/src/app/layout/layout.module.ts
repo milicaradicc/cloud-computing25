@@ -30,7 +30,6 @@ import { UserNavBarMenuComponent } from './user-nav-bar-menu/user-nav-bar-menu.c
     MatIconButton,
     MatMenuItem,
     MatMenu,
-    MatMenuTrigger,
-  ]
+    MatMenuTrigger]
 })
 export class LayoutModule { }

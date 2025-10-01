@@ -16,7 +16,7 @@ from aws_cdk import (
 
 from backend.utils.cognito_setup import setup_cognito
 from backend.utils.create_lambda import create_lambda_function
-from backend.utils.create_lambda_role import create_lambda_role
+#from backend.utils.create_lambda_role import create_lambda_role
 
 
 class BackendStack(Stack):
@@ -124,3 +124,60 @@ class BackendStack(Stack):
             "GET",
             get_artists_integration,
         )
+
+        get_artist_lambda = create_lambda_function(self,"GetArtistLambda","handler.lambda_handler","lambda/getArtist",[],{'TABLE_NAME': artists_table.table_name})
+        artists_table.grant_read_data(get_artist_lambda)
+
+        artist_id_resource = artists_api_resource.add_resource("{id}")
+
+        get_artist_integration = apigateway.LambdaIntegration(get_artist_lambda, proxy=True)
+
+        artist_id_resource.add_method(
+            "GET",
+            get_artist_integration,
+        )
+
+        #Genres api
+        genres_api_resource = api.root.add_resource("genres")
+
+        get_all_genres_lambda = create_lambda_function(
+            self,
+            "GetGenresLambda",
+            "handler.lambda_handler",
+            "lambda/getGenres", 
+            [],
+            {'TABLE_NAME': artists_table.table_name}
+        )
+
+        artists_table.grant_read_data(get_all_genres_lambda)
+
+        get_all_genres_integration = apigateway.LambdaIntegration(get_all_genres_lambda, proxy=True)
+        genres_api_resource.add_method(
+            "GET",
+            get_all_genres_integration
+        )
+
+
+        #filters
+
+        filter_api_resource = api.root.add_resource("discover").add_resource("filter")
+
+        get_filtered_lambda = create_lambda_function(
+            self,
+            "GetFilteredContentLambda",
+            "handler.lambda_handler", 
+            "lambda/filterByGenre",   
+            [],
+            environment={          
+                'ARTISTS_TABLE': artists_table.table_name,
+                'ALBUMS_TABLE': albums_table.table_name
+            }
+        )
+
+        artists_table.grant_read_data(get_filtered_lambda)
+        albums_table.grant_read_data(get_filtered_lambda)
+
+        get_filtered_integration = apigateway.LambdaIntegration(get_filtered_lambda, proxy=True)
+
+        filter_api_resource.add_method("GET", get_filtered_integration)
+

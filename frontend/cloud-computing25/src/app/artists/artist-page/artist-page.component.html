@@ -1,0 +1,39 @@
+<!-- Artist Header -->
+<div class="artist-header" *ngIf="artist">
+  <div class="artist-info">
+    <div class="artist-details">
+      <h2 class="artist-name">{{ artist.name }}</h2>
+
+      <p class="artist-description">{{ artist.biography }}</p>
+
+      <div class="artist-genres">
+        <span class="genre" *ngFor="let genre of artist.genres">{{ genre }}</span>
+      </div>
+    </div>
+  </div>
+    
+  <button class="favorite-btn" (click)="toggleFavorite(artist)">
+    <mat-icon>{{ isFavorite(artist) ? 'favorite' : 'favorite_border' }}</mat-icon>
+  </button>
+</div>
+
+<!-- Albums -->
+<div *ngIf="loading" class="loading-container">
+  <mat-spinner></mat-spinner>
+  <p>Loading albums...</p>
+</div>
+
+<div *ngIf="errorAlbums" class="error-container">
+  <mat-icon>error</mat-icon>
+  <p>{{ errorAlbums }}</p>
+</div>
+
+<div *ngIf="!loading && !errorAlbums" class="albums-container">
+  <div class="albums-grid">
+    <app-album-card 
+      *ngFor="let album of albums" 
+      [album]="album" 
+      [songs]="album.songs">
+    </app-album-card>
+  </div>
+</div>

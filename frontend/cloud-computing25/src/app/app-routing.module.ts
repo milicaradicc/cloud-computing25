@@ -10,6 +10,7 @@ import { ContentComponent } from './content/content/content.component';
 import {SongDetailsComponent} from './content/song-details/song-details.component';
 import { ContentManagementComponent } from './content/content-management/content-management.component';
 import { SubscriptionsComponent } from './subscription/subscriptions/subscriptions.component';
+import { DiscoverContentComponent } from './content/discover-content/discover-content.component';
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -17,6 +18,8 @@ const routes: Routes = [
   {path: 'home', component: ContentComponent},
   {path: 'subscriptions', component: SubscriptionsComponent, canActivate: [AuthGuard],
     data: {role: ['user']}},
+  {path: 'discover', component: DiscoverContentComponent, canActivate: [AuthGuard],
+  data: {role: ['user']}},
   {path: '', redirectTo: '/home', pathMatch: 'full'},
   {path: 'register', component: RegisterComponent},
   {path: 'login', component: LoginComponent},

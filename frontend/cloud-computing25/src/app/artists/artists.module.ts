@@ -12,12 +12,16 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
 import { CreateArtistComponent } from './create-artist/create-artist.component';
 import {MatFormField, MatInput, MatLabel} from '@angular/material/input';
 import {ReactiveFormsModule} from '@angular/forms';
+import { ArtistPageComponent } from './artist-page/artist-page.component';
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { ContentModule } from '../content/content.module';
 
 
 @NgModule({
   declarations: [
     ArtistsComponent,
-    CreateArtistComponent
+    CreateArtistComponent,
+    ArtistPageComponent
   ],
   imports: [
     CommonModule,
@@ -35,8 +39,10 @@ import {ReactiveFormsModule} from '@angular/forms';
     MatFormField,
     MatInput,
     ReactiveFormsModule,
-    MatFormField
-  ]
+    MatFormField,
+    MatProgressSpinnerModule,
+    ContentModule
+]
 })
 export class ArtistsModule {
 }

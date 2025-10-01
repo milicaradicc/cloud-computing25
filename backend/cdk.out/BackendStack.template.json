@@ -1,90 +1,2442 @@
 {
  "Resources": {
-  "BackendQueue5F77CC6F": {
-   "Type": "AWS::SQS::Queue",
+  "mymusicappfilesAC4E028D": {
+   "Type": "AWS::S3::Bucket",
    "Properties": {
-    "VisibilityTimeout": 300
+    "VersioningConfiguration": {
+     "Status": "Enabled"
+    }
    },
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "BackendStack/BackendQueue/Resource"
+    "aws:cdk:path": "BackendStack/my-music-app-files/Resource"
    }
   },
-  "BackendQueuePolicy3C99D003": {
-   "Type": "AWS::SQS::QueuePolicy",
+  "SongsD2AA5F2A": {
+   "Type": "AWS::DynamoDB::Table",
    "Properties": {
-    "PolicyDocument": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "Album",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "Id",
+      "AttributeType": "S"
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "Album",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "Id",
+      "KeyType": "RANGE"
+     }
+    ],
+    "ProvisionedThroughput": {
+     "ReadCapacityUnits": 5,
+     "WriteCapacityUnits": 5
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/Songs/Resource"
+   }
+  },
+  "Albums77B3A114": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "Genre",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "Id",
+      "AttributeType": "S"
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "Genre",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "Id",
+      "KeyType": "RANGE"
+     }
+    ],
+    "ProvisionedThroughput": {
+     "ReadCapacityUnits": 5,
+     "WriteCapacityUnits": 5
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/Albums/Resource"
+   }
+  },
+  "ArtistsAF1BB04E": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "Genre",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "Id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "deleted",
+      "AttributeType": "S"
+     }
+    ],
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "deleted-index",
+      "KeySchema": [
+       {
+        "AttributeName": "deleted",
+        "KeyType": "HASH"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      },
+      "ProvisionedThroughput": {
+       "ReadCapacityUnits": 5,
+       "WriteCapacityUnits": 5
+      }
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "Genre",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "Id",
+      "KeyType": "RANGE"
+     }
+    ],
+    "ProvisionedThroughput": {
+     "ReadCapacityUnits": 5,
+     "WriteCapacityUnits": 5
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/Artists/Resource"
+   }
+  },
+  "MusicAppUserPool6D0B6B56": {
+   "Type": "AWS::Cognito::UserPool",
+   "Properties": {
+    "AccountRecoverySetting": {
+     "RecoveryMechanisms": [
+      {
+       "Name": "verified_email",
+       "Priority": 1
+      }
+     ]
+    },
+    "AdminCreateUserConfig": {
+     "AllowAdminCreateUserOnly": false
+    },
+    "AliasAttributes": [
+     "email"
+    ],
+    "AutoVerifiedAttributes": [
+     "email"
+    ],
+    "EmailVerificationMessage": "The verification code to your new account is {####}",
+    "EmailVerificationSubject": "Verify your new account",
+    "LambdaConfig": {
+     "PreSignUp": {
+      "Fn::GetAtt": [
+       "PreSignUpLambda2E8F0430",
+       "Arn"
+      ]
+     }
+    },
+    "MfaConfiguration": "OFF",
+    "Policies": {
+     "PasswordPolicy": {
+      "MinimumLength": 6,
+      "RequireLowercase": false,
+      "RequireNumbers": false,
+      "RequireSymbols": false,
+      "RequireUppercase": false
+     }
+    },
+    "Schema": [
+     {
+      "Mutable": true,
+      "Name": "birthdate",
+      "Required": true
+     },
+     {
+      "Mutable": true,
+      "Name": "email",
+      "Required": true
+     },
+     {
+      "Mutable": true,
+      "Name": "family_name",
+      "Required": true
+     },
+     {
+      "Mutable": true,
+      "Name": "given_name",
+      "Required": true
+     },
+     {
+      "AttributeDataType": "String",
+      "Mutable": true,
+      "Name": "role",
+      "StringAttributeConstraints": {
+       "MaxLength": "20",
+       "MinLength": "1"
+      }
+     }
+    ],
+    "SmsVerificationMessage": "The verification code to your new account is {####}",
+    "UserPoolName": "music-app-user-pool",
+    "VerificationMessageTemplate": {
+     "DefaultEmailOption": "CONFIRM_WITH_CODE",
+     "EmailMessage": "The verification code to your new account is {####}",
+     "EmailSubject": "Verify your new account",
+     "SmsMessage": "The verification code to your new account is {####}"
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/MusicAppUserPool/Resource"
+   }
+  },
+  "MusicAppUserPoolMusicStreamingAppF2471B08": {
+   "Type": "AWS::Cognito::UserPoolClient",
+   "Properties": {
+    "AccessTokenValidity": 60,
+    "AllowedOAuthFlows": [
+     "implicit",
+     "code"
+    ],
+    "AllowedOAuthFlowsUserPoolClient": true,
+    "AllowedOAuthScopes": [
+     "profile",
+     "phone",
+     "email",
+     "openid",
+     "aws.cognito.signin.user.admin"
+    ],
+    "CallbackURLs": [
+     "https://example.com"
+    ],
+    "ClientName": "music-streaming-client",
+    "EnableTokenRevocation": true,
+    "ExplicitAuthFlows": [
+     "ALLOW_USER_PASSWORD_AUTH",
+     "ALLOW_USER_SRP_AUTH",
+     "ALLOW_REFRESH_TOKEN_AUTH"
+    ],
+    "GenerateSecret": false,
+    "IdTokenValidity": 60,
+    "PreventUserExistenceErrors": "ENABLED",
+    "RefreshTokenValidity": 7200,
+    "SupportedIdentityProviders": [
+     "COGNITO"
+    ],
+    "TokenValidityUnits": {
+     "AccessToken": "minutes",
+     "IdToken": "minutes",
+     "RefreshToken": "minutes"
+    },
+    "UserPoolId": {
+     "Ref": "MusicAppUserPool6D0B6B56"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/MusicAppUserPool/MusicStreamingApp/Resource"
+   }
+  },
+  "MusicAppUserPoolPreSignUpCognitoD0E9495F": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "PreSignUpLambda2E8F0430",
+      "Arn"
+     ]
+    },
+    "Principal": "cognito-idp.amazonaws.com",
+    "SourceArn": {
+     "Fn::GetAtt": [
+      "MusicAppUserPool6D0B6B56",
+      "Arn"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/MusicAppUserPool/PreSignUpCognito"
+   }
+  },
+  "PreSignUpLambdaServiceRoleFA160DE8": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
      "Statement": [
       {
-       "Action": "sqs:SendMessage",
-       "Condition": {
-        "ArnEquals": {
-         "aws:SourceArn": {
-          "Ref": "BackendTopic717F65FA"
-         }
-        }
-       },
+       "Action": "sts:AssumeRole",
        "Effect": "Allow",
        "Principal": {
-        "Service": "sns.amazonaws.com"
-       },
-       "Resource": {
-        "Fn::GetAtt": [
-         "BackendQueue5F77CC6F",
-         "Arn"
-        ]
+        "Service": "lambda.amazonaws.com"
        }
       }
      ],
      "Version": "2012-10-17"
     },
-    "Queues": [
+    "ManagedPolicyArns": [
      {
-      "Ref": "BackendQueue5F77CC6F"
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
      }
     ]
    },
    "Metadata": {
-    "aws:cdk:path": "BackendStack/BackendQueue/Policy/Resource"
+    "aws:cdk:path": "BackendStack/PreSignUpLambda/ServiceRole/Resource"
    }
   },
-  "BackendQueueBackendStackBackendTopicF24EAECA5F7390A7": {
-   "Type": "AWS::SNS::Subscription",
+  "PreSignUpLambda2E8F0430": {
+   "Type": "AWS::Lambda::Function",
    "Properties": {
-    "Endpoint": {
+    "Code": {
+     "ZipFile": "def main(event, context):\n                # Auto-confirm user and auto-verify email\n                event['response']['autoConfirmUser'] = True\n                event['response']['autoVerifyEmail'] = True\n                return event\n            "
+    },
+    "Handler": "index.main",
+    "Role": {
      "Fn::GetAtt": [
-      "BackendQueue5F77CC6F",
+      "PreSignUpLambdaServiceRoleFA160DE8",
       "Arn"
      ]
     },
-    "Protocol": "sqs",
-    "TopicArn": {
-     "Ref": "BackendTopic717F65FA"
+    "Runtime": "python3.11"
+   },
+   "DependsOn": [
+    "PreSignUpLambdaServiceRoleFA160DE8"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/PreSignUpLambda/Resource"
+   }
+  },
+  "PreSignUpLambdaLogGroup4E55E569": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": {
+     "Fn::Join": [
+      "",
+      [
+       "/aws/lambda/",
+       {
+        "Ref": "PreSignUpLambda2E8F0430"
+       }
+      ]
+     ]
+    },
+    "RetentionInDays": 731
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/PreSignUpLambda/LogGroup/Resource"
+   }
+  },
+  "MusicStreamingApiC954D41A": {
+   "Type": "AWS::ApiGateway::RestApi",
+   "Properties": {
+    "Name": "MusicStreamingApi"
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/MusicStreamingApi/Resource"
+   }
+  },
+  "MusicStreamingApiDeployment8B4E5256a54c51b6d1e1e85e8bc2a8e6300454f8": {
+   "Type": "AWS::ApiGateway::Deployment",
+   "Properties": {
+    "Description": "Automatically created by the RestApi construct",
+    "RestApiId": {
+     "Ref": "MusicStreamingApiC954D41A"
     }
    },
    "DependsOn": [
-    "BackendQueuePolicy3C99D003"
+    "CognitoAuthorizerF3215DBC",
+    "MusicStreamingApiartistsidGETD723703D",
+    "MusicStreamingApiartistsidOPTIONSAF662F36",
+    "MusicStreamingApiartistsid07892E02",
+    "MusicStreamingApiartistsGETD6DECBB5",
+    "MusicStreamingApiartistsOPTIONSC00F3232",
+    "MusicStreamingApiartistsPOSTBDFCBE12",
+    "MusicStreamingApiartists29F56A20",
+    "MusicStreamingApidiscoverfilterGET26569681",
+    "MusicStreamingApidiscoverfilterOPTIONS745AA2ED",
+    "MusicStreamingApidiscoverfilterC7329518",
+    "MusicStreamingApidiscoverOPTIONS48060DD3",
+    "MusicStreamingApidiscover3B2C724F",
+    "MusicStreamingApigenresGETD5D8961B",
+    "MusicStreamingApigenresOPTIONSF32B2871",
+    "MusicStreamingApigenresADE25626",
+    "MusicStreamingApiOPTIONS8103E5CB"
    ],
    "Metadata": {
-    "aws:cdk:path": "BackendStack/BackendQueue/BackendStackBackendTopicF24EAECA/Resource"
+    "aws:cdk:path": "BackendStack/MusicStreamingApi/Deployment/Resource",
+    "aws:cdk:do-not-refactor": true
    }
   },
-  "BackendTopic717F65FA": {
-   "Type": "AWS::SNS::Topic",
+  "MusicStreamingApiDeploymentStagedev4D4FE2C4": {
+   "Type": "AWS::ApiGateway::Stage",
+   "Properties": {
+    "DeploymentId": {
+     "Ref": "MusicStreamingApiDeployment8B4E5256a54c51b6d1e1e85e8bc2a8e6300454f8"
+    },
+    "MethodSettings": [
+     {
+      "DataTraceEnabled": false,
+      "HttpMethod": "*",
+      "ResourcePath": "/*",
+      "ThrottlingBurstLimit": 200,
+      "ThrottlingRateLimit": 100
+     }
+    ],
+    "RestApiId": {
+     "Ref": "MusicStreamingApiC954D41A"
+    },
+    "StageName": "dev"
+   },
    "Metadata": {
-    "aws:cdk:path": "BackendStack/BackendTopic/Resource"
+    "aws:cdk:path": "BackendStack/MusicStreamingApi/DeploymentStage.dev/Resource"
+   }
+  },
+  "MusicStreamingApiOPTIONS8103E5CB": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Fn::GetAtt": [
+      "MusicStreamingApiC954D41A",
+      "RootResourceId"
+     ]
+    },
+    "RestApiId": {
+     "Ref": "MusicStreamingApiC954D41A"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/MusicStreamingApi/Default/OPTIONS/Resource"
+   }
+  },
+  "MusicStreamingApiartists29F56A20": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "MusicStreamingApiC954D41A",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "artists",
+    "RestApiId": {
+     "Ref": "MusicStreamingApiC954D41A"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/MusicStreamingApi/Default/artists/Resource"
+   }
+  },
+  "MusicStreamingApiartistsOPTIONSC00F3232": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "MusicStreamingApiartists29F56A20"
+    },
+    "RestApiId": {
+     "Ref": "MusicStreamingApiC954D41A"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/MusicStreamingApi/Default/artists/OPTIONS/Resource"
+   }
+  },
+  "MusicStreamingApiartistsPOSTApiPermissionBackendStackMusicStreamingApi93A5F8E3POSTartistsCC4E419D": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "CreateArtistLambda7E4DB7BE",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:",
+       {
+        "Ref": "AWS::Region"
+       },
+       ":",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "MusicStreamingApiC954D41A"
+       },
+       "/",
+       {
+        "Ref": "MusicStreamingApiDeploymentStagedev4D4FE2C4"
+       },
+       "/POST/artists"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/MusicStreamingApi/Default/artists/POST/ApiPermission.BackendStackMusicStreamingApi93A5F8E3.POST..artists"
+   }
+  },
+  "MusicStreamingApiartistsPOSTApiPermissionTestBackendStackMusicStreamingApi93A5F8E3POSTartists396F6264": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "CreateArtistLambda7E4DB7BE",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:",
+       {
+        "Ref": "AWS::Region"
+       },
+       ":",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "MusicStreamingApiC954D41A"
+       },
+       "/test-invoke-stage/POST/artists"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/MusicStreamingApi/Default/artists/POST/ApiPermission.Test.BackendStackMusicStreamingApi93A5F8E3.POST..artists"
+   }
+  },
+  "MusicStreamingApiartistsPOSTBDFCBE12": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "CognitoAuthorizerF3215DBC"
+    },
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:",
+        {
+         "Ref": "AWS::Region"
+        },
+        ":lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "CreateArtistLambda7E4DB7BE",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "MusicStreamingApiartists29F56A20"
+    },
+    "RestApiId": {
+     "Ref": "MusicStreamingApiC954D41A"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/MusicStreamingApi/Default/artists/POST/Resource"
+   }
+  },
+  "MusicStreamingApiartistsGETApiPermissionBackendStackMusicStreamingApi93A5F8E3GETartists3FCEDFF5": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "GetArtistsLambdaF8071C71",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:",
+       {
+        "Ref": "AWS::Region"
+       },
+       ":",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "MusicStreamingApiC954D41A"
+       },
+       "/",
+       {
+        "Ref": "MusicStreamingApiDeploymentStagedev4D4FE2C4"
+       },
+       "/GET/artists"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/MusicStreamingApi/Default/artists/GET/ApiPermission.BackendStackMusicStreamingApi93A5F8E3.GET..artists"
+   }
+  },
+  "MusicStreamingApiartistsGETApiPermissionTestBackendStackMusicStreamingApi93A5F8E3GETartists4B0540BD": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "GetArtistsLambdaF8071C71",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:",
+       {
+        "Ref": "AWS::Region"
+       },
+       ":",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "MusicStreamingApiC954D41A"
+       },
+       "/test-invoke-stage/GET/artists"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/MusicStreamingApi/Default/artists/GET/ApiPermission.Test.BackendStackMusicStreamingApi93A5F8E3.GET..artists"
+   }
+  },
+  "MusicStreamingApiartistsGETD6DECBB5": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "GET",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:",
+        {
+         "Ref": "AWS::Region"
+        },
+        ":lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "GetArtistsLambdaF8071C71",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "MusicStreamingApiartists29F56A20"
+    },
+    "RestApiId": {
+     "Ref": "MusicStreamingApiC954D41A"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/MusicStreamingApi/Default/artists/GET/Resource"
+   }
+  },
+  "MusicStreamingApiartistsid07892E02": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "MusicStreamingApiartists29F56A20"
+    },
+    "PathPart": "{id}",
+    "RestApiId": {
+     "Ref": "MusicStreamingApiC954D41A"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/MusicStreamingApi/Default/artists/{id}/Resource"
+   }
+  },
+  "MusicStreamingApiartistsidOPTIONSAF662F36": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "MusicStreamingApiartistsid07892E02"
+    },
+    "RestApiId": {
+     "Ref": "MusicStreamingApiC954D41A"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/MusicStreamingApi/Default/artists/{id}/OPTIONS/Resource"
+   }
+  },
+  "MusicStreamingApiartistsidGETApiPermissionBackendStackMusicStreamingApi93A5F8E3GETartistsidF7E5942E": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "GetArtistLambda33C79BE1",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:",
+       {
+        "Ref": "AWS::Region"
+       },
+       ":",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "MusicStreamingApiC954D41A"
+       },
+       "/",
+       {
+        "Ref": "MusicStreamingApiDeploymentStagedev4D4FE2C4"
+       },
+       "/GET/artists/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/MusicStreamingApi/Default/artists/{id}/GET/ApiPermission.BackendStackMusicStreamingApi93A5F8E3.GET..artists.{id}"
+   }
+  },
+  "MusicStreamingApiartistsidGETApiPermissionTestBackendStackMusicStreamingApi93A5F8E3GETartistsid6E60C6F4": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "GetArtistLambda33C79BE1",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:",
+       {
+        "Ref": "AWS::Region"
+       },
+       ":",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "MusicStreamingApiC954D41A"
+       },
+       "/test-invoke-stage/GET/artists/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/MusicStreamingApi/Default/artists/{id}/GET/ApiPermission.Test.BackendStackMusicStreamingApi93A5F8E3.GET..artists.{id}"
+   }
+  },
+  "MusicStreamingApiartistsidGETD723703D": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "GET",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:",
+        {
+         "Ref": "AWS::Region"
+        },
+        ":lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "GetArtistLambda33C79BE1",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "MusicStreamingApiartistsid07892E02"
+    },
+    "RestApiId": {
+     "Ref": "MusicStreamingApiC954D41A"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/MusicStreamingApi/Default/artists/{id}/GET/Resource"
+   }
+  },
+  "MusicStreamingApigenresADE25626": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "MusicStreamingApiC954D41A",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "genres",
+    "RestApiId": {
+     "Ref": "MusicStreamingApiC954D41A"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/MusicStreamingApi/Default/genres/Resource"
+   }
+  },
+  "MusicStreamingApigenresOPTIONSF32B2871": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "MusicStreamingApigenresADE25626"
+    },
+    "RestApiId": {
+     "Ref": "MusicStreamingApiC954D41A"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/MusicStreamingApi/Default/genres/OPTIONS/Resource"
+   }
+  },
+  "MusicStreamingApigenresGETApiPermissionBackendStackMusicStreamingApi93A5F8E3GETgenresBFD04E09": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "GetGenresLambda9ACEE533",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:",
+       {
+        "Ref": "AWS::Region"
+       },
+       ":",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "MusicStreamingApiC954D41A"
+       },
+       "/",
+       {
+        "Ref": "MusicStreamingApiDeploymentStagedev4D4FE2C4"
+       },
+       "/GET/genres"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/MusicStreamingApi/Default/genres/GET/ApiPermission.BackendStackMusicStreamingApi93A5F8E3.GET..genres"
+   }
+  },
+  "MusicStreamingApigenresGETApiPermissionTestBackendStackMusicStreamingApi93A5F8E3GETgenresF3F6F441": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "GetGenresLambda9ACEE533",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:",
+       {
+        "Ref": "AWS::Region"
+       },
+       ":",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "MusicStreamingApiC954D41A"
+       },
+       "/test-invoke-stage/GET/genres"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/MusicStreamingApi/Default/genres/GET/ApiPermission.Test.BackendStackMusicStreamingApi93A5F8E3.GET..genres"
+   }
+  },
+  "MusicStreamingApigenresGETD5D8961B": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "GET",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:",
+        {
+         "Ref": "AWS::Region"
+        },
+        ":lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "GetGenresLambda9ACEE533",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "MusicStreamingApigenresADE25626"
+    },
+    "RestApiId": {
+     "Ref": "MusicStreamingApiC954D41A"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/MusicStreamingApi/Default/genres/GET/Resource"
+   }
+  },
+  "MusicStreamingApidiscover3B2C724F": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "MusicStreamingApiC954D41A",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "discover",
+    "RestApiId": {
+     "Ref": "MusicStreamingApiC954D41A"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/MusicStreamingApi/Default/discover/Resource"
+   }
+  },
+  "MusicStreamingApidiscoverOPTIONS48060DD3": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "MusicStreamingApidiscover3B2C724F"
+    },
+    "RestApiId": {
+     "Ref": "MusicStreamingApiC954D41A"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/MusicStreamingApi/Default/discover/OPTIONS/Resource"
+   }
+  },
+  "MusicStreamingApidiscoverfilterC7329518": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "MusicStreamingApidiscover3B2C724F"
+    },
+    "PathPart": "filter",
+    "RestApiId": {
+     "Ref": "MusicStreamingApiC954D41A"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/MusicStreamingApi/Default/discover/filter/Resource"
+   }
+  },
+  "MusicStreamingApidiscoverfilterOPTIONS745AA2ED": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "MusicStreamingApidiscoverfilterC7329518"
+    },
+    "RestApiId": {
+     "Ref": "MusicStreamingApiC954D41A"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/MusicStreamingApi/Default/discover/filter/OPTIONS/Resource"
+   }
+  },
+  "MusicStreamingApidiscoverfilterGETApiPermissionBackendStackMusicStreamingApi93A5F8E3GETdiscoverfilterBAEA1D75": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "GetFilteredContentLambda838D3EFC",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:",
+       {
+        "Ref": "AWS::Region"
+       },
+       ":",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "MusicStreamingApiC954D41A"
+       },
+       "/",
+       {
+        "Ref": "MusicStreamingApiDeploymentStagedev4D4FE2C4"
+       },
+       "/GET/discover/filter"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/MusicStreamingApi/Default/discover/filter/GET/ApiPermission.BackendStackMusicStreamingApi93A5F8E3.GET..discover.filter"
+   }
+  },
+  "MusicStreamingApidiscoverfilterGETApiPermissionTestBackendStackMusicStreamingApi93A5F8E3GETdiscoverfilter1596A077": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "GetFilteredContentLambda838D3EFC",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:",
+       {
+        "Ref": "AWS::Region"
+       },
+       ":",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "MusicStreamingApiC954D41A"
+       },
+       "/test-invoke-stage/GET/discover/filter"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/MusicStreamingApi/Default/discover/filter/GET/ApiPermission.Test.BackendStackMusicStreamingApi93A5F8E3.GET..discover.filter"
+   }
+  },
+  "MusicStreamingApidiscoverfilterGET26569681": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "GET",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:",
+        {
+         "Ref": "AWS::Region"
+        },
+        ":lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "GetFilteredContentLambda838D3EFC",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "MusicStreamingApidiscoverfilterC7329518"
+    },
+    "RestApiId": {
+     "Ref": "MusicStreamingApiC954D41A"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/MusicStreamingApi/Default/discover/filter/GET/Resource"
+   }
+  },
+  "CognitoAuthorizerF3215DBC": {
+   "Type": "AWS::ApiGateway::Authorizer",
+   "Properties": {
+    "IdentitySource": "method.request.header.Authorization",
+    "Name": "BackendStackCognitoAuthorizerD02D578C",
+    "ProviderARNs": [
+     {
+      "Fn::GetAtt": [
+       "MusicAppUserPool6D0B6B56",
+       "Arn"
+      ]
+     }
+    ],
+    "RestApiId": {
+     "Ref": "MusicStreamingApiC954D41A"
+    },
+    "Type": "COGNITO_USER_POOLS"
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/CognitoAuthorizer/Resource"
+   }
+  },
+  "CreateArtistLambdaRoleAC5EB843": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/CreateArtistLambdaRole/Resource"
+   }
+  },
+  "CreateArtistLambdaRoleDefaultPolicyF9DCB469": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchWriteItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "ArtistsAF1BB04E",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "ArtistsAF1BB04E",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "CreateArtistLambdaRoleDefaultPolicyF9DCB469",
+    "Roles": [
+     {
+      "Ref": "CreateArtistLambdaRoleAC5EB843"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/CreateArtistLambdaRole/DefaultPolicy/Resource"
+   }
+  },
+  "CreateArtistLambda7E4DB7BE": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": {
+      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+     },
+     "S3Key": "6316c355d84e049ff2f3030d94fe2b5f84c842ef663f35779785a0a8ff34236c.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "TABLE_NAME": {
+       "Ref": "ArtistsAF1BB04E"
+      }
+     }
+    },
+    "Handler": "handler.lambda_handler",
+    "MemorySize": 128,
+    "Role": {
+     "Fn::GetAtt": [
+      "CreateArtistLambdaRoleAC5EB843",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.9",
+    "Timeout": 10
+   },
+   "DependsOn": [
+    "CreateArtistLambdaRoleDefaultPolicyF9DCB469",
+    "CreateArtistLambdaRoleAC5EB843"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/CreateArtistLambda/Resource",
+    "aws:asset:path": "asset.6316c355d84e049ff2f3030d94fe2b5f84c842ef663f35779785a0a8ff34236c",
+    "aws:asset:is-bundled": true,
+    "aws:asset:property": "Code"
+   }
+  },
+  "CreateArtistLambdaLogGroup56113955": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": {
+     "Fn::Join": [
+      "",
+      [
+       "/aws/lambda/",
+       {
+        "Ref": "CreateArtistLambda7E4DB7BE"
+       }
+      ]
+     ]
+    },
+    "RetentionInDays": 731
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/CreateArtistLambda/LogGroup/Resource"
+   }
+  },
+  "CreateArtistLambdaFunctionUrlA3A5356D": {
+   "Type": "AWS::Lambda::Url",
+   "Properties": {
+    "AuthType": "NONE",
+    "Cors": {
+     "AllowMethods": [
+      "*"
+     ],
+     "AllowOrigins": [
+      "*"
+     ]
+    },
+    "TargetFunctionArn": {
+     "Fn::GetAtt": [
+      "CreateArtistLambda7E4DB7BE",
+      "Arn"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/CreateArtistLambda/FunctionUrl/Resource"
+   }
+  },
+  "CreateArtistLambdainvokefunctionurl6500D345": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunctionUrl",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "CreateArtistLambda7E4DB7BE",
+      "Arn"
+     ]
+    },
+    "FunctionUrlAuthType": "NONE",
+    "Principal": "*"
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/CreateArtistLambda/invoke-function-url"
+   }
+  },
+  "GetArtistsLambdaRole24EED06E": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/GetArtistsLambdaRole/Resource"
+   }
+  },
+  "GetArtistsLambdaRoleDefaultPolicyEE03CA6D": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:Query",
+        "dynamodb:Scan"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "ArtistsAF1BB04E",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "ArtistsAF1BB04E",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "GetArtistsLambdaRoleDefaultPolicyEE03CA6D",
+    "Roles": [
+     {
+      "Ref": "GetArtistsLambdaRole24EED06E"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/GetArtistsLambdaRole/DefaultPolicy/Resource"
+   }
+  },
+  "GetArtistsLambdaF8071C71": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": {
+      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+     },
+     "S3Key": "45a1a4808f0cb411220f4fe87d1b5172905a7d59bae4a6a3548cbd89b8cc9550.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "TABLE_NAME": {
+       "Ref": "ArtistsAF1BB04E"
+      }
+     }
+    },
+    "Handler": "handler.lambda_handler",
+    "MemorySize": 128,
+    "Role": {
+     "Fn::GetAtt": [
+      "GetArtistsLambdaRole24EED06E",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.9",
+    "Timeout": 10
+   },
+   "DependsOn": [
+    "GetArtistsLambdaRoleDefaultPolicyEE03CA6D",
+    "GetArtistsLambdaRole24EED06E"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/GetArtistsLambda/Resource",
+    "aws:asset:path": "asset.45a1a4808f0cb411220f4fe87d1b5172905a7d59bae4a6a3548cbd89b8cc9550",
+    "aws:asset:is-bundled": true,
+    "aws:asset:property": "Code"
+   }
+  },
+  "GetArtistsLambdaLogGroup9ABDD218": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": {
+     "Fn::Join": [
+      "",
+      [
+       "/aws/lambda/",
+       {
+        "Ref": "GetArtistsLambdaF8071C71"
+       }
+      ]
+     ]
+    },
+    "RetentionInDays": 731
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/GetArtistsLambda/LogGroup/Resource"
+   }
+  },
+  "GetArtistsLambdaFunctionUrl548686A6": {
+   "Type": "AWS::Lambda::Url",
+   "Properties": {
+    "AuthType": "NONE",
+    "Cors": {
+     "AllowMethods": [
+      "*"
+     ],
+     "AllowOrigins": [
+      "*"
+     ]
+    },
+    "TargetFunctionArn": {
+     "Fn::GetAtt": [
+      "GetArtistsLambdaF8071C71",
+      "Arn"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/GetArtistsLambda/FunctionUrl/Resource"
+   }
+  },
+  "GetArtistsLambdainvokefunctionurlFCE82971": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunctionUrl",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "GetArtistsLambdaF8071C71",
+      "Arn"
+     ]
+    },
+    "FunctionUrlAuthType": "NONE",
+    "Principal": "*"
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/GetArtistsLambda/invoke-function-url"
+   }
+  },
+  "GetArtistLambdaRoleBBDAE347": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/GetArtistLambdaRole/Resource"
+   }
+  },
+  "GetArtistLambdaRoleDefaultPolicy8C5CF46F": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:Query",
+        "dynamodb:Scan"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "ArtistsAF1BB04E",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "ArtistsAF1BB04E",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "GetArtistLambdaRoleDefaultPolicy8C5CF46F",
+    "Roles": [
+     {
+      "Ref": "GetArtistLambdaRoleBBDAE347"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/GetArtistLambdaRole/DefaultPolicy/Resource"
+   }
+  },
+  "GetArtistLambda33C79BE1": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": {
+      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+     },
+     "S3Key": "e332e93e7e92800dd7263c421c7dea7858c5497494bef41dc0c0e81be0eb9d6e.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "TABLE_NAME": {
+       "Ref": "ArtistsAF1BB04E"
+      }
+     }
+    },
+    "Handler": "handler.lambda_handler",
+    "MemorySize": 128,
+    "Role": {
+     "Fn::GetAtt": [
+      "GetArtistLambdaRoleBBDAE347",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.9",
+    "Timeout": 10
+   },
+   "DependsOn": [
+    "GetArtistLambdaRoleDefaultPolicy8C5CF46F",
+    "GetArtistLambdaRoleBBDAE347"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/GetArtistLambda/Resource",
+    "aws:asset:path": "asset.e332e93e7e92800dd7263c421c7dea7858c5497494bef41dc0c0e81be0eb9d6e",
+    "aws:asset:is-bundled": true,
+    "aws:asset:property": "Code"
+   }
+  },
+  "GetArtistLambdaLogGroup6F8C25C9": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": {
+     "Fn::Join": [
+      "",
+      [
+       "/aws/lambda/",
+       {
+        "Ref": "GetArtistLambda33C79BE1"
+       }
+      ]
+     ]
+    },
+    "RetentionInDays": 731
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/GetArtistLambda/LogGroup/Resource"
+   }
+  },
+  "GetArtistLambdaFunctionUrl4E9BC9F1": {
+   "Type": "AWS::Lambda::Url",
+   "Properties": {
+    "AuthType": "NONE",
+    "Cors": {
+     "AllowMethods": [
+      "*"
+     ],
+     "AllowOrigins": [
+      "*"
+     ]
+    },
+    "TargetFunctionArn": {
+     "Fn::GetAtt": [
+      "GetArtistLambda33C79BE1",
+      "Arn"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/GetArtistLambda/FunctionUrl/Resource"
+   }
+  },
+  "GetArtistLambdainvokefunctionurlD91DFC8A": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunctionUrl",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "GetArtistLambda33C79BE1",
+      "Arn"
+     ]
+    },
+    "FunctionUrlAuthType": "NONE",
+    "Principal": "*"
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/GetArtistLambda/invoke-function-url"
+   }
+  },
+  "GetGenresLambdaRole521EB931": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/GetGenresLambdaRole/Resource"
+   }
+  },
+  "GetGenresLambdaRoleDefaultPolicy0E732785": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:Query",
+        "dynamodb:Scan"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "ArtistsAF1BB04E",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "ArtistsAF1BB04E",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "GetGenresLambdaRoleDefaultPolicy0E732785",
+    "Roles": [
+     {
+      "Ref": "GetGenresLambdaRole521EB931"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/GetGenresLambdaRole/DefaultPolicy/Resource"
+   }
+  },
+  "GetGenresLambda9ACEE533": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": {
+      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+     },
+     "S3Key": "47cca25d3d05186f8cb23ca6a2dbcf94d46ac4d326b8f5c4f147757fd53ddecf.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "TABLE_NAME": {
+       "Ref": "ArtistsAF1BB04E"
+      }
+     }
+    },
+    "Handler": "handler.lambda_handler",
+    "MemorySize": 128,
+    "Role": {
+     "Fn::GetAtt": [
+      "GetGenresLambdaRole521EB931",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.9",
+    "Timeout": 10
+   },
+   "DependsOn": [
+    "GetGenresLambdaRoleDefaultPolicy0E732785",
+    "GetGenresLambdaRole521EB931"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/GetGenresLambda/Resource",
+    "aws:asset:path": "asset.47cca25d3d05186f8cb23ca6a2dbcf94d46ac4d326b8f5c4f147757fd53ddecf",
+    "aws:asset:is-bundled": true,
+    "aws:asset:property": "Code"
+   }
+  },
+  "GetGenresLambdaLogGroup9B00AAF8": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": {
+     "Fn::Join": [
+      "",
+      [
+       "/aws/lambda/",
+       {
+        "Ref": "GetGenresLambda9ACEE533"
+       }
+      ]
+     ]
+    },
+    "RetentionInDays": 731
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/GetGenresLambda/LogGroup/Resource"
+   }
+  },
+  "GetGenresLambdaFunctionUrl86C1D0E9": {
+   "Type": "AWS::Lambda::Url",
+   "Properties": {
+    "AuthType": "NONE",
+    "Cors": {
+     "AllowMethods": [
+      "*"
+     ],
+     "AllowOrigins": [
+      "*"
+     ]
+    },
+    "TargetFunctionArn": {
+     "Fn::GetAtt": [
+      "GetGenresLambda9ACEE533",
+      "Arn"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/GetGenresLambda/FunctionUrl/Resource"
+   }
+  },
+  "GetGenresLambdainvokefunctionurlEB00CDA1": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunctionUrl",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "GetGenresLambda9ACEE533",
+      "Arn"
+     ]
+    },
+    "FunctionUrlAuthType": "NONE",
+    "Principal": "*"
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/GetGenresLambda/invoke-function-url"
+   }
+  },
+  "GetFilteredContentLambdaRoleBFB6DA89": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/GetFilteredContentLambdaRole/Resource"
+   }
+  },
+  "GetFilteredContentLambdaRoleDefaultPolicy3A988D01": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:Query",
+        "dynamodb:Scan"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "Albums77B3A114",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::GetAtt": [
+          "ArtistsAF1BB04E",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "ArtistsAF1BB04E",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        },
+        {
+         "Ref": "AWS::NoValue"
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "GetFilteredContentLambdaRoleDefaultPolicy3A988D01",
+    "Roles": [
+     {
+      "Ref": "GetFilteredContentLambdaRoleBFB6DA89"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/GetFilteredContentLambdaRole/DefaultPolicy/Resource"
+   }
+  },
+  "GetFilteredContentLambda838D3EFC": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": {
+      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+     },
+     "S3Key": "9e5ee5c411d9b6858c95362f73649ae1e8d39f50fca7b54313365615d93e4e12.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "ARTISTS_TABLE": {
+       "Ref": "ArtistsAF1BB04E"
+      },
+      "ALBUMS_TABLE": {
+       "Ref": "Albums77B3A114"
+      }
+     }
+    },
+    "Handler": "handler.lambda_handler",
+    "MemorySize": 128,
+    "Role": {
+     "Fn::GetAtt": [
+      "GetFilteredContentLambdaRoleBFB6DA89",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.9",
+    "Timeout": 10
+   },
+   "DependsOn": [
+    "GetFilteredContentLambdaRoleDefaultPolicy3A988D01",
+    "GetFilteredContentLambdaRoleBFB6DA89"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/GetFilteredContentLambda/Resource",
+    "aws:asset:path": "asset.9e5ee5c411d9b6858c95362f73649ae1e8d39f50fca7b54313365615d93e4e12",
+    "aws:asset:is-bundled": true,
+    "aws:asset:property": "Code"
+   }
+  },
+  "GetFilteredContentLambdaLogGroup155B7082": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": {
+     "Fn::Join": [
+      "",
+      [
+       "/aws/lambda/",
+       {
+        "Ref": "GetFilteredContentLambda838D3EFC"
+       }
+      ]
+     ]
+    },
+    "RetentionInDays": 731
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/GetFilteredContentLambda/LogGroup/Resource"
+   }
+  },
+  "GetFilteredContentLambdaFunctionUrlB743BD0E": {
+   "Type": "AWS::Lambda::Url",
+   "Properties": {
+    "AuthType": "NONE",
+    "Cors": {
+     "AllowMethods": [
+      "*"
+     ],
+     "AllowOrigins": [
+      "*"
+     ]
+    },
+    "TargetFunctionArn": {
+     "Fn::GetAtt": [
+      "GetFilteredContentLambda838D3EFC",
+      "Arn"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/GetFilteredContentLambda/FunctionUrl/Resource"
+   }
+  },
+  "GetFilteredContentLambdainvokefunctionurl41517CF9": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunctionUrl",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "GetFilteredContentLambda838D3EFC",
+      "Arn"
+     ]
+    },
+    "FunctionUrlAuthType": "NONE",
+    "Principal": "*"
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/GetFilteredContentLambda/invoke-function-url"
    }
   },
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {
-    "Analytics": "v2:deflate64:H4sIAAAAAAAA/22PTWvDMAyGf0t1LI63toxBjuuOG3RrYYdQRj7UVmtqJ5bSEEz++4iTQQ67SLzSI+nVWq9XT/pxkbYc5cU1KinTfi9pflVpy9+ea9b+o8EGEw93YsqoJOkOdEPbCMSwhP6oticTGBXizpaUd4mHelAMcQJLOM6wEegVG9Z+32ScO6qErEk8iK0oD3sVoCkqS0YmWTkrNrclxMA1gwKXtu/InJ7xFUu6o+sm8kSloBvP/FP6IrlMgy+2+CMcnsmaSRSYFm8ogi44nj0696sOg9vw3tAKqu97tevkYs3DRq82+nnxw0SRa4zQDfXnmH8BXJH4D3gBAAA="
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/+0ZXW/bOOy3TI+D5ltb3Eve0qwdimVrkLT3EhQDYzGOVlnySXQzz/B/HyTZjtN23ccBHbDLQ2CHpPhNkZKPk+Ojv5PXL2DrXqXi9pWSq6ReEKS3HLbuY+1Okvq0TG+RljWzmJs7UDOjZFqxERPoyJqKcXaH1kmjUbAR2RKbGz5Z67iOx8cpOFzeNFxUGnIjVkl9BSuFy5oVYEmSNPodVmxUMw05shF7yTijqvCvC9Zw5oylpym+pV7D/yQhIMRbZVagFpgaLcBWF1rgZzZa1kz6tw87noU1nzD1Gl1F7uPp1IN/RM/mJkYxhKnhqcm0JJPU1w7tzBi1rBmkqSk1zTE1d2grNjrmLC0dmXxMZOWqJHQt33wNbMQuz8+DeOe2xorOvJrlUk9RZ7RpqS3+W0qLb2QmybHRGpTDHjo1W7QpOLyPWFT5yqgH9NdFsUf/hH85c6jWC5np6+JMe8PbhObMyUxf6LGS4LxRNcMcpOqwpUMbvRjSnzNH4GMjho6om0jovdcHqQ3plZVZhtZHseHBBy9ZG4DO4bx7mSiJ2tdjx6z1GqQpOndlblH/A0oKSVWHKWlzrsw2KB5WtSEY6r+wRa8+BuMDqznemRR8tnTEGWq0QLjA1CL17pbiMdGFxTvU5HU/+ywdoU7xzFpjXcfO4tqi2zy2uNyzeOezPb9EZMMV5CsBST1Z6xnaXDq/I/HzUocCWNYsNaJL8w1ooby7Y7qVmuQgHqjvpDU6R00thYIKvcbLG85yzI2tFvJLx8wa1ZePzNGU3aofFghCnA1lLvsMiMhpL/6g3kG951XvR3UPNdlVW19219Y3inX7b7AdtQ3pw+WHs6CtDXsTKGW2KC6tzKSOvaPxov73DOKOZ1XDJeRJPTdhdALnyhzFaWiihZU6lQWocWzLnaBA4xeMd/IbznLQkGFswtK3p2W9B6vGtqWNwf5lUW2qvB/y/q40Ia7MrJOyW9NiiSDdXGglNfa4PiufRB6sOFhxsOIh8tt8w87jdecRHFpAx+7KzEMDuiflIViIBQGh7yKuU/jA6PuMHgeHmMRwNFyZzCX11GRvrSmLZc1U+7p3xngeYFCsU6XhUMgMCLdQJfUcHY0LuayZwDWUiibGupnFtZLZhi4LXxi7/jfsfjyC3iNtjHBd/xJYKFMN1tHGGiIldXZaWkdTmcuuAHeoORAOMY4gw4FRzEY175nUKs/fBKF5PH4JdKmVxbCpF7I/wRJIvSN3vdNCqU1NJlNQF2Ivzgf474KHIO+ixRc+LUKIO9CDTPr1JAvCggQ+R2dKm2K4HfMbAY9ZHi7bIqob4omKiGsBUhNmFgbZZwY1VNLGWPnFT/3Dfxfd6g4Eg8uhkP9QyHdYzePViegP94/T+wOJV2mOrjDatVOkI6DSTXYHENuiZ2AhRwonhtjSuh64x+VnmfCDs57fWfdtGzqxm27+g6B2szzE9XnienD3wd1/rrsPzvrJ3AwTSlzQjyjxS91uEiqANjOw1Gfzb8F203lQkU/iR6ruy4Ab94GOw9VkrXeghruTj+AckkvG/tHsbG2vOZ/6BW6XJRUl8bDcT3RSZw2fVbQx+q+T5Oh1cnT04pOT8lV765rM4/MrIl/AWHcdAAA="
    },
    "Metadata": {
     "aws:cdk:path": "BackendStack/CDKMetadata/Default"
    },
    "Condition": "CDKMetadataAvailable"
+  }
+ },
+ "Outputs": {
+  "UserPoolId": {
+   "Description": "User Pool ID",
+   "Value": {
+    "Ref": "MusicAppUserPool6D0B6B56"
+   }
+  },
+  "UserPoolClientId": {
+   "Description": "User Pool Client ID",
+   "Value": {
+    "Ref": "MusicAppUserPoolMusicStreamingAppF2471B08"
+   }
+  },
+  "MusicStreamingApiEndpointBAB5F121": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Ref": "MusicStreamingApiC954D41A"
+      },
+      ".execute-api.",
+      {
+       "Ref": "AWS::Region"
+      },
+      ".",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/",
+      {
+       "Ref": "MusicStreamingApiDeploymentStagedev4D4FE2C4"
+      },
+      "/"
+     ]
+    ]
+   }
   }
  },
  "Conditions": {
