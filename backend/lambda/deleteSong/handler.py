@@ -1,0 +1,87 @@
+import json
+import os
+
+import boto3
+from boto3.dynamodb.conditions import Key, Attr
+
+songs_table_name = os.environ["SONGS_TABLE"]
+albums_table_name = os.environ["ALBUMS_TABLE"]
+
+dynamodb = boto3.resource("dynamodb")
+songs_table = dynamodb.Table(songs_table_name)
+albums_table = dynamodb.Table(albums_table_name)
+
+def lambda_handler(event, context):
+    claims = event.get("requestContext", {}).get("authorizer", {}).get("claims", {})
+    role = claims.get("custom:role")
+    if role != "admin":
+        return {
+            "statusCode": 403,
+            "headers": {"Access-Control-Allow-Origin": "*"},
+            "body": json.dumps({"message": "Forbidden"})
+        }
+
+    path_params = event.get("pathParameters") or {}
+    song_id = path_params.get("id")
+
+    if not song_id:
+        return {
+            "statusCode": 400,
+            "headers": {"Access-Control-Allow-Origin": "*"},
+            "body": json.dumps({"error": "Missing 'id' in path"})
+        }
+
+    try:
+        response = songs_table.query(
+            IndexName="Id-index",
+            KeyConditionExpression=Key("Id").eq(song_id)
+        )
+
+        items = response.get("Items", [])
+        if not items:
+            return {
+                "statusCode": 404,
+                "headers": {"Access-Control-Allow-Origin": "*"},
+                "body": json.dumps({"error": "Song not found"})
+            }
+
+        song_item = items[0]
+        album_id = song_item["Album"]
+
+        songs_table.update_item(
+            Key={"Album": song_item["Album"], "Id": song_item["Id"]},
+            UpdateExpression="SET deleted = :val",
+            ExpressionAttributeValues={":val": "true"},
+            ConditionExpression="attribute_exists(Id)"
+        )
+
+        remaining_songs = songs_table.query(
+            IndexName="Album-index",
+            KeyConditionExpression=Key("Album").eq(album_id),
+            FilterExpression=Attr("deleted").eq("false")
+        )
+
+        if remaining_songs['Count'] == 0:
+            album_response = albums_table.query(
+                IndexName="Id-index",
+                KeyConditionExpression=Key("Id").eq(album_id)
+            )
+            for album_item in album_response.get("Items", []):
+                albums_table.update_item(
+                    Key={"Genre": album_item["Genre"], "Id": album_item["Id"]},
+                    UpdateExpression="SET deleted = :val",
+                    ExpressionAttributeValues={":val": "true"}
+                )
+
+        return {
+            "statusCode": 200,
+            "headers": {"Access-Control-Allow-Origin": "*"},
+            "body": json.dumps({"message": f"Song {song_id} marked deleted. Album cleanup checked."})
+        }
+
+    except Exception as e:
+        return {
+            "statusCode": 500,
+            "headers": {"Access-Control-Allow-Origin": "*"},
+            "body": json.dumps({"error": str(e)})
+        }

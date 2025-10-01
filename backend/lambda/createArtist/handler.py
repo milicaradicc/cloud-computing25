@@ -10,7 +10,6 @@ def lambda_handler(event, context):
     claims = event.get("requestContext", {}).get("authorizer", {}).get("claims", {})
     print("Claims:", claims)
     role = claims.get("custom:role")
-
     if role != "admin":
         return {
             "statusCode": 403,

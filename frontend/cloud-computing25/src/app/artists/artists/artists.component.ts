@@ -72,7 +72,7 @@ export class ArtistsComponent implements OnInit {
 
   deleteArtist(artist: Artist) {
     if(confirm(`Are you sure you want to delete ${artist.name}?`)) {
-      this.service.delete(artist).subscribe({
+      this.service.delete(artist.Id).subscribe({
         next: () => {
           this.refreshDataSource();
           this.snackBar.open('Artist deleted successfully','OK',{duration:3000});

@@ -15,7 +15,7 @@ export class ContentService {
   constructor(private httpClient: HttpClient) { }
 
   addSong(song: SingleUploadDTO): Observable<any> {
-    return this.httpClient.post<Song>(environment.apiHost + `/song`, song
+    return this.httpClient.post<Song>(environment.apiHost + `/songs`, song
     );
   }
 
@@ -24,7 +24,7 @@ export class ContentService {
   }
 
   getAllSongs(): Observable<Song[]> {
-    return this.httpClient.get<Song[]>(environment.apiHost + `/song`);
+    return this.httpClient.get<Song[]>(environment.apiHost + `/songs`);
   }
 
   getAllAlbums(): Observable<Album[]> {
@@ -32,15 +32,15 @@ export class ContentService {
   }
 
   getSong(songId: string): Observable<Song> {
-    return this.httpClient.get<Song>(environment.apiHost + `/song/` + songId);
+    return this.httpClient.get<Song>(environment.apiHost + `/songs/` + songId);
   }
 
   deleteAlbum(album: Album): Observable<any> {
-    return this.httpClient.delete(environment.apiHost + `/albums?Genre=${album.Genre}&Id=${album.Id}`);
+    return this.httpClient.delete(environment.apiHost + `/albums/${album.Id}`);
   }
 
-  deleteSong(song: Song): Observable<any> {
-    return this.httpClient.delete(environment.apiHost + `/song?Album=${song.Album}&Id=${song.Id}`);
+  deleteSong(songId: string): Observable<any> {
+    return this.httpClient.delete(environment.apiHost + `/songs/` + songId);
   }
 
   updateAlbum(album: Album): Observable<any> {
@@ -48,14 +48,14 @@ export class ContentService {
   }
 
   updateSong(song: Song): Observable<any> {
-    return this.httpClient.put(environment.apiHost + `/song/${song.Id}`, song);
+    return this.httpClient.put(environment.apiHost + `/songs/${song.Id}`, song);
   }
 
   rateSong(rating: Rating): Observable<any> {
-    return this.httpClient.post(environment.apiHost + `/song/${rating.targetId}/rating`, rating);
+    return this.httpClient.post(environment.apiHost + `/songs/${rating.targetId}/rating`, rating);
   }
 
   getSongRating(songId:string,userId:string): Observable<Rating>{
-    return this.httpClient.get<Rating>(environment.apiHost + `/song/${songId}/rating?userId=${userId}`);
+    return this.httpClient.get<Rating>(environment.apiHost + `/songs/${songId}/rating?userId=${userId}`);
   }
 }
