@@ -1,9 +1,25 @@
+from constructs import Construct
+
+from aws_cdk import (
+    Stack,
+    RemovalPolicy,
+    aws_dynamodb as dynamodb,
+    aws_lambda_event_sources as lambda_event_sources,
+    aws_lambda as _lambda,
+    aws_sqs as sqs,
+    aws_sns as sns,
+    aws_sns_subscriptions as subs,
+    aws_s3 as s3,
+    aws_apigateway as apigateway
+)
+
+from backend.utils.create_lambda import create_lambda_function
+from backend.utils.cognito_setup import setup_cognito
+
 from backend.constructs.songs_construct import SongsConstruct
 from backend.constructs.albums_construct import AlbumConstruct
-from constructs import Construct
-from aws_cdk import Stack, RemovalPolicy, aws_dynamodb as dynamodb,aws_sqs as sqs,aws_sns_subscriptions as subs,aws_sns as sns, aws_s3 as s3, aws_apigateway as apigateway
-from backend.utils.cognito_setup import setup_cognito
 from backend.constructs.artists_construct import ArtistsConstruct
+from backend.constructs.subscriptions_construct import SubscriptionsConstruct
 
 class BackendStack(Stack):
 
@@ -100,10 +116,30 @@ class BackendStack(Stack):
 
         # RATING TABLE
         rating_table = dynamodb.Table(
-            self, "Rating",
+            self, "Ratings",
             partition_key=dynamodb.Attribute(name="User", type=dynamodb.AttributeType.STRING),
             sort_key=dynamodb.Attribute(name="Song", type=dynamodb.AttributeType.STRING),
             removal_policy=RemovalPolicy.DESTROY
+        )
+
+        # SUBSCRIPTIONS TABLE
+        subscriptions_table = dynamodb.Table(
+            self, "Subscriptions",
+            partition_key=dynamodb.Attribute(name="Target", type=dynamodb.AttributeType.STRING),
+            sort_key=dynamodb.Attribute(name="User", type=dynamodb.AttributeType.STRING),
+            removal_policy=RemovalPolicy.DESTROY
+        )
+
+        subscriptions_table.add_global_secondary_index(
+            index_name="deleted-index",
+            partition_key=dynamodb.Attribute(name="deleted", type=dynamodb.AttributeType.STRING),
+            projection_type=dynamodb.ProjectionType.ALL
+        )
+
+        subscriptions_table.add_global_secondary_index(
+            index_name="User-index",
+            partition_key=dynamodb.Attribute(name="User", type=dynamodb.AttributeType.STRING),
+            projection_type=dynamodb.ProjectionType.ALL
         )
 
         user_pool, user_pool_client = setup_cognito(self)
@@ -128,6 +164,40 @@ class BackendStack(Stack):
         topic.add_subscription(subs.SqsSubscription(new_song_queue))
         topic.add_subscription(subs.SqsSubscription(new_album_queue))
 
+        # Lambda for sending single email (triggers from NewSongQueue)
+        send_single_email_lambda = create_lambda_function(
+            self,
+            "SendSingleEmail",
+            "handler.lambda_handler",
+            "lambda/sendSingleEmail",
+            [],
+            {
+                "SUBSCRIPTIONS_TABLE": subscriptions_table.table_name,
+            }
+        )
+        subscriptions_table.grant_read_data(send_single_email_lambda)
+
+        send_single_email_lambda.add_event_source(
+            lambda_event_sources.SqsEventSource(new_song_queue)
+        )
+
+        # Lambda for sending general email (triggers from NewAlbumQueue)
+        send_email_lambda = create_lambda_function(
+            self,
+            "SendAlbumEmail",
+            "handler.lambda_handler",
+            "lambda/sendAlbumEmail",
+            [],
+            {
+                "SUBSCRIPTIONS_TABLE": subscriptions_table.table_name,
+            }
+        )
+        subscriptions_table.grant_read_data(send_email_lambda)
+
+        send_email_lambda.add_event_source(
+            lambda_event_sources.SqsEventSource(new_album_queue)
+        )
+
         # API
         api = apigateway.RestApi(
             self, "MusicStreamingApi",
@@ -144,7 +214,8 @@ class BackendStack(Stack):
             cognito_user_pools=[user_pool],
         )
 
-        # Artists API construct
+        # API constructs
         ArtistsConstruct(self, "ArtistsConstruct", api, artists_table, songs_table, albums_table, artist_album_table, artist_song_table, authorizer)
         SongsConstruct(self, "SongsConstruct", api, songs_table, albums_table, artist_song_table, music_bucket, topic,authorizer, artists_table, rating_table)
         AlbumConstruct(self, "AlbumConstruct", api, songs_table, albums_table, artist_album_table, music_bucket, topic,authorizer)
+        SubscriptionsConstruct(self, "SubscriptionsConstruct", api, subscriptions_table, authorizer)
