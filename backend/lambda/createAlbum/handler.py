@@ -4,23 +4,23 @@ import uuid
 from datetime import datetime
 import boto3
 import traceback
-import os
 
-BUCKET_NAME = os.environ["BUCKET_NAME"]
-TABLE_NAME = os.environ["ALBUMS_TABLE"]
-SNS_TOPIC_ARN = os.environ["SNS_TOPIC_ARN"]
-ARTIST_ALBUM_TABLE = os.environ["ARTIST_ALBUM_TABLE"]
+# Konstante
+BUCKET_NAME = "my-music-app-files"
+TABLE_NAME = "Album"  # tabela za albume sa Genre kao partition i Id kao sort
+SNS_TOPIC_ARN = "arn:aws:sns:eu-north-1:138881450188:NewContentTopic"
 
+# AWS resursi
 s3 = boto3.client('s3')
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table(TABLE_NAME)
 sns = boto3.client("sns")
-artist_album_table = dynamodb.Table(ARTIST_ALBUM_TABLE)
 
 CORS_HEADERS = {"Access-Control-Allow-Origin": "*"}
 
 def lambda_handler(event, context):
     claims = event.get("requestContext", {}).get("authorizer", {}).get("claims", {})
+    print("Claims:", claims)
     role = claims.get("custom:role")
 
     if role != "admin":
@@ -45,6 +45,7 @@ def lambda_handler(event, context):
                 "body": json.dumps({"message": "Album must have at least one genre"})
             }
 
+        # Upload cover image u S3 (ako postoji)
         if cover_file_base64 and cover_filename:
             cover_content = base64.b64decode(cover_file_base64)
             s3.put_object(
@@ -52,13 +53,16 @@ def lambda_handler(event, context):
                 Key=cover_filename,
                 Body=cover_content
             )
+            print(f"Uploaded cover {cover_filename} to S3 bucket {BUCKET_NAME}")
 
+        # Generisanje jedinstvenog ID-a albuma
         album_id = str(uuid.uuid4())
-        primary_genre = genres[0]
+        primary_genre = genres[0]  # partition key
 
+        # Kreiranje DynamoDB item-a
         item = {
-            "Genre": primary_genre,    
-            "Id": album_id,            
+            "Genre": primary_genre,    # partition key
+            "Id": album_id,            # sort key
             "title": album_title,
             "artists": body.get('artists', []),
             "genres": genres,
@@ -70,35 +74,27 @@ def lambda_handler(event, context):
             "deleted":"false"
         }
 
+        # Upis u DynamoDB
         table.put_item(Item=item)
+        print(f"Saved album '{album_title}' to DynamoDB table {TABLE_NAME}")
 
-        artists = body.get('artists', [])
-        for artist_id in artists:
-            artist_album_table.put_item(
-                Item={
-                    "ArtistId": artist_id,
-                    "AlbumId": album_id,
-                    "createdDate": str(datetime.now())
-                }
+        # Publish event u SNS (ide u SQS + SES Lambda)
+        try:
+            sns.publish(
+                TopicArn=SNS_TOPIC_ARN,
+                Message=json.dumps(item, default=str),
+                MessageAttributes={
+                    "contentType": {
+                        "DataType": "String",
+                        "StringValue": "album"
+                    }
+                },
+                Subject="New Release"
             )
-
-        # Publish SNS event SAMO ako NIJE single
-        if not single:
-            try:
-                sns.publish(
-                    TopicArn=SNS_TOPIC_ARN,
-                    Message=json.dumps(item, default=str),
-                    MessageAttributes={
-                        "contentType": {
-                            "DataType": "String",
-                            "StringValue": "album"
-                        }
-                    },
-                    Subject="New Album"
-                )
-            except Exception as sns_err:
-                print("SNS Publish ERROR:", str(sns_err))
-                print(traceback.format_exc())
+            print(f"Published album '{album_title}' event to SNS topic {SNS_TOPIC_ARN}")
+        except Exception as sns_err:
+            print("SNS Publish ERROR:", str(sns_err))
+            print(traceback.format_exc())
 
         return {
             "statusCode": 201,

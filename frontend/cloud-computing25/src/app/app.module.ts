@@ -21,6 +21,7 @@ import {AuthInterceptor} from './infrastructure/auth/interceptor';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ArtistsModule} from './artists/artists.module';
 import { ContentModule } from './content/content.module';
+import { SubscriptionModule } from './subscription/subscription.module';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import { ContentModule } from './content/content.module';
         MatTableModule,
         MatPaginatorModule,
         ArtistsModule,
-        ContentModule
+        ContentModule,
+        SubscriptionModule
     ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
