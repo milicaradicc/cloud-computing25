@@ -38,7 +38,9 @@ class BackendStack(Stack):
                 ignore_public_acls=True,
                 restrict_public_buckets=False
             ),
-            public_read_access=True
+            public_read_access=True,
+            website_index_document="index.html",
+            website_error_document="error.html"
         )
 
         CfnOutput(

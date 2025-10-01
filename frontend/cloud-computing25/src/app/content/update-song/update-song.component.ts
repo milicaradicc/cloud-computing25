@@ -4,8 +4,8 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ArtistService } from '../../artists/artist.service';
 import { Artist } from '../../artists/artist.model';
 import { ContentService } from '../content.service';
-import { SingleUploadDTO } from '../single-upload-dto.model';
 import { Song } from '../song.model';
+import { environment } from '../../../env/environment';
 
 @Component({
   selector: 'app-update-song',
@@ -16,7 +16,8 @@ import { Song } from '../song.model';
 export class UpdateSongComponent implements OnInit {
   form: FormGroup;
 
-  selectedFile: File | null = null;
+  selectedAudioFile: File | null = null;
+  selectedCoverFile: File | null = null;
   audioInfo: any = null;
 
   allArtists: Artist[] = [];
@@ -50,23 +51,23 @@ export class UpdateSongComponent implements OnInit {
       this.allArtists = artists;
       const selectedArtists = this.data.song.artists || [];
       this.form.patchValue({
-        artists: selectedArtists
+        artists: selectedArtists.map(a => a.Id)
       });
     });
   }
 
-  onFileChange(event: any): void {
+  onAudioFileChange(event: any): void {
     const file = event.target.files[0];
     if (!file) return;
 
-    this.selectedFile = file;
+    this.selectedAudioFile = file;
     const audio = new Audio();
     const objectUrl = URL.createObjectURL(file);
     audio.src = objectUrl;
 
     audio.addEventListener('loadedmetadata', () => {
       this.audioInfo = {
-        fileName: crypto.randomUUID(),
+        fileName: file.name,
         fileType: file.type,
         fileSize: file.size,
         duration: Math.round(audio.duration)
@@ -77,12 +78,45 @@ export class UpdateSongComponent implements OnInit {
     audio.addEventListener('error', () => URL.revokeObjectURL(objectUrl));
   }
 
+  onCoverFileChange(event: any): void {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    this.selectedCoverFile = file;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.form.patchValue({ coverImage: reader.result as string });
+    };
+    reader.readAsDataURL(file);
+  }
+
+  getCoverUrl(): string {
+    const cover = this.form.value.coverImage;
+
+    if (cover && cover.startsWith('data:image')) {
+      return cover;
+    }
+
+    if (cover) {
+      return environment.s3BucketLink + '/' + cover;
+    }
+
+    return "assets/default-song.png";
+  }
+
+
   async save(): Promise<void> {
     if (this.form.invalid) return;
 
-    let fileBase64: string | undefined;
-    if (this.selectedFile) {
-      fileBase64 = await this.convertFileToBase64(this.selectedFile);
+    let audioBase64: string | undefined;
+    if (this.selectedAudioFile) {
+      audioBase64 = await this.convertFileToBase64(this.selectedAudioFile);
+    }
+
+    let coverBase64: string | undefined;
+    if (this.selectedCoverFile) {
+      coverBase64 = await this.convertFileToBase64(this.selectedCoverFile);
     }
 
     const updatedSong: any = {
@@ -92,11 +126,18 @@ export class UpdateSongComponent implements OnInit {
       duration: this.audioInfo?.duration || this.data.song.duration
     };
 
-    if (fileBase64) {
-      updatedSong.fileBase64 = fileBase64;
+    if (audioBase64) {
+      updatedSong.fileBase64 = audioBase64;
       updatedSong.fileName = crypto.randomUUID();
-      updatedSong.fileType = this.selectedFile!.type;
-      updatedSong.fileSize = this.selectedFile!.size;
+      updatedSong.fileType = this.audioInfo.fileType;
+      updatedSong.fileSize = this.audioInfo.fileSize;
+    }
+
+    if (coverBase64) {
+      updatedSong.coverBase64 = coverBase64;
+      updatedSong.coverImage = this.form.value.coverImage.startsWith('http')
+        ? this.form.value.coverImage
+        : crypto.randomUUID();
     }
 
     this.contentService.updateSong(updatedSong).subscribe({

@@ -35,7 +35,6 @@ export class UploadContentComponent implements OnInit {
     this.uploadForm = this.fb.group({
       type: ['single', Validators.required],
       title: ['', Validators.required],
-      coverImageUrl: [''],
       releaseDate: [new Date()],
       description: [''],
       artists: [[], Validators.required],
@@ -47,7 +46,6 @@ export class UploadContentComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadArtists();
-
     this.uploadForm.get('type')?.valueChanges.subscribe(type => {
       if (type === 'single') this.songs.clear();
     });
@@ -67,7 +65,8 @@ export class UploadContentComponent implements OnInit {
       audioFile: [null, Validators.required],
       audioInfo: [null],
       description: [''],
-      coverImageUrl: ['']
+      coverFile: [null],
+      coverBase64: [null]
     });
   }
 
@@ -86,8 +85,6 @@ export class UploadContentComponent implements OnInit {
       next: artists => this.availableArtists = artists,
       error: err => console.error('Error loading artists:', err)
     });
-
-    console.log('Available artists:', this.availableArtists);
   }
 
   // ----------- Cover Image Handling -----------
@@ -99,16 +96,23 @@ export class UploadContentComponent implements OnInit {
     this.coverFile = file;
     const reader = new FileReader();
     reader.onload = (e: any) => {
-      this.coverImagePreview = e.target.result; // za prikaz u UI
+      this.coverImagePreview = e.target.result;
     };
     reader.readAsDataURL(file);
-
-    this.uploadForm.patchValue({ coverImageUrl: file.name }); // ili možeš čuvati ime
   }
 
-  onImageError() {
-    this.coverImagePreview = null;
-    console.warn('Failed to load image from the provided URL');
+  onAlbumSongCoverChange(event: any, index: number) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      this.songs.at(index).patchValue({
+        coverFile: file,
+        coverBase64: (e.target.result as string).split(',')[1]
+      });
+    };
+    reader.readAsDataURL(file);
   }
 
   // ----------- Audio File Handling -----------
@@ -192,6 +196,7 @@ export class UploadContentComponent implements OnInit {
       coverBase64 = await this.convertFileToBase64(this.coverFile);
     }
 
+    const name = crypto.randomUUID();
     const albumDto: AlbumUploadDTO = {
       createdDate: new Date(),
       modifiedDate: new Date(),
@@ -200,12 +205,11 @@ export class UploadContentComponent implements OnInit {
       artists: formValue.artists,
       genres: formValue.genres,
       coverFileBase64: coverBase64 ?? undefined,
-      coverFileName: this.coverFile?.name,
+      coverFileName: name,
       single: true
     };
 
     console.log('Album DTO:', albumDto);
-
     this.musicService.addAlbum(albumDto).subscribe({
       next: albumRes => {
         const albumId = albumRes.item.Id;
@@ -222,13 +226,13 @@ export class UploadContentComponent implements OnInit {
           description: formValue.description,
           artists: formValue.artists,
           genres: formValue.genres,
-          coverImage: this.coverFile?.name ?? "",
+          coverImage: name,
+          coverFileBase64: coverBase64 ?? undefined,
           album: albumId,
-          single: true
+          single: true,
         };
 
         console.log('Single DTO:', dto);
-
         this.musicService.addSong(dto).subscribe({
           next: res => console.log('Single uploaded successfully', res),
           error: err => console.error('Single upload failed', err)
@@ -243,6 +247,7 @@ export class UploadContentComponent implements OnInit {
       this.coverBase64 = await this.convertFileToBase64(this.coverFile);
     }
 
+    const name = crypto.randomUUID();
     const albumDto: AlbumUploadDTO = {
       createdDate: new Date(),
       modifiedDate: new Date(),
@@ -251,15 +256,12 @@ export class UploadContentComponent implements OnInit {
       artists: formValue.artists,
       genres: formValue.genres,
       coverFileBase64: this.coverBase64 ?? undefined,
-      coverFileName: this.coverFile?.name,
+      coverFileName: name,
       single: false
     };
 
-    console.log('Album DTO:', albumDto);
-
     this.musicService.addAlbum(albumDto).subscribe({
       next: albumRes => {
-        console.log('Album created:', albumRes);
         const albumId = albumRes.item.Id;
 
         this.songs.controls.forEach(async (songCtrl) => {
@@ -281,12 +283,11 @@ export class UploadContentComponent implements OnInit {
             description: songControl.value.description,
             artists: songControl.value.artists,
             genres: songControl.value.genres,
-            coverImage: songControl.value.coverImageUrl || formValue.coverImageUrl,
+            coverImage: name,
+            coverFileBase64: this.coverBase64 ?? undefined,
             album: albumId,
             single: false
           };
-
-          console.log('Song DTO:', songDto);
 
           this.musicService.addSong(songDto).subscribe({
             next: res => console.log(`Song ${songDto.title} uploaded`, res),

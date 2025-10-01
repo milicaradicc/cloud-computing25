@@ -52,17 +52,18 @@
           <textarea matInput formControlName="description" rows="3"></textarea>
         </mat-form-field>
 
-        <!-- Cover Image Upload (Choose File Button) -->
+        <!-- Cover Image Upload -->
         <div class="file-upload-section">
           <input type="file" #coverFileInput accept="image/*" (change)="onCoverFileChange($event)" hidden>
           <button type="button" mat-stroked-button (click)="coverFileInput.click()">Choose Cover Image</button>
           <span *ngIf="coverFile">{{ coverFile.name }}</span>
         </div>
 
-        <div class="image-preview" *ngIf="coverImagePreview">
-          <img [src]="coverImagePreview" alt="Cover preview" class="preview-image" (error)="onImageError()">
-        </div>
         <h1></h1>
+
+        <div class="image-preview" *ngIf="coverImagePreview">
+          <img [src]="coverImagePreview" alt="Cover preview" class="preview-image">
+        </div>
 
         <!-- Single Audio Upload -->
         <div *ngIf="uploadForm.value.type === 'single'" class="audio-upload-section">
@@ -106,17 +107,20 @@
                 <textarea matInput formControlName="description" rows="2"></textarea>
               </mat-form-field>
 
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Song Cover Image URL</mat-label>
-                <input matInput formControlName="coverImageUrl" (input)="song.value.coverImagePreview = song.value.coverImageUrl">
-                <mat-icon matSuffix>image</mat-icon>
-              </mat-form-field>
-
-              <div class="image-preview" *ngIf="song.value.coverImageUrl">
-                <img [src]="song.value.coverImageUrl" alt="Song Cover preview" class="preview-image" (error)="song.value.coverImageUrl=null">
+              <!-- Song Cover Upload -->
+              <div class="file-upload-section">
+                <input type="file" #songCoverInput accept="image/*" (change)="onAlbumSongCoverChange($event, i)" hidden>
+                <button type="button" mat-stroked-button (click)="songCoverInput.click()">Choose Song Cover</button>
+                <span *ngIf="song.value.coverFile">{{ song.value.coverFile.name }}</span>
               </div>
 
-              <!-- Audio File Upload for Song (Choose File Button) -->
+              <div class="image-preview" *ngIf="song.value.coverBase64">
+                <img [src]="'data:image/*;base64,'+song.value.coverBase64" alt="Song Cover preview" class="preview-image">
+              </div>
+
+              <h1></h1>
+
+              <!-- Audio File Upload for Song -->
               <div class="file-upload-section">
                 <input type="file" #songFileInput accept=".mp3,.wav,.flac,.m4a,.ogg" (change)="onAlbumSongFileChange($event, i)" hidden>
                 <button type="button" mat-stroked-button (click)="songFileInput.click()">Choose Audio File</button>

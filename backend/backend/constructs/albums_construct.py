@@ -79,12 +79,14 @@ class AlbumConstruct(Construct):
             [],
             {
                 "ALBUMS_TABLE": albums_table.table_name,
-                "ARTIST_ALBUM_TABLE": artist_album_table.table_name
+                "ARTIST_ALBUM_TABLE": artist_album_table.table_name,
+                "BUCKET_NAME": bucket.bucket_name
             }
         )
 
         albums_table.grant_read_write_data(update_album_lambda)
         artist_album_table.grant_read_write_data(update_album_lambda)
+        bucket.grant_read_write(update_album_lambda)
 
         # /albums/{id} → PUT
         album_id_resource = albums_api_resource.add_resource("{id}")

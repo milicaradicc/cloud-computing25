@@ -1,4 +1,3 @@
-// src/app/shared/services/s3-url.service.ts
 import { Injectable } from '@angular/core';
 import { environment } from '../../env/environment';
 
