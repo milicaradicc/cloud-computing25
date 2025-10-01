@@ -894,7 +894,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-138881450188-eu-central-1",
-     "S3Key": "8bb77bb2bfc9048fc9ff3d9aef1366aadc2b4ad822cfc516613537079c745cbd.zip"
+     "S3Key": "3f8b3f25fbdb8a205535596cd4b44548b5dac424c1e1b1b9ef52c482910b6ef8.zip"
     },
     "Environment": {
      "Variables": {
@@ -922,7 +922,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "BackendStack/SendEmail/Resource",
-    "aws:asset:path": "asset.8bb77bb2bfc9048fc9ff3d9aef1366aadc2b4ad822cfc516613537079c745cbd",
+    "aws:asset:path": "asset.3f8b3f25fbdb8a205535596cd4b44548b5dac424c1e1b1b9ef52c482910b6ef8",
     "aws:asset:is-bundled": true,
     "aws:asset:property": "Code"
    }
@@ -4576,7 +4576,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-138881450188-eu-central-1",
-     "S3Key": "38a77dcee621b3c5e017f806a4902aa1e2ae16e74d5b12a3a7ff74de7c261db6.zip"
+     "S3Key": "05d276aab6b96a4fab0499c1d1b1f5c4baad6373024b05d4b94d4f669e547aba.zip"
     },
     "Environment": {
      "Variables": {
@@ -4611,7 +4611,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "BackendStack/SongsConstruct/UpdateSongLambda/Resource",
-    "aws:asset:path": "asset.38a77dcee621b3c5e017f806a4902aa1e2ae16e74d5b12a3a7ff74de7c261db6",
+    "aws:asset:path": "asset.05d276aab6b96a4fab0499c1d1b1f5c4baad6373024b05d4b94d4f669e547aba",
     "aws:asset:is-bundled": true,
     "aws:asset:property": "Code"
    }
@@ -6001,6 +6001,43 @@
          "Ref": "AWS::NoValue"
         }
        ]
+      },
+      {
+       "Action": [
+        "s3:Abort*",
+        "s3:DeleteObject*",
+        "s3:GetBucket*",
+        "s3:GetObject*",
+        "s3:List*",
+        "s3:PutObject",
+        "s3:PutObjectLegalHold",
+        "s3:PutObjectRetention",
+        "s3:PutObjectTagging",
+        "s3:PutObjectVersionTagging"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "mymusicappfilesAC4E028D",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "mymusicappfilesAC4E028D",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
       }
      ],
      "Version": "2012-10-17"
@@ -6030,6 +6067,9 @@
       },
       "ARTIST_ALBUM_TABLE": {
        "Ref": "ArtistAlbum6D4E520D"
+      },
+      "BUCKET_NAME": {
+       "Ref": "mymusicappfilesAC4E028D"
       }
      }
     },
@@ -6903,7 +6943,7 @@
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {
-    "Analytics": "v2:deflate64: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"
+    "Analytics": "v2:deflate64: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"
    },
    "Metadata": {
     "aws:cdk:path": "BackendStack/CDKMetadata/Default"

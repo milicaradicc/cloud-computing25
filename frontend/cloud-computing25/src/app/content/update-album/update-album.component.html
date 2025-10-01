@@ -17,14 +17,13 @@
   </mat-form-field>
 
   <!-- Cover image -->
-  <div class="cover-preview">
-    <img [src]="form.get('coverImage')?.value || 'assets/placeholder.png'" 
-         alt="Album cover" />
+  <div class="cover-section">
+    <p>Cover Image:</p>
+    <div class="cover-preview" *ngIf="form.value.coverImage">
+      <img [src]="getCoverUrl()" alt="Album cover" class="preview-image" />
+    </div>
+    <input type="file" (change)="onCoverFileChange($event)" accept="image/*">
   </div>
-  <mat-form-field appearance="fill" class="full-width">
-    <mat-label>Cover Image URL</mat-label>
-    <input matInput formControlName="coverImage" />
-  </mat-form-field>
 
   <!-- Artists -->
   <mat-form-field appearance="fill" class="full-width">

@@ -18,7 +18,7 @@
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::138881450188:role/cdk-hnb659fds-deploy-role-138881450188-eu-central-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::138881450188:role/cdk-hnb659fds-cfn-exec-role-138881450188-eu-central-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-138881450188-eu-central-1/40a182733f1cb3d6b2eea0ef123647e37a0c9aabebff6067e750f1de222f33bd.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-138881450188-eu-central-1/67a695e56915f258cad9ca5f86bcf48055a0f7ec74ce2a9e902ae62ba7badc6b.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -4888,6 +4888,14 @@
                 {}
               ]
             }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToPrincipalPolicy": [
+                {}
+              ]
+            }
           }
         ],
         "/BackendStack/AlbumConstruct/UpdateAlbumLambdaRole/ImportUpdateAlbumLambdaRole": [
@@ -4938,6 +4946,14 @@
                 {}
               ]
             }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addStatements": [
+                {}
+              ]
+            }
           }
         ],
         "/BackendStack/AlbumConstruct/UpdateAlbumLambdaRole/DefaultPolicy/Resource": [
@@ -4958,6 +4974,15 @@
               "code": "*",
               "handler": "*",
               "runtime": "*"
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addEnvironment": [
+                "*",
+                "*"
+              ]
             }
           },
           {
