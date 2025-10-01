@@ -4,9 +4,13 @@ from boto3.dynamodb.conditions import Key
 from decimal import Decimal
 import os
 
-dynamodb = boto3.resource('dynamodb')
-artists_table = dynamodb.Table(os.environ['ARTISTS_TABLE'])
-albums_table = dynamodb.Table(os.environ['ALBUMS_TABLE'])
+# Dohvat imena tabela iz environment var
+ARTISTS_TABLE_NAME = os.environ["ARTISTS_TABLE"]
+ALBUMS_TABLE_NAME = os.environ["ALBUMS_TABLE"]
+
+dynamodb = boto3.resource("dynamodb")
+artists_table = dynamodb.Table(ARTISTS_TABLE_NAME)
+albums_table = dynamodb.Table(ALBUMS_TABLE_NAME)
 
 CORS_HEADERS = {
     "Access-Control-Allow-Origin": "*",
@@ -15,39 +19,43 @@ CORS_HEADERS = {
     "Content-Type": "application/json"
 }
 
-def decimal_default(obj):
-    if isinstance(obj, Decimal):
-        if obj % 1 == 0:
-            return int(obj)
-        return float(obj)
-    raise TypeError
+class DecimalEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, Decimal):
+            if obj % 1 == 0:
+                return int(obj)
+            return float(obj)
+        return super(DecimalEncoder, self).default(obj)
 
 def lambda_handler(event, context):
     # Preflight request (OPTIONS)
     if event.get("httpMethod") == "OPTIONS":
         return {
-            'statusCode': 200,
-            'headers': CORS_HEADERS,
-            'body': json.dumps({"message": "CORS preflight"})
+            "statusCode": 200,
+            "headers": CORS_HEADERS,
+            "body": json.dumps({"message": "CORS preflight"})
         }
 
     try:
-        query_params = event.get('queryStringParameters') or {}
-        genre = query_params.get('genre')
+        query_params = event.get("queryStringParameters") or {}
+        genre = query_params.get("genre")
 
         if not genre:
             return {
-                'statusCode': 400,
-                'headers': CORS_HEADERS,
-                'body': json.dumps({"message": "Missing 'genre' query parameter"})
+                "statusCode": 400,
+                "headers": CORS_HEADERS,
+                "body": json.dumps({"message": "Missing 'genre' query parameter"})
             }
 
+        # Query za umetnike po žanru (može se koristiti sekundarni indeks po potrebi)
         artists_response = artists_table.query(
-            KeyConditionExpression=Key('Genre').eq(genre)
+            KeyConditionExpression=Key("Genre").eq(genre),
+            IndexName="deleted-index"  # ako želiš filtrirati samo neobrisane
         )
 
+        # Query za albume po žanru
         albums_response = albums_table.query(
-            KeyConditionExpression=Key('Genre').eq(genre)
+            KeyConditionExpression=Key("Genre").eq(genre)
         )
 
         result = {
@@ -56,9 +64,9 @@ def lambda_handler(event, context):
         }
 
         return {
-            'statusCode': 200,
-            'headers': CORS_HEADERS,
-            'body': json.dumps(result, default=decimal_default)
+            "statusCode": 200,
+            "headers": CORS_HEADERS,
+            "body": json.dumps(result, cls=DecimalEncoder)
         }
 
     except Exception as e:
@@ -66,7 +74,7 @@ def lambda_handler(event, context):
         error_trace = traceback.format_exc()
         print(f"Error: {error_trace}")
         return {
-            'statusCode': 500,
-            'headers': CORS_HEADERS,
-            'body': json.dumps({"error": str(e), "trace": error_trace})
+            "statusCode": 500,
+            "headers": CORS_HEADERS,
+            "body": json.dumps({"error": str(e), "trace": error_trace})
         }
