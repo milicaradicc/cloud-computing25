@@ -1,9 +1,11 @@
 import json
+import os
+
 import boto3
 
-dynamodb = boto3.resource('dynamodb')
-RATING_TABLE = 'Rating'
-rating_table = dynamodb.Table(RATING_TABLE)
+table_name = os.environ["RATING_TABLE"]
+dynamodb = boto3.resource("dynamodb")
+rating_table = dynamodb.Table(table_name)
 
 def lambda_handler(event, context):
     headers = {
@@ -12,7 +14,7 @@ def lambda_handler(event, context):
 
     claims = event.get("requestContext", {}).get("authorizer", {}).get("claims", {})
     role = claims.get("custom:role")
-    if role != "admin":
+    if role != "user":
         return {
             "statusCode": 403,
             "headers": headers,
@@ -21,7 +23,7 @@ def lambda_handler(event, context):
 
     try:
         body = json.loads(event.get('body', '{}'))
-        song_id = event['pathParameters']['songId']
+        song_id = event['pathParameters']['id']
         user_id = body.get('userId')
         rating_value = body.get('rating')
 
