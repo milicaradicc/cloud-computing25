@@ -18,7 +18,7 @@
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::138881450188:role/cdk-hnb659fds-deploy-role-138881450188-eu-central-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::138881450188:role/cdk-hnb659fds-cfn-exec-role-138881450188-eu-central-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-138881450188-eu-central-1/142acc779f76ddf7ca66d0d73d0ee005861dec35e8e919031bc91cad7ba868f5.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-138881450188-eu-central-1/cbec12530aa9c708c4af76968e89b8c71b430642c4dc7977f95bf1c1ef21dd9d.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -536,7 +536,7 @@
             "data": "NewContentTopicE1BD8C89"
           }
         ],
-        "/BackendStack/NewSongQueue": [
+        "/BackendStack/NewContentQueue": [
           {
             "type": "aws:cdk:analytics:construct",
             "data": {
@@ -544,13 +544,13 @@
             }
           }
         ],
-        "/BackendStack/NewSongQueue/Resource": [
+        "/BackendStack/NewContentQueue/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "NewSongQueue9E00A352"
+            "data": "NewContentQueueAAB7BE0E"
           }
         ],
-        "/BackendStack/NewSongQueue/Policy": [
+        "/BackendStack/NewContentQueue/Policy": [
           {
             "type": "aws:cdk:analytics:construct",
             "data": {
@@ -560,13 +560,13 @@
             }
           }
         ],
-        "/BackendStack/NewSongQueue/Policy/Resource": [
+        "/BackendStack/NewContentQueue/Policy/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "NewSongQueuePolicy1D5DCF6F"
+            "data": "NewContentQueuePolicy84CB67E6"
           }
         ],
-        "/BackendStack/NewSongQueue/BackendStackNewContentTopic6E806F6B": [
+        "/BackendStack/NewContentQueue/BackendStackNewContentTopic6E806F6B": [
           {
             "type": "aws:cdk:analytics:construct",
             "data": {
@@ -581,64 +581,13 @@
             }
           }
         ],
-        "/BackendStack/NewSongQueue/BackendStackNewContentTopic6E806F6B/Resource": [
+        "/BackendStack/NewContentQueue/BackendStackNewContentTopic6E806F6B/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "NewSongQueueBackendStackNewContentTopic6E806F6B1E05DBC3"
+            "data": "NewContentQueueBackendStackNewContentTopic6E806F6BB37AB72A"
           }
         ],
-        "/BackendStack/NewAlbumQueue": [
-          {
-            "type": "aws:cdk:analytics:construct",
-            "data": {
-              "queueName": "*"
-            }
-          }
-        ],
-        "/BackendStack/NewAlbumQueue/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "NewAlbumQueue4212514C"
-          }
-        ],
-        "/BackendStack/NewAlbumQueue/Policy": [
-          {
-            "type": "aws:cdk:analytics:construct",
-            "data": {
-              "queues": [
-                "*"
-              ]
-            }
-          }
-        ],
-        "/BackendStack/NewAlbumQueue/Policy/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "NewAlbumQueuePolicy6E2A83C1"
-          }
-        ],
-        "/BackendStack/NewAlbumQueue/BackendStackNewContentTopic6E806F6B": [
-          {
-            "type": "aws:cdk:analytics:construct",
-            "data": {
-              "topic": "*",
-              "endpoint": "*",
-              "protocol": "sqs",
-              "rawMessageDelivery": "*",
-              "filterPolicy": "*",
-              "filterPolicyWithMessageBody": "*",
-              "region": "*",
-              "deadLetterQueue": "*"
-            }
-          }
-        ],
-        "/BackendStack/NewAlbumQueue/BackendStackNewContentTopic6E806F6B/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "NewAlbumQueueBackendStackNewContentTopic6E806F6B7DB9440C"
-          }
-        ],
-        "/BackendStack/SendSingleEmailRole": [
+        "/BackendStack/SendEmailRole": [
           {
             "type": "aws:cdk:analytics:construct",
             "data": {
@@ -689,21 +638,29 @@
                 {}
               ]
             }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToPrincipalPolicy": [
+                {}
+              ]
+            }
           }
         ],
-        "/BackendStack/SendSingleEmailRole/ImportSendSingleEmailRole": [
+        "/BackendStack/SendEmailRole/ImportSendEmailRole": [
           {
             "type": "aws:cdk:analytics:construct",
             "data": "*"
           }
         ],
-        "/BackendStack/SendSingleEmailRole/Resource": [
+        "/BackendStack/SendEmailRole/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "SendSingleEmailRoleD8F533E3"
+            "data": "SendEmailRole539124E4"
           }
         ],
-        "/BackendStack/SendSingleEmailRole/DefaultPolicy": [
+        "/BackendStack/SendEmailRole/DefaultPolicy": [
           {
             "type": "aws:cdk:analytics:construct",
             "data": "*"
@@ -739,15 +696,23 @@
                 {}
               ]
             }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addStatements": [
+                {}
+              ]
+            }
           }
         ],
-        "/BackendStack/SendSingleEmailRole/DefaultPolicy/Resource": [
+        "/BackendStack/SendEmailRole/DefaultPolicy/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "SendSingleEmailRoleDefaultPolicyB2202ECE"
+            "data": "SendEmailRoleDefaultPolicy8910A22C"
           }
         ],
-        "/BackendStack/SendSingleEmail": [
+        "/BackendStack/SendEmail": [
           {
             "type": "aws:cdk:analytics:construct",
             "data": {
@@ -773,198 +738,10 @@
           {
             "type": "aws:cdk:analytics:method",
             "data": {
-              "addLayers": []
-            }
-          }
-        ],
-        "/BackendStack/SendSingleEmail/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "SendSingleEmail44A6897A"
-          }
-        ],
-        "/BackendStack/SendSingleEmail/LogGroup": [
-          {
-            "type": "aws:cdk:analytics:construct",
-            "data": {
-              "logGroupName": "*"
-            }
-          }
-        ],
-        "/BackendStack/SendSingleEmail/LogGroup/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "SendSingleEmailLogGroup0B77814C"
-          }
-        ],
-        "/BackendStack/SendSingleEmail/FunctionUrl": [
-          {
-            "type": "aws:cdk:analytics:construct",
-            "data": {
-              "function": "*",
-              "authType": "NONE",
-              "cors": {
-                "allowedOrigins": "*"
-              }
-            }
-          }
-        ],
-        "/BackendStack/SendSingleEmail/FunctionUrl/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "SendSingleEmailFunctionUrlA033A8D4"
-          }
-        ],
-        "/BackendStack/SendSingleEmail/invoke-function-url": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "SendSingleEmailinvokefunctionurlB089C3D3"
-          }
-        ],
-        "/BackendStack/SendSingleEmail/SqsEventSource:BackendStackNewSongQueueAF60C975": [
-          {
-            "type": "aws:cdk:analytics:construct",
-            "data": {
-              "target": "*",
-              "batchSize": "*",
-              "maxBatchingWindow": "*",
-              "maxConcurrency": "*",
-              "reportBatchItemFailures": "*",
-              "enabled": "*",
-              "eventSourceArn": "*",
-              "filters": "*",
-              "filterEncryption": "*",
-              "metricsConfig": "*"
-            }
-          }
-        ],
-        "/BackendStack/SendSingleEmail/SqsEventSource:BackendStackNewSongQueueAF60C975/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "SendSingleEmailSqsEventSourceBackendStackNewSongQueueAF60C97594AEDB2D"
-          }
-        ],
-        "/BackendStack/SendAlbumEmailRole": [
-          {
-            "type": "aws:cdk:analytics:construct",
-            "data": {
-              "assumedBy": {
-                "principalAccount": "*",
-                "assumeRoleAction": "*"
-              }
-            }
-          },
-          {
-            "type": "aws:cdk:analytics:method",
-            "data": {
-              "addManagedPolicy": [
-                {
-                  "managedPolicyArn": "*"
-                }
-              ]
-            }
-          },
-          {
-            "type": "aws:cdk:analytics:method",
-            "data": {
-              "addToPrincipalPolicy": [
-                {}
-              ]
-            }
-          },
-          {
-            "type": "aws:cdk:analytics:method",
-            "data": {
-              "attachInlinePolicy": [
+              "addEnvironment": [
+                "*",
                 "*"
               ]
-            }
-          },
-          {
-            "type": "aws:cdk:analytics:method",
-            "data": {
-              "attachInlinePolicy": [
-                "*"
-              ]
-            }
-          },
-          {
-            "type": "aws:cdk:analytics:method",
-            "data": {
-              "addToPrincipalPolicy": [
-                {}
-              ]
-            }
-          }
-        ],
-        "/BackendStack/SendAlbumEmailRole/ImportSendAlbumEmailRole": [
-          {
-            "type": "aws:cdk:analytics:construct",
-            "data": "*"
-          }
-        ],
-        "/BackendStack/SendAlbumEmailRole/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "SendAlbumEmailRole25F5A5F4"
-          }
-        ],
-        "/BackendStack/SendAlbumEmailRole/DefaultPolicy": [
-          {
-            "type": "aws:cdk:analytics:construct",
-            "data": "*"
-          },
-          {
-            "type": "aws:cdk:analytics:method",
-            "data": {
-              "attachToRole": [
-                "*"
-              ]
-            }
-          },
-          {
-            "type": "aws:cdk:analytics:method",
-            "data": {
-              "attachToRole": [
-                "*"
-              ]
-            }
-          },
-          {
-            "type": "aws:cdk:analytics:method",
-            "data": {
-              "addStatements": [
-                {}
-              ]
-            }
-          },
-          {
-            "type": "aws:cdk:analytics:method",
-            "data": {
-              "addStatements": [
-                {}
-              ]
-            }
-          }
-        ],
-        "/BackendStack/SendAlbumEmailRole/DefaultPolicy/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "SendAlbumEmailRoleDefaultPolicy8B479FCB"
-          }
-        ],
-        "/BackendStack/SendAlbumEmail": [
-          {
-            "type": "aws:cdk:analytics:construct",
-            "data": {
-              "environment": "*",
-              "layers": [],
-              "memorySize": "*",
-              "role": "*",
-              "timeout": "*",
-              "code": "*",
-              "handler": "*",
-              "runtime": "*"
             }
           },
           {
@@ -983,13 +760,13 @@
             }
           }
         ],
-        "/BackendStack/SendAlbumEmail/Resource": [
+        "/BackendStack/SendEmail/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "SendAlbumEmailCFE5B5CE"
+            "data": "SendEmail14C26199"
           }
         ],
-        "/BackendStack/SendAlbumEmail/LogGroup": [
+        "/BackendStack/SendEmail/LogGroup": [
           {
             "type": "aws:cdk:analytics:construct",
             "data": {
@@ -997,13 +774,13 @@
             }
           }
         ],
-        "/BackendStack/SendAlbumEmail/LogGroup/Resource": [
+        "/BackendStack/SendEmail/LogGroup/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "SendAlbumEmailLogGroupE3D26EC2"
+            "data": "SendEmailLogGroup1BBDEAE9"
           }
         ],
-        "/BackendStack/SendAlbumEmail/FunctionUrl": [
+        "/BackendStack/SendEmail/FunctionUrl": [
           {
             "type": "aws:cdk:analytics:construct",
             "data": {
@@ -1015,19 +792,19 @@
             }
           }
         ],
-        "/BackendStack/SendAlbumEmail/FunctionUrl/Resource": [
+        "/BackendStack/SendEmail/FunctionUrl/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "SendAlbumEmailFunctionUrl1EA1DCA7"
+            "data": "SendEmailFunctionUrlC554297E"
           }
         ],
-        "/BackendStack/SendAlbumEmail/invoke-function-url": [
+        "/BackendStack/SendEmail/invoke-function-url": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "SendAlbumEmailinvokefunctionurlBCC05FF0"
+            "data": "SendEmailinvokefunctionurlFA7232ED"
           }
         ],
-        "/BackendStack/SendAlbumEmail/SqsEventSource:BackendStackNewAlbumQueueC0FC012E": [
+        "/BackendStack/SendEmail/SqsEventSource:BackendStackNewContentQueue0115C3D5": [
           {
             "type": "aws:cdk:analytics:construct",
             "data": {
@@ -1044,10 +821,10 @@
             }
           }
         ],
-        "/BackendStack/SendAlbumEmail/SqsEventSource:BackendStackNewAlbumQueueC0FC012E/Resource": [
+        "/BackendStack/SendEmail/SqsEventSource:BackendStackNewContentQueue0115C3D5/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "SendAlbumEmailSqsEventSourceBackendStackNewAlbumQueueC0FC012E858707BC"
+            "data": "SendEmailSqsEventSourceBackendStackNewContentQueue0115C3D5F4C3793C"
           }
         ],
         "/BackendStack/MusicStreamingApi": [

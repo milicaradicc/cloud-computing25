@@ -660,18 +660,18 @@
     "aws:cdk:path": "BackendStack/NewContentTopic/Resource"
    }
   },
-  "NewSongQueue9E00A352": {
+  "NewContentQueueAAB7BE0E": {
    "Type": "AWS::SQS::Queue",
    "Properties": {
-    "QueueName": "NewSongQueue"
+    "QueueName": "NewContentQueue"
    },
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "BackendStack/NewSongQueue/Resource"
+    "aws:cdk:path": "BackendStack/NewContentQueue/Resource"
    }
   },
-  "NewSongQueuePolicy1D5DCF6F": {
+  "NewContentQueuePolicy84CB67E6": {
    "Type": "AWS::SQS::QueuePolicy",
    "Properties": {
     "PolicyDocument": {
@@ -691,7 +691,7 @@
        },
        "Resource": {
         "Fn::GetAtt": [
-         "NewSongQueue9E00A352",
+         "NewContentQueueAAB7BE0E",
          "Arn"
         ]
        }
@@ -701,20 +701,20 @@
     },
     "Queues": [
      {
-      "Ref": "NewSongQueue9E00A352"
+      "Ref": "NewContentQueueAAB7BE0E"
      }
     ]
    },
    "Metadata": {
-    "aws:cdk:path": "BackendStack/NewSongQueue/Policy/Resource"
+    "aws:cdk:path": "BackendStack/NewContentQueue/Policy/Resource"
    }
   },
-  "NewSongQueueBackendStackNewContentTopic6E806F6B1E05DBC3": {
+  "NewContentQueueBackendStackNewContentTopic6E806F6BB37AB72A": {
    "Type": "AWS::SNS::Subscription",
    "Properties": {
     "Endpoint": {
      "Fn::GetAtt": [
-      "NewSongQueue9E00A352",
+      "NewContentQueueAAB7BE0E",
       "Arn"
      ]
     },
@@ -724,83 +724,13 @@
     }
    },
    "DependsOn": [
-    "NewSongQueuePolicy1D5DCF6F"
+    "NewContentQueuePolicy84CB67E6"
    ],
    "Metadata": {
-    "aws:cdk:path": "BackendStack/NewSongQueue/BackendStackNewContentTopic6E806F6B/Resource"
+    "aws:cdk:path": "BackendStack/NewContentQueue/BackendStackNewContentTopic6E806F6B/Resource"
    }
   },
-  "NewAlbumQueue4212514C": {
-   "Type": "AWS::SQS::Queue",
-   "Properties": {
-    "QueueName": "NewAlbumQueue"
-   },
-   "UpdateReplacePolicy": "Delete",
-   "DeletionPolicy": "Delete",
-   "Metadata": {
-    "aws:cdk:path": "BackendStack/NewAlbumQueue/Resource"
-   }
-  },
-  "NewAlbumQueuePolicy6E2A83C1": {
-   "Type": "AWS::SQS::QueuePolicy",
-   "Properties": {
-    "PolicyDocument": {
-     "Statement": [
-      {
-       "Action": "sqs:SendMessage",
-       "Condition": {
-        "ArnEquals": {
-         "aws:SourceArn": {
-          "Ref": "NewContentTopicE1BD8C89"
-         }
-        }
-       },
-       "Effect": "Allow",
-       "Principal": {
-        "Service": "sns.amazonaws.com"
-       },
-       "Resource": {
-        "Fn::GetAtt": [
-         "NewAlbumQueue4212514C",
-         "Arn"
-        ]
-       }
-      }
-     ],
-     "Version": "2012-10-17"
-    },
-    "Queues": [
-     {
-      "Ref": "NewAlbumQueue4212514C"
-     }
-    ]
-   },
-   "Metadata": {
-    "aws:cdk:path": "BackendStack/NewAlbumQueue/Policy/Resource"
-   }
-  },
-  "NewAlbumQueueBackendStackNewContentTopic6E806F6B7DB9440C": {
-   "Type": "AWS::SNS::Subscription",
-   "Properties": {
-    "Endpoint": {
-     "Fn::GetAtt": [
-      "NewAlbumQueue4212514C",
-      "Arn"
-     ]
-    },
-    "Protocol": "sqs",
-    "TopicArn": {
-     "Ref": "NewContentTopicE1BD8C89"
-    }
-   },
-   "DependsOn": [
-    "NewAlbumQueuePolicy6E2A83C1"
-   ],
-   "Metadata": {
-    "aws:cdk:path": "BackendStack/NewAlbumQueue/BackendStackNewContentTopic6E806F6B/Resource"
-   }
-  },
-  "SendSingleEmailRoleD8F533E3": {
+  "SendEmailRole539124E4": {
    "Type": "AWS::IAM::Role",
    "Properties": {
     "AssumeRolePolicyDocument": {
@@ -831,10 +761,10 @@
     ]
    },
    "Metadata": {
-    "aws:cdk:path": "BackendStack/SendSingleEmailRole/Resource"
+    "aws:cdk:path": "BackendStack/SendEmailRole/Resource"
    }
   },
-  "SendSingleEmailRoleDefaultPolicyB2202ECE": {
+  "SendEmailRoleDefaultPolicy8910A22C": {
    "Type": "AWS::IAM::Policy",
    "Properties": {
     "PolicyDocument": {
@@ -885,263 +815,54 @@
        "Effect": "Allow",
        "Resource": {
         "Fn::GetAtt": [
-         "NewSongQueue9E00A352",
+         "NewContentQueueAAB7BE0E",
          "Arn"
         ]
        }
-      }
-     ],
-     "Version": "2012-10-17"
-    },
-    "PolicyName": "SendSingleEmailRoleDefaultPolicyB2202ECE",
-    "Roles": [
-     {
-      "Ref": "SendSingleEmailRoleD8F533E3"
-     }
-    ]
-   },
-   "Metadata": {
-    "aws:cdk:path": "BackendStack/SendSingleEmailRole/DefaultPolicy/Resource"
-   }
-  },
-  "SendSingleEmail44A6897A": {
-   "Type": "AWS::Lambda::Function",
-   "Properties": {
-    "Code": {
-     "S3Bucket": "cdk-hnb659fds-assets-138881450188-eu-central-1",
-     "S3Key": "e921dc1d8d878ef468bfc32426b5c1e22451c8942f72aa0abf769723e8138241.zip"
-    },
-    "Environment": {
-     "Variables": {
-      "SUBSCRIPTIONS_TABLE": {
-       "Ref": "Subscriptions1F71F6D8"
-      }
-     }
-    },
-    "Handler": "handler.lambda_handler",
-    "MemorySize": 128,
-    "Role": {
-     "Fn::GetAtt": [
-      "SendSingleEmailRoleD8F533E3",
-      "Arn"
-     ]
-    },
-    "Runtime": "python3.9",
-    "Timeout": 10
-   },
-   "DependsOn": [
-    "SendSingleEmailRoleDefaultPolicyB2202ECE",
-    "SendSingleEmailRoleD8F533E3"
-   ],
-   "Metadata": {
-    "aws:cdk:path": "BackendStack/SendSingleEmail/Resource",
-    "aws:asset:path": "asset.e921dc1d8d878ef468bfc32426b5c1e22451c8942f72aa0abf769723e8138241",
-    "aws:asset:is-bundled": true,
-    "aws:asset:property": "Code"
-   }
-  },
-  "SendSingleEmailLogGroup0B77814C": {
-   "Type": "AWS::Logs::LogGroup",
-   "Properties": {
-    "LogGroupName": {
-     "Fn::Join": [
-      "",
-      [
-       "/aws/lambda/",
-       {
-        "Ref": "SendSingleEmail44A6897A"
-       }
-      ]
-     ]
-    },
-    "RetentionInDays": 731
-   },
-   "UpdateReplacePolicy": "Retain",
-   "DeletionPolicy": "Retain",
-   "Metadata": {
-    "aws:cdk:path": "BackendStack/SendSingleEmail/LogGroup/Resource"
-   }
-  },
-  "SendSingleEmailFunctionUrlA033A8D4": {
-   "Type": "AWS::Lambda::Url",
-   "Properties": {
-    "AuthType": "NONE",
-    "Cors": {
-     "AllowMethods": [
-      "*"
-     ],
-     "AllowOrigins": [
-      "*"
-     ]
-    },
-    "TargetFunctionArn": {
-     "Fn::GetAtt": [
-      "SendSingleEmail44A6897A",
-      "Arn"
-     ]
-    }
-   },
-   "Metadata": {
-    "aws:cdk:path": "BackendStack/SendSingleEmail/FunctionUrl/Resource"
-   }
-  },
-  "SendSingleEmailinvokefunctionurlB089C3D3": {
-   "Type": "AWS::Lambda::Permission",
-   "Properties": {
-    "Action": "lambda:InvokeFunctionUrl",
-    "FunctionName": {
-     "Fn::GetAtt": [
-      "SendSingleEmail44A6897A",
-      "Arn"
-     ]
-    },
-    "FunctionUrlAuthType": "NONE",
-    "Principal": "*"
-   },
-   "Metadata": {
-    "aws:cdk:path": "BackendStack/SendSingleEmail/invoke-function-url"
-   }
-  },
-  "SendSingleEmailSqsEventSourceBackendStackNewSongQueueAF60C97594AEDB2D": {
-   "Type": "AWS::Lambda::EventSourceMapping",
-   "Properties": {
-    "EventSourceArn": {
-     "Fn::GetAtt": [
-      "NewSongQueue9E00A352",
-      "Arn"
-     ]
-    },
-    "FunctionName": {
-     "Ref": "SendSingleEmail44A6897A"
-    }
-   },
-   "Metadata": {
-    "aws:cdk:path": "BackendStack/SendSingleEmail/SqsEventSource:BackendStackNewSongQueueAF60C975/Resource"
-   }
-  },
-  "SendAlbumEmailRole25F5A5F4": {
-   "Type": "AWS::IAM::Role",
-   "Properties": {
-    "AssumeRolePolicyDocument": {
-     "Statement": [
-      {
-       "Action": "sts:AssumeRole",
-       "Effect": "Allow",
-       "Principal": {
-        "Service": "lambda.amazonaws.com"
-       }
-      }
-     ],
-     "Version": "2012-10-17"
-    },
-    "ManagedPolicyArns": [
-     {
-      "Fn::Join": [
-       "",
-       [
-        "arn:",
-        {
-         "Ref": "AWS::Partition"
-        },
-        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
-       ]
-      ]
-     }
-    ]
-   },
-   "Metadata": {
-    "aws:cdk:path": "BackendStack/SendAlbumEmailRole/Resource"
-   }
-  },
-  "SendAlbumEmailRoleDefaultPolicy8B479FCB": {
-   "Type": "AWS::IAM::Policy",
-   "Properties": {
-    "PolicyDocument": {
-     "Statement": [
-      {
-       "Action": [
-        "dynamodb:BatchGetItem",
-        "dynamodb:ConditionCheckItem",
-        "dynamodb:DescribeTable",
-        "dynamodb:GetItem",
-        "dynamodb:GetRecords",
-        "dynamodb:GetShardIterator",
-        "dynamodb:Query",
-        "dynamodb:Scan"
-       ],
-       "Effect": "Allow",
-       "Resource": [
-        {
-         "Fn::GetAtt": [
-          "Subscriptions1F71F6D8",
-          "Arn"
-         ]
-        },
-        {
-         "Fn::Join": [
-          "",
-          [
-           {
-            "Fn::GetAtt": [
-             "Subscriptions1F71F6D8",
-             "Arn"
-            ]
-           },
-           "/index/*"
-          ]
-         ]
-        }
-       ]
       },
       {
        "Action": [
-        "sqs:ChangeMessageVisibility",
-        "sqs:DeleteMessage",
-        "sqs:GetQueueAttributes",
-        "sqs:GetQueueUrl",
-        "sqs:ReceiveMessage"
+        "ses:SendEmail",
+        "ses:SendRawEmail"
        ],
        "Effect": "Allow",
-       "Resource": {
-        "Fn::GetAtt": [
-         "NewAlbumQueue4212514C",
-         "Arn"
-        ]
-       }
+       "Resource": "*"
       }
      ],
      "Version": "2012-10-17"
     },
-    "PolicyName": "SendAlbumEmailRoleDefaultPolicy8B479FCB",
+    "PolicyName": "SendEmailRoleDefaultPolicy8910A22C",
     "Roles": [
      {
-      "Ref": "SendAlbumEmailRole25F5A5F4"
+      "Ref": "SendEmailRole539124E4"
      }
     ]
    },
    "Metadata": {
-    "aws:cdk:path": "BackendStack/SendAlbumEmailRole/DefaultPolicy/Resource"
+    "aws:cdk:path": "BackendStack/SendEmailRole/DefaultPolicy/Resource"
    }
   },
-  "SendAlbumEmailCFE5B5CE": {
+  "SendEmail14C26199": {
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-138881450188-eu-central-1",
-     "S3Key": "d2f4283e04ce6c1d9f5305b03f78cd68f9c60e9c7bcfa40cc1ea26e0b195766c.zip"
+     "S3Key": "8bb77bb2bfc9048fc9ff3d9aef1366aadc2b4ad822cfc516613537079c745cbd.zip"
     },
     "Environment": {
      "Variables": {
       "SUBSCRIPTIONS_TABLE": {
        "Ref": "Subscriptions1F71F6D8"
-      }
+      },
+      "SES_REGION": "eu-central-1",
+      "SES_SOURCE_EMAIL": "milica.t.radic@gmail.com"
      }
     },
     "Handler": "handler.lambda_handler",
     "MemorySize": 128,
     "Role": {
      "Fn::GetAtt": [
-      "SendAlbumEmailRole25F5A5F4",
+      "SendEmailRole539124E4",
       "Arn"
      ]
     },
@@ -1149,17 +870,17 @@
     "Timeout": 10
    },
    "DependsOn": [
-    "SendAlbumEmailRoleDefaultPolicy8B479FCB",
-    "SendAlbumEmailRole25F5A5F4"
+    "SendEmailRoleDefaultPolicy8910A22C",
+    "SendEmailRole539124E4"
    ],
    "Metadata": {
-    "aws:cdk:path": "BackendStack/SendAlbumEmail/Resource",
-    "aws:asset:path": "asset.d2f4283e04ce6c1d9f5305b03f78cd68f9c60e9c7bcfa40cc1ea26e0b195766c",
+    "aws:cdk:path": "BackendStack/SendEmail/Resource",
+    "aws:asset:path": "asset.8bb77bb2bfc9048fc9ff3d9aef1366aadc2b4ad822cfc516613537079c745cbd",
     "aws:asset:is-bundled": true,
     "aws:asset:property": "Code"
    }
   },
-  "SendAlbumEmailLogGroupE3D26EC2": {
+  "SendEmailLogGroup1BBDEAE9": {
    "Type": "AWS::Logs::LogGroup",
    "Properties": {
     "LogGroupName": {
@@ -1168,7 +889,7 @@
       [
        "/aws/lambda/",
        {
-        "Ref": "SendAlbumEmailCFE5B5CE"
+        "Ref": "SendEmail14C26199"
        }
       ]
      ]
@@ -1178,10 +899,10 @@
    "UpdateReplacePolicy": "Retain",
    "DeletionPolicy": "Retain",
    "Metadata": {
-    "aws:cdk:path": "BackendStack/SendAlbumEmail/LogGroup/Resource"
+    "aws:cdk:path": "BackendStack/SendEmail/LogGroup/Resource"
    }
   },
-  "SendAlbumEmailFunctionUrl1EA1DCA7": {
+  "SendEmailFunctionUrlC554297E": {
    "Type": "AWS::Lambda::Url",
    "Properties": {
     "AuthType": "NONE",
@@ -1195,22 +916,22 @@
     },
     "TargetFunctionArn": {
      "Fn::GetAtt": [
-      "SendAlbumEmailCFE5B5CE",
+      "SendEmail14C26199",
       "Arn"
      ]
     }
    },
    "Metadata": {
-    "aws:cdk:path": "BackendStack/SendAlbumEmail/FunctionUrl/Resource"
+    "aws:cdk:path": "BackendStack/SendEmail/FunctionUrl/Resource"
    }
   },
-  "SendAlbumEmailinvokefunctionurlBCC05FF0": {
+  "SendEmailinvokefunctionurlFA7232ED": {
    "Type": "AWS::Lambda::Permission",
    "Properties": {
     "Action": "lambda:InvokeFunctionUrl",
     "FunctionName": {
      "Fn::GetAtt": [
-      "SendAlbumEmailCFE5B5CE",
+      "SendEmail14C26199",
       "Arn"
      ]
     },
@@ -1218,24 +939,24 @@
     "Principal": "*"
    },
    "Metadata": {
-    "aws:cdk:path": "BackendStack/SendAlbumEmail/invoke-function-url"
+    "aws:cdk:path": "BackendStack/SendEmail/invoke-function-url"
    }
   },
-  "SendAlbumEmailSqsEventSourceBackendStackNewAlbumQueueC0FC012E858707BC": {
+  "SendEmailSqsEventSourceBackendStackNewContentQueue0115C3D5F4C3793C": {
    "Type": "AWS::Lambda::EventSourceMapping",
    "Properties": {
     "EventSourceArn": {
      "Fn::GetAtt": [
-      "NewAlbumQueue4212514C",
+      "NewContentQueueAAB7BE0E",
       "Arn"
      ]
     },
     "FunctionName": {
-     "Ref": "SendAlbumEmailCFE5B5CE"
+     "Ref": "SendEmail14C26199"
     }
    },
    "Metadata": {
-    "aws:cdk:path": "BackendStack/SendAlbumEmail/SqsEventSource:BackendStackNewAlbumQueueC0FC012E/Resource"
+    "aws:cdk:path": "BackendStack/SendEmail/SqsEventSource:BackendStackNewContentQueue0115C3D5/Resource"
    }
   },
   "MusicStreamingApiC954D41A": {
@@ -7135,7 +6856,7 @@
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {
-    "Analytics": "v2:deflate64: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"
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/+1cS2/bOBD+LeWxYL3bBosFfHPcpAjqNF472R6MoKDFscyGIlVyFFcV9N8XpJ52utlun3bCQyJphpzXR5HUkPSLwYvnfwx+f8I29lnEb55JsRwUc2TRDWUb+66wR4PiOItuABcFMZDoWyanWoooJ0PCwaLROaHkFowVWgEnQzQZlNd0vFJVPVpdjpmFxXVJea5YovlyUFyypYRFQVJmUKDQ6jXkZFgQxRIgQ/KUUIJ56m7npKTEaoP3l/g380paEMb5K6mXTM4h0oozk58pDh/JcFEQ4e7edDJTo99D5Cy6rKSPJhNH/hI7y+ufry0E8KC0BbgOIYBBSWhvTpsfyfxQVdJIx0qgHhRXFsxUa7koCIsinSmcQaRvweRk+IKSKLOokxGiEcsMwdZykxUjQ3JxeurVW7vRhjfBLEgi1ARUjOu6tIEPmTDwUsQCLRmumLTQUid6AyZiFnYZ8zxZanmn/FWabpW/B01KLMjVXMTqKj1RzvF6UKfEilidqZEUzDqnCgIJE7LhZhZMFUU/BaDEInPY8H4girIq6KLXglRDemlEHINxKJbUx+ApqQFoAk6bm7EUoNycpBFWR41FEVh7qW9A/c2k4ALzhpPh+lTqjTfc16oh6Ns/N2lrPnjnvagZ3OqIudbSFI5BgWEIc4gMYBtuwT+nOjVwCwqd7ScfhUVQEZwYo41txBlYGbDrz1XOtjzuYrYVl4pZUsmSJWeDYrxSUzCJsG5WRk8z5V+ARUEizZtmvmaKSxfuqrllCkUPD1C3wmiVgMK6hGQ5OIsX15QkkGiTz8WnRpjRsn19RAI6a2p9sULG+Ulf56JtAd/KnLSG76Vjwbxf0ywebIN6nF7vuXmPE5QHa/shOxbMCy/yYwIl2P5Ym8XhmOe/5prvtPaD7cq4FMOqfqq1uA/ZOpXx5uLNiTfI+K9aJqXeAL8wIhaqyjqUTlUQEAQEAUHA9xFQJZ6MpCcuqTXXmYngnKWpUPGiIMhMDE1PuWQYrXtdasI+HjuSUPFbobjedPSxVlFmDKioSXwZSLVBX/4MITllQmamTaZCk5qsnjpTRqbxayUk+v6193SiIpOnPecTQCMiO9ZqJeLKQ+/gXedKKlgyKGbar1oya7ME+LHP3aZGqEikTI6qbHATWF/GVRh18S6du4rFUOV+hfNoUWzR8saHOtv91arqcea8L/s/tXF+qaeNlq5OzUVk0fpMSaGg5bVD2r3M++Xez30YEQhe7I8X39IaQ0sO8QnvSEA5+PgYIhC82B8vQo8UUA4+HoqPwYv98MInNJx1tKL7PHRT4VLPfKJ7R85dMudzZAgulW23utUvJn83tfsn6EeS98vIBxr7H21NeOUeNuyH3n72LxDfS5Af/aqBr6RSx3ZQTHT8yugsXRRE1rdbm5ED8ZcQPVINNiW1yg6KS52KaFEQLmwqWb5T2HPpPFvayIi03uOMjtguE/FUi3ailhqNOvK7xe0H6xaZ2OYcrGUxvAQpqh38veWidnf8LumtwHVd8Vjzbskq7laWODA+AUQwf2WQ9a3u21tS+8EOCl9kUZAP7rrjpOdR/7+ev9Xl7NYEr1egpPboHbMW0A5G7kJZKmKGsGH5oJiBxVEqXFBhxTKJY23s1MBKiniNF96sbvmvv/hHK9I54Fpz2yxncUilznv1cG00ohQqPs6MxYlIRANAx5oxhD7HIot7nrtgejN3glEbT196pUl1CIBDG8/GzlS0mCATqitu2wbo59oTHYuIyTO+kykI9EAP9EA/VLrvLLtej85d9+q7yoZ0p0f++s66GtUcjc7A+k0T/ry3G5xoNVr44+MVq5axRkwrXk0QCiE2rNeL695YlOFaG/HJbbbrP501tRsS6x318+MIS8VryGfVQTjeHtX6fHm/IWSt+QxsqpWtN2dYZJjZcbfvz9TsKTMsgXaXSXndJn22pPxfITQE6+cHa9e3fhCbdN43KKonHQHXB4ZrQGW/UQnwB/gflKLQzvYRlQB/gD/AH+AP8Af4A/yHAb9PW1Vy27xV9YOEXXosZbieMoN1PB8Zt1ly8aGh4+r3r5ofHbKjNqBVpm+8Uh2pLLuYesk//s9bcJFhmiH1y14uJelPbk1zXGv129Hg+dHgzyfvrRDP6sO6g1l1/QdUQmnmCVMAAA=="
    },
    "Metadata": {
     "aws:cdk:path": "BackendStack/CDKMetadata/Default"

@@ -1,31 +1,16 @@
 {
   "version": "48.0.0",
   "files": {
-    "e921dc1d8d878ef468bfc32426b5c1e22451c8942f72aa0abf769723e8138241": {
-      "displayName": "SendSingleEmail/Code",
+    "8bb77bb2bfc9048fc9ff3d9aef1366aadc2b4ad822cfc516613537079c745cbd": {
+      "displayName": "SendEmail/Code",
       "source": {
-        "path": "asset.e921dc1d8d878ef468bfc32426b5c1e22451c8942f72aa0abf769723e8138241",
+        "path": "asset.8bb77bb2bfc9048fc9ff3d9aef1366aadc2b4ad822cfc516613537079c745cbd",
         "packaging": "zip"
       },
       "destinations": {
-        "138881450188-eu-central-1-46b510ac": {
+        "138881450188-eu-central-1-b53d398a": {
           "bucketName": "cdk-hnb659fds-assets-138881450188-eu-central-1",
-          "objectKey": "e921dc1d8d878ef468bfc32426b5c1e22451c8942f72aa0abf769723e8138241.zip",
-          "region": "eu-central-1",
-          "assumeRoleArn": "arn:${AWS::Partition}:iam::138881450188:role/cdk-hnb659fds-file-publishing-role-138881450188-eu-central-1"
-        }
-      }
-    },
-    "d2f4283e04ce6c1d9f5305b03f78cd68f9c60e9c7bcfa40cc1ea26e0b195766c": {
-      "displayName": "SendAlbumEmail/Code",
-      "source": {
-        "path": "asset.d2f4283e04ce6c1d9f5305b03f78cd68f9c60e9c7bcfa40cc1ea26e0b195766c",
-        "packaging": "zip"
-      },
-      "destinations": {
-        "138881450188-eu-central-1-71690cb3": {
-          "bucketName": "cdk-hnb659fds-assets-138881450188-eu-central-1",
-          "objectKey": "d2f4283e04ce6c1d9f5305b03f78cd68f9c60e9c7bcfa40cc1ea26e0b195766c.zip",
+          "objectKey": "8bb77bb2bfc9048fc9ff3d9aef1366aadc2b4ad822cfc516613537079c745cbd.zip",
           "region": "eu-central-1",
           "assumeRoleArn": "arn:${AWS::Partition}:iam::138881450188:role/cdk-hnb659fds-file-publishing-role-138881450188-eu-central-1"
         }
@@ -286,16 +271,16 @@
         }
       }
     },
-    "142acc779f76ddf7ca66d0d73d0ee005861dec35e8e919031bc91cad7ba868f5": {
+    "cbec12530aa9c708c4af76968e89b8c71b430642c4dc7977f95bf1c1ef21dd9d": {
       "displayName": "BackendStack Template",
       "source": {
         "path": "BackendStack.template.json",
         "packaging": "file"
       },
       "destinations": {
-        "138881450188-eu-central-1-f8d9267c": {
+        "138881450188-eu-central-1-ef739175": {
           "bucketName": "cdk-hnb659fds-assets-138881450188-eu-central-1",
-          "objectKey": "142acc779f76ddf7ca66d0d73d0ee005861dec35e8e919031bc91cad7ba868f5.json",
+          "objectKey": "cbec12530aa9c708c4af76968e89b8c71b430642c4dc7977f95bf1c1ef21dd9d.json",
           "region": "eu-central-1",
           "assumeRoleArn": "arn:${AWS::Partition}:iam::138881450188:role/cdk-hnb659fds-file-publishing-role-138881450188-eu-central-1"
         }

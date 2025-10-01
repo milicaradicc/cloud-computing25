@@ -10,7 +10,8 @@ from aws_cdk import (
     aws_sns as sns,
     aws_sns_subscriptions as subs,
     aws_s3 as s3,
-    aws_apigateway as apigateway
+    aws_apigateway as apigateway,
+    aws_iam as iam
 )
 
 from backend.utils.create_lambda import create_lambda_function
@@ -150,53 +151,38 @@ class BackendStack(Stack):
             self, "NewContentTopic",
             display_name="NewContentTopic"
         )
-        # SQS Queue za pesme
-        new_song_queue = sqs.Queue(
-            self, "NewSongQueue",
-            queue_name="NewSongQueue"
+        # SQS Queue
+        new_content_queue = sqs.Queue(
+            self, "NewContentQueue",
+            queue_name="NewContentQueue"
         )
 
-        # SQS Queue za albume
-        new_album_queue = sqs.Queue(
-            self, "NewAlbumQueue",
-            queue_name="NewAlbumQueue"
-        )
+        topic.add_subscription(subs.SqsSubscription(new_content_queue))
 
-        topic.add_subscription(subs.SqsSubscription(new_song_queue))
-        topic.add_subscription(subs.SqsSubscription(new_album_queue))
-
-        # Lambda for sending single email (triggers from NewSongQueue)
-        send_single_email_lambda = create_lambda_function(
-            self,
-            "SendSingleEmail",
-            "handler.lambda_handler",
-            "lambda/sendSingleEmail",
-            [],
-            {
-                "SUBSCRIPTIONS_TABLE": subscriptions_table.table_name,
-            }
-        )
-        subscriptions_table.grant_read_data(send_single_email_lambda)
-
-        send_single_email_lambda.add_event_source(
-            lambda_event_sources.SqsEventSource(new_song_queue)
-        )
-
-        # Lambda for sending general email (triggers from NewAlbumQueue)
         send_email_lambda = create_lambda_function(
             self,
-            "SendAlbumEmail",
+            "SendEmail",
             "handler.lambda_handler",
-            "lambda/sendAlbumEmail",
+            "lambda/sendEmail",
             [],
             {
                 "SUBSCRIPTIONS_TABLE": subscriptions_table.table_name,
+                "SES_REGION": "eu-central-1",
+                "SES_SOURCE_EMAIL": "milica.t.radic@gmail.com"
             }
         )
+
         subscriptions_table.grant_read_data(send_email_lambda)
 
         send_email_lambda.add_event_source(
-            lambda_event_sources.SqsEventSource(new_album_queue)
+            lambda_event_sources.SqsEventSource(new_content_queue)
+        )
+
+        send_email_lambda.add_to_role_policy(
+            iam.PolicyStatement(
+                actions=["ses:SendEmail", "ses:SendRawEmail"],
+                resources=["*"]
+            )
         )
 
         # API
