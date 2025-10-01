@@ -13,15 +13,15 @@ import { CreateArtistComponent } from './create-artist/create-artist.component';
 import {MatFormField, MatInput, MatLabel} from '@angular/material/input';
 import {ReactiveFormsModule} from '@angular/forms';
 import { ArtistPageComponent } from './artist-page/artist-page.component';
-import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ContentModule } from '../content/content.module';
-
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
   declarations: [
     ArtistsComponent,
     CreateArtistComponent,
-    ArtistPageComponent
+    ArtistPageComponent,
   ],
   imports: [
     CommonModule,
@@ -34,15 +34,16 @@ import { ContentModule } from '../content/content.module';
     MatDialogModule,
     MatSnackBarModule,
     MatSortModule,
+    MatProgressSpinnerModule,
     MatFormField,
     MatLabel,
     MatFormField,
     MatInput,
     ReactiveFormsModule,
     MatFormField,
-    MatProgressSpinnerModule,
-    ContentModule
-]
+    ContentModule,
+    MatSelectModule
+  ]
 })
 export class ArtistsModule {
 }

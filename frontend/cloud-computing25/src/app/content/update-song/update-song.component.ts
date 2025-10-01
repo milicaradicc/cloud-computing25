@@ -4,8 +4,8 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ArtistService } from '../../artists/artist.service';
 import { Artist } from '../../artists/artist.model';
 import { ContentService } from '../content.service';
-import { SingleUploadDTO } from '../single-upload-dto.model';
-import { Song } from '../song.model';
+import { SingleUploadDTO } from '../models/single-upload-dto.model';
+import { Song } from '../models/song.model';
 
 @Component({
   selector: 'app-update-song',

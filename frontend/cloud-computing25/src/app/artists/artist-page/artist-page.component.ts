@@ -2,18 +2,18 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ArtistService } from '../artist.service';
 import { Artist } from '../artist.model';
-import { Album } from '../../content/album.model';
+import { Album } from '../../content/models/album.model';
 
 @Component({
   selector: 'app-artist-page',
   templateUrl: './artist-page.component.html',
   styleUrls: ['./artist-page.component.css'],
-  standalone: false
+  standalone: false,
 })
 export class ArtistPageComponent implements OnInit {
 
   artistId?: string | null;
-  artist: Artist | null = null; 
+  artist: Artist | null = null;  // inicijalno null
   albums: Album[] = [];
   loading = true;
   errorAlbums: string | null = null;
@@ -33,8 +33,8 @@ export class ArtistPageComponent implements OnInit {
     this.loading = true;
     this.artistService.get(id).subscribe({
       next: (data) => {
-        // this.artist = data.artist;
-        // this.albums = data.albums || [];
+        this.artist = data.artist;
+        this.albums = data.albums || [];
 
         this.loading = false;
         console.log('data:', data);

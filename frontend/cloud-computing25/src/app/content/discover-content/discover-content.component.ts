@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Album } from '../album.model';
 import { ContentService } from '../content.service';
 import { GenreService } from '../../layout/genres.service';
+import { Album } from '../models/album.model';
 
 @Component({
   selector: 'app-discover-content',
