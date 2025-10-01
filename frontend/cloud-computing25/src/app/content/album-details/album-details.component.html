@@ -1,0 +1,83 @@
+<div class="song-details-container" *ngIf="album">
+  <!-- Left Side - Album Info -->
+  <div class="player-section">
+    <div class="cover-image-container">
+      <img *ngIf="album?.coverImage"
+        [src]="album.coverImage"
+        [alt]="(album.title || 'Unknown') + ' cover'"
+        class="cover-image"
+      />
+      <div *ngIf="!album?.coverImage" class="placeholder-image">
+        <mat-icon class="music-icon">album</mat-icon>
+        <span class="placeholder-text">No Cover</span>
+      </div>
+    </div>
+
+    <div class="player-controls">
+      <div class="song-info">
+        <h2 class="song-title">{{ album.title || 'Unknown Album' }}</h2>
+        <p class="artist-names" *ngIf="album?.artists?.length">
+          <span *ngFor="let artist of album.artists; let last = last">
+            {{ artist?.name || 'Unknown Artist' }}<span *ngIf="!last">, </span>
+          </span>
+        </p>
+      </div>
+
+      <div class="detail-item" *ngIf="album?.genres?.length">
+        <label>Genres:</label>
+        <div class="genre-tags">
+          <span *ngFor="let genre of album.genres" class="genre-tag">
+            {{ genre }}
+          </span>
+        </div>
+      </div>
+
+      <div class="detail-item" *ngIf="album?.description">
+        <label>Description:</label>
+        <p class="description">{{ album.description }}</p>
+      </div>
+
+      <div class="detail-item" *ngIf="album?.releaseDate">
+        <label>Release Date:</label>
+        <span>{{ album.releaseDate | date }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Side - Songs Table -->
+  <div class="details-section">
+    <h1 class="details-title">Songs</h1>
+    <table class="songs-table">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Duration</th>
+          <th>Artists</th>
+          <th>Genres</th>
+          <th>Type</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let song of album.songs">
+          <td>{{ song.title }}</td>
+          <td>{{ formatTime(song.duration || 0) }}</td>
+          <td>
+            <span *ngFor="let artist of song.artists; let last = last">
+              {{ artist?.name }}<span *ngIf="!last">, </span>
+            </span>
+          </td>
+          <td>
+            <span *ngFor="let genre of song.genres" class="genre-tag">
+              {{ genre }}
+            </span>
+          </td>
+          <td>{{ song.type }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <ng-template #noSongs>
+      <p>No songs found for this album.</p>
+    </ng-template>
+  </div>
+</div>

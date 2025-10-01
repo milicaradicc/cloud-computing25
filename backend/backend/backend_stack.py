@@ -107,6 +107,14 @@ class BackendStack(Stack):
             removal_policy=RemovalPolicy.DESTROY
         )
 
+        artist_song_table.add_global_secondary_index(
+            index_name="AlbumId-index",
+            partition_key=dynamodb.Attribute(name="AlbumId", type=dynamodb.AttributeType.STRING),
+            sort_key=dynamodb.Attribute(name="ArtistId", type=dynamodb.AttributeType.STRING),
+            projection_type=dynamodb.ProjectionType.ALL
+        )
+
+
         # ARTIST ALBUM TABLE
         artist_album_table = dynamodb.Table(
             self, "ArtistAlbum",
@@ -114,6 +122,14 @@ class BackendStack(Stack):
             sort_key=dynamodb.Attribute(name="AlbumId", type=dynamodb.AttributeType.STRING),
             removal_policy=RemovalPolicy.DESTROY
         )
+
+        artist_album_table.add_global_secondary_index(
+            index_name="AlbumId-index",
+            partition_key=dynamodb.Attribute(name="AlbumId", type=dynamodb.AttributeType.STRING),
+            sort_key=dynamodb.Attribute(name="ArtistId", type=dynamodb.AttributeType.STRING),  # opcionalno
+            projection_type=dynamodb.ProjectionType.ALL
+        )
+
 
         # RATING TABLE
         rating_table = dynamodb.Table(
@@ -207,26 +223,7 @@ class BackendStack(Stack):
         AlbumConstruct(self, "AlbumConstruct", api, songs_table, albums_table, artist_album_table, music_bucket, topic, authorizer)
         SubscriptionsConstruct(self, "SubscriptionsConstruct", api, subscriptions_table, authorizer)
 
-# Genres API
-        genres_api_resource = api.root.add_resource("genres")
-
-        get_all_genres_lambda = create_lambda_function(
-            self,
-            "GetGenresLambda",
-            "handler.lambda_handler",
-            "lambda/getGenres", 
-            [],
-            {'ARTISTS_TABLE_NAME': artists_table.table_name}
-        )
-
-        # CORRECTED: Use grant_read_data for read-only access
-        artists_table.grant_read_data(get_all_genres_lambda)
-
-        get_all_genres_integration = apigateway.LambdaIntegration(get_all_genres_lambda, proxy=True)
-        genres_api_resource.add_method("GET", get_all_genres_integration)
-
-
-        #filters
+        # FILTERS
         filter_api_resource = api.root.add_resource("discover").add_resource("filter")
 
         get_filtered_lambda = create_lambda_function(
@@ -240,12 +237,56 @@ class BackendStack(Stack):
                 'ALBUMS_TABLE': albums_table.table_name
             }
         )
-
-        # CORRECTED: Grant read data to the *filtered* lambda for the artists table
         artists_table.grant_read_data(get_filtered_lambda)
         albums_table.grant_read_data(get_filtered_lambda)
 
         get_filtered_integration = apigateway.LambdaIntegration(get_filtered_lambda, proxy=True)
 
         filter_api_resource.add_method("GET", get_filtered_integration)
+
+        albums_resource = api.root.get_resource("albums")
+        if albums_resource is None:
+            albums_resource = api.root.add_resource("albums")
+
+        album_id_resource = albums_resource.get_resource("{id}")
+        if album_id_resource is None:
+            album_id_resource = albums_resource.add_resource("{id}")
+
+        get_album_lambda = create_lambda_function(
+            self,
+            "GetAlbumByIdLambda",
+            "handler.lambda_handler",
+            "lambda/getAlbumById",
+            [],
+            environment={
+                "ALBUMS_TABLE": albums_table.table_name,
+                "SONGS_TABLE": songs_table.table_name,
+                "ARTIST_ALBUM_TABLE": artist_album_table.table_name,
+                "ARTIST_SONG_TABLE": artist_song_table.table_name,
+                "ARTISTS_TABLE": artists_table.table_name
+            }
+        )
+        get_album_lambda.add_to_role_policy(
+            iam.PolicyStatement(
+                actions=["dynamodb:Query", "dynamodb:GetItem"],
+                resources=[
+                    artist_album_table.table_arn,
+                    f"{artist_album_table.table_arn}/index/AlbumId-index"
+                ]
+            )
+        )
+
+        albums_table.grant_read_data(get_album_lambda)
+        artist_album_table.grant_read_data(get_album_lambda)
+        artist_song_table.grant_read_data(get_album_lambda)
+        songs_table.grant_read_data(get_album_lambda)
+        artists_table.grant_read_data(get_album_lambda)
+
+        get_album_integration = apigateway.LambdaIntegration(get_album_lambda, proxy=True)
+
+        album_id_resource.add_method(
+            "GET",
+            get_album_integration,
+            authorization_type=apigateway.AuthorizationType.NONE,
+        )
 

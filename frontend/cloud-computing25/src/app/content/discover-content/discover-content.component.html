@@ -30,7 +30,7 @@
               [ngStyle]="{'background-image': artist.profileImage ? 'url(' + artist.profileImage + ')' : 'none'}">
             <mat-icon *ngIf="!artist.profileImage" class="artist-placeholder-icon">person</mat-icon>
           </div>
-          <p class="artist-name">{{ artist.name }}</p>
+          <p class="artist-name">{{ artist.Name }}</p>
         </mat-card>
       </div>
       <ng-template #noArtists>
@@ -44,7 +44,13 @@
         <mat-icon>album</mat-icon>
       </h2>
       <div *ngIf="albums.length > 0; else noAlbums" class="albums-list-grid">
-        <mat-card *ngFor="let album of albums" class="album-card" [class.no-image]="!album.coverImage">
+        <mat-card 
+          *ngFor="let album of albums" 
+          class="album-card" 
+          [class.no-image]="!album.coverImage"
+          [routerLink]="['/album-details', album.Id]"
+          style="cursor: pointer;"
+        >          
           <div class="album-header">
             <div class="album-image-container">
               <img *ngIf="album.coverImage"

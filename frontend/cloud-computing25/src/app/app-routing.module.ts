@@ -12,7 +12,7 @@ import { ArtistPageComponent } from './artists/artist-page/artist-page.component
 import {SongDetailsComponent} from './content/song-details/song-details.component';
 import { ContentManagementComponent } from './content/content-management/content-management.component';
 import { SubscriptionsComponent } from './subscription/subscriptions/subscriptions.component';
-import { DiscoverContentComponent } from './content/discover-content/discover-content.component';
+import { AlbumDetailsComponent } from './content/album-details/album-details.component';
 
 const routes: Routes = [
   {path: 'home', component: DiscoverContentComponent}, // ContentComponent
@@ -33,6 +33,8 @@ const routes: Routes = [
   data: {role: ['user']}},
   { path: 'artist/:id', component: ArtistPageComponent }, 
   {path:'song-details/:id',component:SongDetailsComponent},
+  {path:'album-details/:id',component:AlbumDetailsComponent},
+
 ];
 
 @NgModule({

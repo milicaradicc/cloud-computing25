@@ -37,7 +37,10 @@ def lambda_handler(event, context):
         }
 
     try:
+        # Uzmemo query parametre i normalizujemo ključeve na lowercase
         query_params = event.get("queryStringParameters") or {}
+        query_params = {k.lower(): v for k, v in query_params.items()}
+        
         genre = query_params.get("genre")
 
         if not genre:

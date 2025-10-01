@@ -38,26 +38,33 @@ export class DiscoverContentComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.genreService.getAllGenres().subscribe({
-      next: (genres: string[]) => {
-        this.genres = genres;
-        console.log(genres)
-      },
-      error: (err) => {
-        console.error('Error while loading genres:', err);
-      }
-    });
+    // this.genreService.getAllGenres().subscribe({
+    //   next: (genres: string[]) => {
+    //     this.genres = genres;
+    //     console.log(genres)
+    //   },
+    //   error: (err) => {
+    //     console.error('Error while loading genres:', err);
+    //   }
+    // });
   }
 
   selectGenre(genre: string) {
-    const trimmedGenre = genre.trim();
-    if (this.selectedGenre === trimmedGenre) {
+    // Pretvori svaku reč tako da počinje velikim slovom
+    const formattedGenre = genre
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ');
+
+    console.log(formattedGenre);
+
+    if (this.selectedGenre === formattedGenre) {
       this.selectedGenre = null;
       this.artists = [];
       this.albums = [];
     } else {
-      this.selectedGenre = trimmedGenre;
-      this.fetchFilteredContent(trimmedGenre);
+      this.selectedGenre = formattedGenre;
+      this.fetchFilteredContent(formattedGenre);
     }
   }
 
@@ -66,6 +73,7 @@ export class DiscoverContentComponent implements OnInit {
       next: (result) => {
         this.albums = result.albums;
         this.artists = result.artists;
+        console.log(result)
       },
       error: (err) => {
         console.error("Error fetching filtered content:", err);

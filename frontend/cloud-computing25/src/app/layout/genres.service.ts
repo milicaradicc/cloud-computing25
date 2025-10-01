@@ -16,10 +16,10 @@ export class GenreService {
 
   getFilteredContent(genre: string): Observable<FilterResult> {
     const url = `${environment.apiHost}/discover/filter?genre=${encodeURIComponent(genre)}`;
-    return this.httpClient.get<any>(url).pipe(
+    return this.httpClient.get<{ artists: any[]; albums: any[] }>(url).pipe(
       map(response => ({
-        artists: response.artists?.Items || [],
-        albums: response.albums?.Items || []
+        artists: response.artists || [],
+        albums: response.albums || []
       }))
     );
   }
