@@ -22,7 +22,6 @@ def lambda_handler(event, context):
         print("Content type:", content_type)
         print("Parsed message:", message)
 
-        # izvuci interese za korisnike
         genres = message.get("genres", [])
         artists = message.get("artists", [])
 

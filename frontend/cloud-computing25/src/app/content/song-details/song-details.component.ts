@@ -107,7 +107,8 @@ export class SongDetailsComponent implements OnInit, OnDestroy {
 
   getAudioUrl(): string {
     if (!this.song?.fileName) return '';
-    return environment.s3BucketLink + this.song.fileName;
+    console.log(environment.s3BucketLink + '/' + this.song.fileName)
+    return environment.s3BucketLink + '/' + this.song.fileName;
   }
 
   togglePlayPause() {
