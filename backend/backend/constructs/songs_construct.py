@@ -19,7 +19,8 @@ class SongsConstruct(Construct):
         artist_song_table: dynamodb.Table,
         bucket: s3.Bucket,
         topic: sns.Topic,
-        authorizer
+        authorizer,
+        artists_table: dynamodb.Table,
     ):
         super().__init__(scope, id)
 
@@ -115,6 +116,31 @@ class SongsConstruct(Construct):
         song_id_resource.add_method(
             "DELETE",
             apigateway.LambdaIntegration(delete_song_lambda, proxy=True),
+            authorizer=authorizer,
+            authorization_type=apigateway.AuthorizationType.COGNITO
+        )
+
+        # Get Song by Id
+        get_song_lambda = create_lambda_function(
+            self,
+            "GetSongLambda",
+            "handler.lambda_handler",
+            "lambda/getSong",
+            [],  # lambda environment variables if any additional
+            {
+                "SONGS_TABLE": table.table_name,
+                "ALBUMS_TABLE": albums_table.table_name,
+                "ARTISTS_TABLE": artists_table.table_name
+            }
+        )
+
+        table.grant_read_data(get_song_lambda)
+        albums_table.grant_read_data(get_song_lambda)
+        artists_table.grant_read_data(get_song_lambda)
+
+        song_id_resource.add_method(
+            "GET",
+            apigateway.LambdaIntegration(get_song_lambda, proxy=True),
             authorizer=authorizer,
             authorization_type=apigateway.AuthorizationType.COGNITO
         )

@@ -138,5 +138,5 @@ class BackendStack(Stack):
 
         # Artists API construct
         ArtistsConstruct(self, "ArtistsConstruct", api, artists_table, songs_table, albums_table, artist_album_table, artist_song_table, authorizer)
-        SongsConstruct(self, "SongsConstruct", api, songs_table, albums_table, artist_song_table, music_bucket, topic,authorizer)
+        SongsConstruct(self, "SongsConstruct", api, songs_table, albums_table, artist_song_table, music_bucket, topic,authorizer, artists_table)
         AlbumConstruct(self, "AlbumConstruct", api, songs_table, albums_table, artist_album_table, music_bucket, topic,authorizer)
