@@ -1,0 +1,135 @@
+.artist-page-container {
+  display: flex;
+  min-height: 100vh;
+  background: #080808;
+  color: #fff; /* ceo tekst beo */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow-y: auto;
+}
+
+/* Left - Artist Info */
+.artist-player-section {
+  flex: 0 0 350px;
+  padding: 2rem;
+  background: #111;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.artist-info-controls {
+  text-align: center;
+}
+
+.artist-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: #c858e1;
+}
+
+.artist-biography {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #fff; /* tekst beo */
+  margin-bottom: 1rem;
+}
+
+.artist-genres {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.genre-tag {
+  background: #4ecdc4;
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #111; /* kontrast sa tirkiznom pozadinom */
+}
+
+.favorite-btn {
+  background: transparent;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  font-size: 1.5rem;
+  transition: transform 0.2s, color 0.2s;
+}
+
+.favorite-btn:hover {
+  transform: scale(1.2);
+  color: #c858e1;
+}
+
+/* Right - Albums */
+.artist-albums-section {
+  flex: 1;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.albums-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #333;
+  padding-bottom: 0.5rem;
+  color: #fff; /* naslov albuma beo */
+}
+
+.albums-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* uvek 3 kartice po redu */
+  gap: 1.5rem;
+}
+
+.no-albums {
+  color: #aaa;
+  text-align: center;
+  font-style: italic;
+}
+
+/* Loader & Error */
+.loading-container, .error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.error-container {
+  color: #ff4d4f;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .artist-page-container {
+    flex-direction: column;
+  }
+  .artist-player-section {
+    flex: none;
+    width: 100%;
+    padding: 1rem;
+  }
+  .artist-albums-section {
+    padding: 1rem;
+  }
+  .albums-grid {
+    grid-template-columns: repeat(2, 1fr); /* 2 kartice na srednjim ekranima */
+  }
+}
+
+@media (max-width: 600px) {
+  .albums-grid {
+    grid-template-columns: 1fr; /* 1 kartica na mobilnom */
+  }
+}

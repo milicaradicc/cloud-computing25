@@ -12,7 +12,15 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
 import { CreateArtistComponent } from './create-artist/create-artist.component';
 import {MatFormField, MatInput, MatLabel} from '@angular/material/input';
 import {ReactiveFormsModule} from '@angular/forms';
+<<<<<<< Updated upstream
 
+=======
+import { ArtistPageComponent } from './artist-page/artist-page.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ContentModule } from '../content/content.module';
+import { MatSelectModule } from '@angular/material/select';
+import { RouterModule } from '@angular/router';
+>>>>>>> Stashed changes
 
 @NgModule({
   declarations: [
@@ -35,7 +43,14 @@ import {ReactiveFormsModule} from '@angular/forms';
     MatFormField,
     MatInput,
     ReactiveFormsModule,
+<<<<<<< Updated upstream
     MatFormField
+=======
+    MatFormField,
+    ContentModule,
+    MatSelectModule,
+    RouterModule
+>>>>>>> Stashed changes
   ]
 })
 export class ArtistsModule {
