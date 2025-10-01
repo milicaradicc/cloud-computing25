@@ -3,6 +3,12 @@
   "mymusicappfilesAC4E028D": {
    "Type": "AWS::S3::Bucket",
    "Properties": {
+    "PublicAccessBlockConfiguration": {
+     "BlockPublicAcls": true,
+     "BlockPublicPolicy": false,
+     "IgnorePublicAcls": true,
+     "RestrictPublicBuckets": false
+    },
     "VersioningConfiguration": {
      "Status": "Enabled"
     }
@@ -11,6 +17,43 @@
    "DeletionPolicy": "Delete",
    "Metadata": {
     "aws:cdk:path": "BackendStack/my-music-app-files/Resource"
+   }
+  },
+  "mymusicappfilesPolicy8C638107": {
+   "Type": "AWS::S3::BucketPolicy",
+   "Properties": {
+    "Bucket": {
+     "Ref": "mymusicappfilesAC4E028D"
+    },
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "s3:GetObject",
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": "*"
+       },
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          {
+           "Fn::GetAtt": [
+            "mymusicappfilesAC4E028D",
+            "Arn"
+           ]
+          },
+          "/*"
+         ]
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/my-music-app-files/Policy/Resource"
    }
   },
   "ArtistsAF1BB04E": {
@@ -6856,7 +6899,7 @@
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {
-    "Analytics": "v2:deflate64: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"
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/+1c3XPbKBD/W8pjh+quzdzcTN4cN+lk6jQ+O7k+eDIdDGuZBoEKKK6q0f9+AxKSnPRyvX7aCQ+Jrd1lv34I0IL8Innx/I/k9ydkY55Rdv1M8GVSzS2h15hszLvKHCTVUUGvwS4qtBSKXk+LpeB0RCkYgw7RU4RR7kkzICyQrS4AIw2ZuiFiqgSnJTpEDIzVqkQY3YA2XElgjWh9hccr2djBzUfTyBn1l97SUKzht8JHxMDiqsaslCRTbJlUF2QpYFGhnGjLLVfyNZTosEKSZNB6bcvcfZ2jGiOjtL1f4t9iqXGFCGOvhFoSMQeqJCO6PJUMPqLDRYW4+/am15lr9R6o8+ii0T6aTBz5S/ysr36+tZjAvbIW4dqHBEYjsb85a34+81NVjalKJbcqqS4N6KlSYlEhQqkqpJ0BVTegS3T4AiNaGKuykbWaLwsLYQ7OVgQdovOTE2/emI3SLCSzQhmXE5CpXbfSGj4UXMNLnnJr0OGKCAMddaI2oCkxcJsxL7OlEnfkL/N8S/4eNDEyIFZznsrL/Fi6wFlYLBieylM5EpwYF1SFICNcBG5hQDdZ9OsFjIwlDhs2TERVN4Iuex1ILaQXmqcpaIdijX0OnqIWgJBwHL6MBQfpFjxBWZs14lc3F+oa5N9EcMZtGTiFXZ8ItfGO+1YtBEP/5zrv3AcfvFc1gxtFiestQTgFCZpYmAPVbunTppuzz5nONdyAtM7344/cWJAUjrVWerAMW2kw6881LrYi7nO2lZeGWWNBsiUjSTVeySnojBu3hMMnhfQ3wKJCVLHQzddEMuHS3XS3Qlo+wAPkDddKZiBtKyFICc7jxRVGGWRKl3P+KSjTSnS3D89AFaHVFxskjB0PbS66HvCtzEnn+E4GFt37Nd3iwXaoxxn1jrv3OEF5sL7vc2DRvXgjPyZQou+PtVvsj3v+aS48p3UPbJfalRhW7VVrxT3ItqWMN+dvjr1D2j/VEiHUBti55imXTdWhdqaigqggKogKvo+CpvCkBT52Ra25KjSFM5LnXKaLClmiUwgj5ZJYuh4MqRn5eORIXKZvuWRq09PHStJCa5A0FL405EpbL39qITshXBS6K6ZCKE02V70rIx3iWnFh/fg6uDqWVJf5IPgMrObUjJVc8bSJ0Ad4N7gac5Il1Uz5XUtiTJEBO/K121xzSXlOxKipBofEehnXYNTnu3bhSpJCU/vlLqJFtUUrQwxttfurTbXzzNlQ939aY+xCTYOVvk3LtZbQ9akUXELH66a0e5n3672f+zAyEKPYnSi+pTfGnhzzE++RiHKM8TFkIEaxO1HEESmiHGPclxhjFLsRhS9oOO9we2TbOR0aXKiZL3Tf0nOXzNjcEguulG22htUvJn83s7un6EeSd8vJB5r7H+1NvOUeNuz73n92LxHfS5Gf/ZqJr8ZCpSapJip9pVWRLyok2q9bh5Ej8ZcQPVIBmxobaZLqQuWcLirEuMkFKW8Jey6eF0tDNc/bM87WEbttIpYr3i3Ucq2sov60uPlg3CYT2ZyBMSSFlyB4c4J/sF3UnY6/TXrL7bpteKRYv2WV9jtLDAibgLWg/yqgGHo99LfG5oNJKi+yqNAH93krSM/D/n/3yp2XM1sLvIFAjc3BO2IMWJOM3AcmOU+JhQ0pk2oGxo5y7pIKK1IIO1baTDWsBE/X9ty71W//DTf/cEM6A7tWzITtLAa5UOWgnV1rZa3gMj0qtLETnvEAQM+aEQtDjrEkHUTukundvJWM1nn80hvNmpcAGHT5DH7mvMPEEi57cdN1QL/WnqiUUyJO2a1KQaRHeqRH+r7S/WDZj3p47oZXP1QG0p0R+esH62ZWczQ8A+MPTfj3vd3khJvZYlG5Ad2zWh1ra/OG1xK4tJBqMhjF1WAuKuxaaf7JHbYbXp2G1oFEBq/6+XmE5Pw1lLPmRTjWvar1eXl/IGSt2AxMrqRpD2cYS2xhxv25P92yp0STDLpTJvVVV/TZ0vJ/leCYrJ+frNuxDZMYynnfYKhddERcHxiuEZXdRiXCH+F/UIZiP9tFVCL8Ef4If4Q/wh/hj/DvB/y+bNXo7epWzQ8S9uWxnNj1lOj21w3xI+OGLRefGjxufv8q/OiQGXUJbSp945XsSXXtrs8Lmxe2z6638eP/rrDf9nIlSf/m1rS0ayV/O0ieHyR/PnlvOH/WvqybzJrPfwA7QUlKZlMAAA=="
    },
    "Metadata": {
     "aws:cdk:path": "BackendStack/CDKMetadata/Default"
@@ -6864,6 +6907,21 @@
   }
  },
  "Outputs": {
+  "MusicBucketURL": {
+   "Description": "Music Bucket URL",
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Ref": "mymusicappfilesAC4E028D"
+      },
+      ".s3.eu-central-1.amazonaws.com/"
+     ]
+    ]
+   }
+  },
   "UserPoolId": {
    "Description": "User Pool ID",
    "Value": {

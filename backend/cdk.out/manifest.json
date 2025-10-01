@@ -18,7 +18,7 @@
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::138881450188:role/cdk-hnb659fds-deploy-role-138881450188-eu-central-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::138881450188:role/cdk-hnb659fds-cfn-exec-role-138881450188-eu-central-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-138881450188-eu-central-1/cbec12530aa9c708c4af76968e89b8c71b430642c4dc7977f95bf1c1ef21dd9d.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-138881450188-eu-central-1/8561220be41643780801a39e25adc08f0fd58babeb0863284c842132f7e9aab6.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -38,6 +38,8 @@
           {
             "type": "aws:cdk:analytics:construct",
             "data": {
+              "blockPublicAccess": "*",
+              "publicReadAccess": true,
               "removalPolicy": "destroy",
               "versioned": true
             }
@@ -47,6 +49,26 @@
           {
             "type": "aws:cdk:logicalId",
             "data": "mymusicappfilesAC4E028D"
+          }
+        ],
+        "/BackendStack/my-music-app-files/Policy": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "bucket": "*"
+            }
+          }
+        ],
+        "/BackendStack/my-music-app-files/Policy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "mymusicappfilesPolicy8C638107"
+          }
+        ],
+        "/BackendStack/MusicBucketURL": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MusicBucketURL"
           }
         ],
         "/BackendStack/Artists": [

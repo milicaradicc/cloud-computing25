@@ -3,6 +3,7 @@ from constructs import Construct
 from aws_cdk import (
     Stack,
     RemovalPolicy,
+    CfnOutput,
     aws_dynamodb as dynamodb,
     aws_lambda_event_sources as lambda_event_sources,
     aws_lambda as _lambda,
@@ -30,7 +31,21 @@ class BackendStack(Stack):
         music_bucket = s3.Bucket(
             self, "my-music-app-files",
             versioned=True,
-            removal_policy=RemovalPolicy.DESTROY
+            removal_policy=RemovalPolicy.DESTROY,
+            block_public_access=s3.BlockPublicAccess(
+                block_public_acls=True,
+                block_public_policy=False,
+                ignore_public_acls=True,
+                restrict_public_buckets=False
+            ),
+            public_read_access=True
+        )
+
+        CfnOutput(
+            self,
+            "MusicBucketURL",
+            value=f"https://{music_bucket.bucket_name}.s3.{self.region}.amazonaws.com/",
+            description="Music Bucket URL",
         )
 
         # ARISTS TABLE AND GSI
