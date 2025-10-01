@@ -30,6 +30,12 @@ class BackendStack(Stack):
             projection_type=dynamodb.ProjectionType.ALL
         )
 
+        artists_table.add_global_secondary_index(
+            index_name="Id-index",
+            partition_key=dynamodb.Attribute(name="Id", type=dynamodb.AttributeType.STRING),
+            projection_type=dynamodb.ProjectionType.ALL
+        )
+
         # SONGS TABLE AND GSI
         songs_table = dynamodb.Table(
             self, "Songs",
@@ -131,6 +137,6 @@ class BackendStack(Stack):
         )
 
         # Artists API construct
-        ArtistsConstruct(self, "ArtistsConstruct", api, artists_table, authorizer)
+        ArtistsConstruct(self, "ArtistsConstruct", api, artists_table, songs_table, albums_table, artist_album_table, artist_song_table, authorizer)
         SongsConstruct(self, "SongsConstruct", api, songs_table, albums_table, artist_song_table, music_bucket, topic,authorizer)
         AlbumConstruct(self, "AlbumConstruct", api, songs_table, albums_table, artist_album_table, music_bucket, topic,authorizer)
