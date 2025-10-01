@@ -64,4 +64,17 @@ export class AuthService {
     const session = await fetchAuthSession();
     return session.tokens?.idToken?.toString();
   }
+  async getEmail() {
+    try {
+      const session = await fetchAuthSession();
+      const idToken = session.tokens?.idToken?.toString();
+      if (!idToken) {
+        return null;
+      }
+      const decoded: any = jwtDecode(idToken);
+      return decoded['email'] || null;
+    } catch (err) {
+      return null;
+    }
+  }
 }

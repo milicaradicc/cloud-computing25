@@ -13,6 +13,7 @@ export interface SingleUploadDTO {
   artists: Artist[];
   genres: string[];
   album: string,
-  coverImage: string;
-  single: boolean
+  coverImage: string,
+  single: boolean,
+  coverFileBase64?: string;
 }
