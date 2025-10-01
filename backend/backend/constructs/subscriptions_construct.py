@@ -33,3 +33,22 @@ class SubscriptionsConstruct(Construct):
             authorization_type=apigateway.AuthorizationType.COGNITO
         )
 
+        # Get Subscriptions
+        get_subscriptions_lambda = create_lambda_function(
+            self,
+            "GetSubscriptionsLambda",
+            "handler.lambda_handler",
+            "lambda/getSubscriptionsByUser",
+            [],
+            {"SUBSCRIPTIONS_TABLE": table.table_name}
+        )
+        table.grant_read_write_data(get_subscriptions_lambda)
+
+        subscriptions_api_resource.add_method(
+            "GET",
+            apigateway.LambdaIntegration(get_subscriptions_lambda, proxy=True),
+            authorizer=authorizer,
+            authorization_type=apigateway.AuthorizationType.COGNITO
+        )
+
+
