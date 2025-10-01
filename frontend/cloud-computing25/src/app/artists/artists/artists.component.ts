@@ -11,7 +11,7 @@ import {CreateArtistComponent} from '../create-artist/create-artist.component';
   selector: 'app-artists',
   standalone: false,
   templateUrl: './artists.component.html',
-  styleUrl: './artists.component.css'
+  styleUrl: './artists.component.css',
 })
 export class ArtistsComponent implements OnInit {
   constructor(private service:ArtistService,
@@ -31,6 +31,7 @@ export class ArtistsComponent implements OnInit {
     this.service.getAll().subscribe({
       next: (artists: Artist[]) => {
         artists.sort((a, b) => a.name.localeCompare(b.name));
+        console.log(artists)
         this.dataSource = new MatTableDataSource<Artist>(artists);
       }
     })

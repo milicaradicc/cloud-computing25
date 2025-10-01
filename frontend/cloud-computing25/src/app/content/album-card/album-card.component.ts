@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
-import { Album } from '../album.model';
-import { Song } from '../song.model';
 import { environment } from '../../../env/environment';
+import { Album } from '../models/album.model';
+import { Song } from '../models/song.model';
 
 @Component({
   selector: 'app-album-card',

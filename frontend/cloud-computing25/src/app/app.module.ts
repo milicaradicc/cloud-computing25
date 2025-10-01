@@ -22,33 +22,40 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ArtistsModule} from './artists/artists.module';
 import { ContentModule } from './content/content.module';
 import { SubscriptionModule } from './subscription/subscription.module';
+import { DiscoverContentComponent } from './content/discover-content/discover-content.component';
+import { MatDivider } from "@angular/material/divider";
+import { MatListItem } from "@angular/material/list";
+import { MatList } from '@angular/material/list';
 
 @NgModule({
   declarations: [
     AppComponent,
   ],
     imports: [
-        BrowserModule,
-        BrowserAnimationsModule,
-        AppRoutingModule,
-        LayoutModule,
-        AuthModule,
-        HttpClientModule,
-        MatButtonModule,
-        MatIconModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatDialogModule,
-        MatSelectModule,
-        MatSliderModule,
-        MatDatepickerModule,
-        MatCardModule,
-        MatTableModule,
-        MatPaginatorModule,
-        ArtistsModule,
-        ContentModule,
-        SubscriptionModule
-    ],
+    BrowserModule,
+    BrowserAnimationsModule,
+    AppRoutingModule,
+    LayoutModule,
+    AuthModule,
+    HttpClientModule,
+    MatButtonModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatDialogModule,
+    MatSelectModule,
+    MatSliderModule,
+    MatDatepickerModule,
+    MatCardModule,
+    MatTableModule,
+    MatPaginatorModule,
+    ArtistsModule,
+    ContentModule,
+    SubscriptionModule,
+    MatDivider,
+    MatListItem,
+    MatList
+],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
   ],
