@@ -21,6 +21,7 @@ class SongsConstruct(Construct):
         topic: sns.Topic,
         authorizer,
         artists_table: dynamodb.Table,
+        rating_table: dynamodb.Table,
     ):
         super().__init__(scope, id)
 
@@ -141,6 +142,48 @@ class SongsConstruct(Construct):
         song_id_resource.add_method(
             "GET",
             apigateway.LambdaIntegration(get_song_lambda, proxy=True),
+            authorizer=authorizer,
+            authorization_type=apigateway.AuthorizationType.COGNITO
+        )
+
+        rating_resource = song_id_resource.add_resource("rating")
+
+        # Rate Song Lambda (POST /songs/{songId}/rating)
+        rate_song_lambda = create_lambda_function(
+            self,
+            "RateSongLambda",
+            "handler.lambda_handler",
+            "lambda/rateSong",
+            [],
+            {
+                "RATING_TABLE": rating_table.table_name,
+            }
+        )
+        rating_table.grant_read_write_data(rate_song_lambda)
+
+        rating_resource.add_method(
+            "POST",
+            apigateway.LambdaIntegration(rate_song_lambda, proxy=True),
+            authorizer=authorizer,
+            authorization_type=apigateway.AuthorizationType.COGNITO
+        )
+
+        # Get Song Rating Lambda (GET /songs/{songId}/rating?userId=xxx)
+        get_song_rating_lambda = create_lambda_function(
+            self,
+            "GetSongRatingLambda",
+            "handler.lambda_handler",
+            "lambda/getSongRating",
+            [],
+            {
+                "RATING_TABLE": rating_table.table_name,
+            }
+        )
+        rating_table.grant_read_data(get_song_rating_lambda)
+
+        rating_resource.add_method(
+            "GET",
+            apigateway.LambdaIntegration(get_song_rating_lambda, proxy=True),
             authorizer=authorizer,
             authorization_type=apigateway.AuthorizationType.COGNITO
         )

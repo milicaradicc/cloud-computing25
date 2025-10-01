@@ -1,10 +1,12 @@
 import json
+import os
+
 import boto3
 from decimal import Decimal
 
-dynamodb = boto3.resource('dynamodb')
-RATING_TABLE = 'Rating'
-rating_table = dynamodb.Table(RATING_TABLE)
+table_name = os.environ["RATING_TABLE"]
+dynamodb = boto3.resource("dynamodb")
+rating_table = dynamodb.Table(table_name)
 
 def decimal_default(obj):
     if isinstance(obj, Decimal):
@@ -19,7 +21,7 @@ def lambda_handler(event, context):
     }
 
     try:
-        song_id = event.get("pathParameters", {}).get("songId")
+        song_id = event.get("pathParameters", {}).get("id")
         user_id = event.get("queryStringParameters", {}).get("userId") if event.get("queryStringParameters") else None
 
         if not user_id or not song_id:

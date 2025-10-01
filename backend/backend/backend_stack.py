@@ -98,6 +98,14 @@ class BackendStack(Stack):
             removal_policy=RemovalPolicy.DESTROY
         )
 
+        # RATING TABLE
+        rating_table = dynamodb.Table(
+            self, "Rating",
+            partition_key=dynamodb.Attribute(name="User", type=dynamodb.AttributeType.STRING),
+            sort_key=dynamodb.Attribute(name="Song", type=dynamodb.AttributeType.STRING),
+            removal_policy=RemovalPolicy.DESTROY
+        )
+
         user_pool, user_pool_client = setup_cognito(self)
 
         # SNS
@@ -138,5 +146,5 @@ class BackendStack(Stack):
 
         # Artists API construct
         ArtistsConstruct(self, "ArtistsConstruct", api, artists_table, songs_table, albums_table, artist_album_table, artist_song_table, authorizer)
-        SongsConstruct(self, "SongsConstruct", api, songs_table, albums_table, artist_song_table, music_bucket, topic,authorizer, artists_table)
+        SongsConstruct(self, "SongsConstruct", api, songs_table, albums_table, artist_song_table, music_bucket, topic,authorizer, artists_table, rating_table)
         AlbumConstruct(self, "AlbumConstruct", api, songs_table, albums_table, artist_album_table, music_bucket, topic,authorizer)
