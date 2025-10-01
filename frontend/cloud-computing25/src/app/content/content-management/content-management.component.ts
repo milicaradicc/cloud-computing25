@@ -131,7 +131,7 @@ albums: Album[] = [];
       if (result) {
         song.deleted = true;
         
-        this.contentService.deleteSong(song).subscribe({
+        this.contentService.deleteSong(song.Id).subscribe({
           next: () => {
             this.showMessage('Song deleted successfully');
             this.loadData(); 

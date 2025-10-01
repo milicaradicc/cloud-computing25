@@ -17,12 +17,14 @@ export class UploadContentComponent implements OnInit {
   uploadForm: FormGroup;
   availableArtists: Artist[] = [];
   availableGenres: string[] = [
-    'Pop', 'Rock', 'Hip Hop', 'Rap', 'Electronic', 
+    'Pop', 'Rock', 'Hip Hop', 'Rap', 'Electronic',
     'Classical', 'Jazz', 'Blues', 'Country', 'Reggae'
   ];
   coverImagePreview: string | null = null;
   selectedAudioFileName: string = '';
   singleAudioInfo: any | null = null;
+  coverFile: File | null = null;
+  coverBase64: string | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -90,9 +92,18 @@ export class UploadContentComponent implements OnInit {
 
   // ----------- Cover Image Handling -----------
 
-  onCoverImageUrlChange(event: any) {
-    const url = event.target.value;
-    this.coverImagePreview = url || null;
+  onCoverFileChange(event: any) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    this.coverFile = file;
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      this.coverImagePreview = e.target.result; // za prikaz u UI
+    };
+    reader.readAsDataURL(file);
+
+    this.uploadForm.patchValue({ coverImageUrl: file.name }); // ili možeš čuvati ime
   }
 
   onImageError() {
@@ -176,6 +187,11 @@ export class UploadContentComponent implements OnInit {
 
     const base64File = await this.convertFileToBase64(file);
 
+    let coverBase64: string | null = null;
+    if (this.coverFile) {
+      coverBase64 = await this.convertFileToBase64(this.coverFile);
+    }
+
     const albumDto: AlbumUploadDTO = {
       createdDate: new Date(),
       modifiedDate: new Date(),
@@ -183,7 +199,8 @@ export class UploadContentComponent implements OnInit {
       description: formValue.description,
       artists: formValue.artists,
       genres: formValue.genres,
-      coverImage: formValue.coverImageUrl,
+      coverFileBase64: coverBase64 ?? undefined,
+      coverFileName: this.coverFile?.name,
       single: true
     };
 
@@ -205,7 +222,7 @@ export class UploadContentComponent implements OnInit {
           description: formValue.description,
           artists: formValue.artists,
           genres: formValue.genres,
-          coverImage: formValue.coverImageUrl,
+          coverImage: this.coverFile?.name ?? "",
           album: albumId,
           single: true
         };
@@ -222,6 +239,10 @@ export class UploadContentComponent implements OnInit {
   }
 
   private async uploadAlbum(formValue: any) {
+    if (this.coverFile) {
+      this.coverBase64 = await this.convertFileToBase64(this.coverFile);
+    }
+
     const albumDto: AlbumUploadDTO = {
       createdDate: new Date(),
       modifiedDate: new Date(),
@@ -229,7 +250,8 @@ export class UploadContentComponent implements OnInit {
       description: formValue.description,
       artists: formValue.artists,
       genres: formValue.genres,
-      coverImage: formValue.coverImageUrl,
+      coverFileBase64: this.coverBase64 ?? undefined,
+      coverFileName: this.coverFile?.name,
       single: false
     };
 

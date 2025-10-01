@@ -29,8 +29,8 @@ export class ArtistService {
     return this.httpClient.put<Artist>(`${environment.apiHost}/artists/${id}`, artist);
   }
 
-  delete(artist: Artist): Observable<any> {
-    return this.httpClient.delete(`${environment.apiHost}/artists?Genre=${artist.Genre}&Id=${artist.Id}`);
+  delete(id: string): Observable<any> {
+    return this.httpClient.delete(`${environment.apiHost}/artists/${id}`);
   }
 }
 

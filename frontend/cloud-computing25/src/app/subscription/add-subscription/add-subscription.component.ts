@@ -64,6 +64,7 @@ export class AddSubscriptionComponent implements OnInit {
 
     const value = this.form.value;
     const user = await this.authService.getUser();
+    const email = await this.authService.getEmail();
 
     let targetName: string;
     if (value.type === 'artist') {
@@ -78,7 +79,7 @@ export class AddSubscriptionComponent implements OnInit {
       targetId: value.targetId,
       type: value.type,
       targetName: targetName,
-      email:user.username
+      email:email
     };
 
     this.dialogRef.close(subscriptionDto);

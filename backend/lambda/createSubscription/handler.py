@@ -1,16 +1,19 @@
 import json
-import boto3
-import uuid
 import os
 
-table_name = os.environ.get('TABLE_NAME')
+import boto3
+import uuid
+import time
+
+table_name = os.environ["SUBSCRIPTIONS_TABLE"]
 dynamodb = boto3.resource("dynamodb")
+table = dynamodb.Table(table_name)
 
 def lambda_handler(event, context):
     claims = event.get("requestContext", {}).get("authorizer", {}).get("claims", {})
-    print("Claims:", claims)
     role = claims.get("custom:role")
-    if role != "admin":
+
+    if role != "user":
         return {
             "statusCode": 403,
             'headers': {'Access-Control-Allow-Origin': '*'},
@@ -27,29 +30,33 @@ def lambda_handler(event, context):
             "body": json.dumps({"message": "Invalid JSON"})
         }
 
-    name = body.get("name")
-    biography = body.get("biography")
-    genres = body.get("genres")
-    print("Parsed body:", name, biography, genres)
+    userId = body.get("userId")
+    targetId = body.get("targetId")
+    targetType = body.get("type")
+    targetName = body.get("targetName")
+    email = body.get("email")
 
-    if not name or not biography or not genres or len(genres) == 0:
+    print(userId, targetId, targetType)
+    if not userId or not targetId or not targetType:
+        print("Missing required fields")
         return {
             "statusCode": 400,
             "headers": {"Access-Control-Allow-Origin": "*"},
             "body": json.dumps({"message": "Missing required fields"})
         }
 
-    artist_id = str(uuid.uuid4())
-    primary_genre = genres[0]
+    subscription_id = str(uuid.uuid4())
+    createdAt = int(time.time())  # <--- timestamp u sekundama
 
     item = {
-        "Genre": primary_genre,
-        "Id": artist_id,
-        "artistId": artist_id,
-        "name": name,
-        "biography": biography,
-        "genres": genres,
-        "deleted":"false"
+        "Target": targetType + "#" + str(targetId),
+        "User": userId,
+        "id": subscription_id,
+        "type": targetType,
+        "createdAt": createdAt,
+        "targetName": targetName,
+        "email":email,
+        "deleted": "false"
     }
 
     try:
