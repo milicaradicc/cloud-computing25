@@ -47,10 +47,9 @@ def lambda_handler(event, context):
                 "body": json.dumps({"message": "Missing 'genre' query parameter"})
             }
 
-        # Query za umetnike po žanru (može se koristiti sekundarni indeks po potrebi)
+        # Query za umetnike po žanru
         artists_response = artists_table.query(
-            KeyConditionExpression=Key("Genre").eq(genre),
-            IndexName="deleted-index"  # ako želiš filtrirati samo neobrisane
+            KeyConditionExpression=Key("Genre").eq(genre)
         )
 
         # Query za albume po žanru

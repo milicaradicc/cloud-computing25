@@ -201,50 +201,13 @@ class BackendStack(Stack):
             cognito_user_pools=[user_pool],
         )
 
-        # API constructs
+        # API constructs (sve Artists rute idu preko ArtistsConstruct!)
         ArtistsConstruct(self, "ArtistsConstruct", api, artists_table, songs_table, albums_table, artist_album_table, artist_song_table, authorizer)
-        SongsConstruct(self, "SongsConstruct", api, songs_table, albums_table, artist_song_table, music_bucket, topic,authorizer, artists_table, rating_table)
-        AlbumConstruct(self, "AlbumConstruct", api, songs_table, albums_table, artist_album_table, music_bucket, topic,authorizer)
+        SongsConstruct(self, "SongsConstruct", api, songs_table, albums_table, artist_song_table, music_bucket, topic, authorizer, artists_table, rating_table)
+        AlbumConstruct(self, "AlbumConstruct", api, songs_table, albums_table, artist_album_table, music_bucket, topic, authorizer)
         SubscriptionsConstruct(self, "SubscriptionsConstruct", api, subscriptions_table, authorizer)
 
-        #Artists api
-        artists_api_resource = api.root.add_resource("artists")
-
-        create_artist_lambda = create_lambda_function(self,"CreateArtistLambda","handler.lambda_handler","lambda/createArtist",[],{'TABLE_NAME': artists_table.table_name})
-        artists_table.grant_write_data(create_artist_lambda)
-
-        create_artist_integration = apigateway.LambdaIntegration(create_artist_lambda, proxy=True)
-
-        artists_api_resource.add_method(
-            "POST",
-            create_artist_integration,
-            authorizer=authorizer,
-            authorization_type=apigateway.AuthorizationType.COGNITO
-        )
-
-        get_artists_lambda = create_lambda_function(self,"GetArtistsLambda","handler.lambda_handler","lambda/getArtists",[],{'TABLE_NAME': artists_table.table_name})
-        artists_table.grant_read_data(get_artists_lambda)
-
-        get_artists_integration = apigateway.LambdaIntegration(get_artists_lambda, proxy=True)
-
-        artists_api_resource.add_method(
-            "GET",
-            get_artists_integration,
-        )
-
-        get_artist_lambda = create_lambda_function(self,"GetArtistLambda","handler.lambda_handler","lambda/getArtist",[],{'TABLE_NAME': artists_table.table_name})
-        artists_table.grant_read_data(get_artist_lambda)
-
-        artist_id_resource = artists_api_resource.add_resource("{id}")
-
-        get_artist_integration = apigateway.LambdaIntegration(get_artist_lambda, proxy=True)
-
-        artist_id_resource.add_method(
-            "GET",
-            get_artist_integration,
-        )
-
-        #Genres api
+# Genres API
         genres_api_resource = api.root.add_resource("genres")
 
         get_all_genres_lambda = create_lambda_function(
@@ -253,34 +216,32 @@ class BackendStack(Stack):
             "handler.lambda_handler",
             "lambda/getGenres", 
             [],
-            {'TABLE_NAME': artists_table.table_name}
+            {'ARTISTS_TABLE_NAME': artists_table.table_name}
         )
 
+        # CORRECTED: Use grant_read_data for read-only access
         artists_table.grant_read_data(get_all_genres_lambda)
 
         get_all_genres_integration = apigateway.LambdaIntegration(get_all_genres_lambda, proxy=True)
-        genres_api_resource.add_method(
-            "GET",
-            get_all_genres_integration
-        )
+        genres_api_resource.add_method("GET", get_all_genres_integration)
 
 
         #filters
-
         filter_api_resource = api.root.add_resource("discover").add_resource("filter")
 
         get_filtered_lambda = create_lambda_function(
             self,
             "GetFilteredContentLambda",
             "handler.lambda_handler", 
-            "lambda/filterByGenre",   
+            "lambda/filterByGenre",  
             [],
-            environment={          
+            environment={      
                 'ARTISTS_TABLE': artists_table.table_name,
                 'ALBUMS_TABLE': albums_table.table_name
             }
         )
 
+        # CORRECTED: Grant read data to the *filtered* lambda for the artists table
         artists_table.grant_read_data(get_filtered_lambda)
         albums_table.grant_read_data(get_filtered_lambda)
 

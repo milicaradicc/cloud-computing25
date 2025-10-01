@@ -38,12 +38,14 @@ def lambda_handler(event, context):
         }
 
     except Exception as e:
-        print(f"Error occurred: {e}")
+        import traceback
+        print("Error occurred:", e)
+        traceback.print_exc()
         return {
             'statusCode': 500,
             'headers': {
                 "Access-Control-Allow-Origin": "*",
                 "Content-Type": "application/json"
             },
-            'body': json.dumps({"error": "Internal server error."})
+            'body': json.dumps({"error": str(e)})
         }

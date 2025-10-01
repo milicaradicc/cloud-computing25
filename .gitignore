@@ -24,3 +24,5 @@ Thumbs.db
 # Optional logs
 *.log
 node_modules
+
+backend/cdk.out/
