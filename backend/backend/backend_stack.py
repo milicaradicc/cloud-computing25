@@ -131,8 +131,8 @@ class BackendStack(Stack):
         )
 
         subscriptions_table.add_global_secondary_index(
-            index_name="deleted-index",
-            partition_key=dynamodb.Attribute(name="deleted", type=dynamodb.AttributeType.STRING),
+            index_name="id-index",
+            partition_key=dynamodb.Attribute(name="id", type=dynamodb.AttributeType.STRING),
             projection_type=dynamodb.ProjectionType.ALL
         )
 
@@ -141,6 +141,7 @@ class BackendStack(Stack):
             partition_key=dynamodb.Attribute(name="User", type=dynamodb.AttributeType.STRING),
             projection_type=dynamodb.ProjectionType.ALL
         )
+
 
         user_pool, user_pool_client = setup_cognito(self)
 
