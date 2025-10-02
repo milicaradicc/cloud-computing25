@@ -12,11 +12,15 @@ from aws_cdk import (
     aws_sns_subscriptions as subs,
     aws_s3 as s3,
     aws_apigateway as apigateway,
-    aws_iam as iam
+    aws_iam as iam,
+    Duration,
+    aws_stepfunctions as sfn,
+    aws_stepfunctions_tasks as tasks,
 )
 
 from backend.utils.create_lambda import create_lambda_function
 from backend.utils.cognito_setup import setup_cognito
+from backend.utils.transcription_sf import setup_transcription_sf
 
 from backend.constructs.songs_construct import SongsConstruct
 from backend.constructs.albums_construct import AlbumConstruct
@@ -161,8 +165,8 @@ class BackendStack(Stack):
 
         user_pool, user_pool_client = setup_cognito(self)
 
-        # SNS
-        topic = sns.Topic(
+        # SNS :(
+        new_content_topic = sns.Topic(
             self, "NewContentTopic",
             display_name="NewContentTopic"
         )
@@ -172,7 +176,7 @@ class BackendStack(Stack):
             queue_name="NewContentQueue"
         )
 
-        topic.add_subscription(subs.SqsSubscription(new_content_queue))
+        new_content_topic.add_subscription(subs.SqsSubscription(new_content_queue))
 
         send_email_lambda = create_lambda_function(
             self,
@@ -200,6 +204,58 @@ class BackendStack(Stack):
             )
         )
 
+        transcription_bucket = s3.Bucket(
+            self, "my-music-app-transcriptions",
+            versioned=True,
+            removal_policy=RemovalPolicy.DESTROY,
+            block_public_access=s3.BlockPublicAccess(
+                block_public_acls=True,
+                block_public_policy=False,
+                ignore_public_acls=True,
+                restrict_public_buckets=False
+            ),
+            public_read_access=True
+        )
+
+        CfnOutput(
+            self,
+            "TranscriptionBucketURL",
+            value=f"https://{transcription_bucket.bucket_name}.s3.{self.region}.amazonaws.com/",
+            description="Transcription Bucket URL",
+        )
+
+        state_machine = setup_transcription_sf(self, transcription_bucket, music_bucket, songs_table)
+
+        new_transcription_topic = sns.Topic(
+            self, "NewTranscriptionTopic",
+            display_name="NewTranscriptionTopic"
+        )
+        # SQS Queue
+        new_transcription_queue = sqs.Queue(
+            self, "NewTranscriptionQueue",
+            queue_name="NewTranscriptionQueue"
+        )
+
+        new_transcription_topic.add_subscription(subs.SqsSubscription(new_transcription_queue))
+
+        handle_new_transcription_lambda = create_lambda_function(
+            self,
+            "HandleNewTranscription",
+            "handler.lambda_handler",
+            "lambda/handleNewTranscription",
+            [],
+            {
+                "MUSIC_BUCKET_NAME": music_bucket.bucket_name,
+                "TRANSCRIPTION_STEP_FUNCTION_ARN": state_machine.state_machine_arn
+            }
+        )
+
+        handle_new_transcription_lambda.add_event_source(
+            lambda_event_sources.SqsEventSource(new_transcription_queue)
+        )
+
+        state_machine.grant_start_execution(handle_new_transcription_lambda)
+
         # API
         api = apigateway.RestApi(
             self, "MusicStreamingApi",
@@ -218,6 +274,6 @@ class BackendStack(Stack):
 
         # API constructs
         ArtistsConstruct(self, "ArtistsConstruct", api, artists_table, songs_table, albums_table, artist_album_table, artist_song_table, authorizer)
-        SongsConstruct(self, "SongsConstruct", api, songs_table, albums_table, artist_song_table, music_bucket, topic,authorizer, artists_table, rating_table)
-        AlbumConstruct(self, "AlbumConstruct", api, songs_table, albums_table, artist_album_table, music_bucket, topic,authorizer)
+        SongsConstruct(self, "SongsConstruct", api, songs_table, albums_table, artist_song_table, music_bucket, new_content_topic, new_transcription_topic, authorizer, artists_table, rating_table)
+        AlbumConstruct(self, "AlbumConstruct", api, songs_table, albums_table, artist_album_table, music_bucket, new_content_topic, authorizer)
         SubscriptionsConstruct(self, "SubscriptionsConstruct", api, subscriptions_table, authorizer)

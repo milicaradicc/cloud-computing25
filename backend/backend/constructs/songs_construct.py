@@ -18,7 +18,8 @@ class SongsConstruct(Construct):
         albums_table: dynamodb.Table,
         artist_song_table: dynamodb.Table,
         bucket: s3.Bucket,
-        topic: sns.Topic,
+        new_content_topic: sns.Topic,
+        new_transcription_topic: sns.Topic,
         authorizer,
         artists_table: dynamodb.Table,
         rating_table: dynamodb.Table,
@@ -38,13 +39,15 @@ class SongsConstruct(Construct):
                 "BUCKET_NAME": bucket.bucket_name,
                 "SONGS_TABLE": table.table_name,
                 "ARTIST_SONG_TABLE": artist_song_table.table_name,
-                "SNS_TOPIC_ARN": topic.topic_arn,
+                "SNS_NEW_CONTENT_ARN": new_content_topic.topic_arn,
+                "SNS_NEW_TRANSCRIPTION_ARN": new_transcription_topic.topic_arn,
             }
         )
         bucket.grant_read_write(create_song_lambda)
         table.grant_write_data(create_song_lambda)
         artist_song_table.grant_write_data(create_song_lambda)
-        topic.grant_publish(create_song_lambda)
+        new_content_topic.grant_publish(create_song_lambda)
+        new_transcription_topic.grant_publish(create_song_lambda)
 
         songs_api_resource.add_method(
             "POST",
