@@ -20,7 +20,7 @@ from aws_cdk import (
 
 from backend.utils.create_lambda import create_lambda_function
 from backend.utils.cognito_setup import setup_cognito
-from backend.utils.transcription_sf import setup_transcription_sf
+from backend.utils.transcription_sf_setup import setup_transcription_sf
 
 from backend.constructs.songs_construct import SongsConstruct
 from backend.constructs.albums_construct import AlbumConstruct
