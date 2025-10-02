@@ -214,7 +214,14 @@ class BackendStack(Stack):
                 ignore_public_acls=True,
                 restrict_public_buckets=False
             ),
-            public_read_access=True
+            public_read_access=True,
+            cors=[
+                s3.CorsRule(
+                    allowed_methods=[s3.HttpMethods.GET],
+                    allowed_origins=["*"],
+                    allowed_headers=["*"]
+                )
+            ]
         )
 
         CfnOutput(
