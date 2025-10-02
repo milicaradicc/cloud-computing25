@@ -224,7 +224,8 @@ export class UploadContentComponent implements OnInit {
           genres: formValue.genres,
           coverImage: this.coverFile?.name ?? "",
           album: albumId,
-          single: true
+          single: true,
+          transcribe:true
         };
 
         console.log('Single DTO:', dto);
@@ -283,6 +284,7 @@ export class UploadContentComponent implements OnInit {
             genres: songControl.value.genres,
             coverImage: songControl.value.coverImageUrl || formValue.coverImageUrl,
             album: albumId,
+            transcribe:true,
             single: false
           };
 

@@ -28,8 +28,8 @@
       <div class="rating-section">
         <label class="rating-label">Rate this song:</label>
         <div class="star-rating" [class.loading]="isRatingLoading">
-          <button 
-            *ngFor="let star of getStarArray()" 
+          <button
+            *ngFor="let star of getStarArray()"
             class="star-button"
             [class]="getStarClass(star)"
             (click)="onStarClick(star)"
@@ -118,6 +118,11 @@
       <div class="detail-item" *ngIf="song?.description">
         <label>Description:</label>
         <p class="description">{{ song.description }}</p>
+      </div>
+
+      <div class="detail-item" *ngIf="song?.transcriptFileName">
+        <label>Lyrics:</label>
+        <p class="description">{{ transcript }}</p>
       </div>
     </div>
 

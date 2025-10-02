@@ -13,4 +13,5 @@ export interface Song {
   fileType:string,
   fileSize:number,
   deleted:boolean,
+  transcriptFileName?:string;
 }
