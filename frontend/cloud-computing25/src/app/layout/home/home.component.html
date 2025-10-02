@@ -1,0 +1,62 @@
+<div class="discover-container">
+
+  <div class="page-header">
+    <h1>Your Feed</h1>
+    <button mat-icon-button class="discover-link" routerLink="/discover" title="Discover Music">
+      <mat-icon>search</mat-icon>
+    </button>
+  </div>
+  <p>Music recommendations</p>
+
+  <div *ngIf="isLoading" class="text-center loading-container">
+    <mat-spinner diameter="50" color="accent"></mat-spinner>
+    <p>Preparing recommendations...</p>
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger">
+    {{ error }}
+  </div>
+
+  <div *ngIf="!isLoading && !error" class="feed-content-container">
+
+    <div class="songs-section">
+      <div *ngIf="recommendedSongs" class="songs-section">
+        <h2 class="section-title">
+            Songs for you
+            <mat-icon>music_note</mat-icon>
+        </h2>
+        <div *ngIf="recommendedSongs.length > 0; else noSongs" class="content-grid">
+            <app-song-card *ngFor="let song of recommendedSongs" [song]="song"></app-song-card>
+        </div>
+        <ng-template #noSongs>
+            <p class="no-content-message">No recommended songs</p>
+        </ng-template>
+        </div>
+      <ng-template #noSongs>
+        <p class="no-content-message">No recommended songs</p>
+      </ng-template>
+    </div>
+    
+    <mat-divider class="section-divider"></mat-divider>
+
+    <div class="albums-section">
+        <div *ngIf="recommendedAlbums" class="albums-section">
+        <h2 class="section-title">
+            Albumi za Vas
+            <mat-icon>album</mat-icon>
+        </h2>
+        <div *ngIf="recommendedAlbums.length > 0; else noAlbums" class="albums-list-grid">
+            <mat-card *ngFor="let album of recommendedAlbums" class="album-card" [routerLink]="['/album-details', album.Id]">
+            </mat-card>
+        </div>
+        <ng-template #noAlbums>
+            <p class="no-content-message">No recommended albums</p>
+        </ng-template>
+        </div>
+      <ng-template #noAlbums>
+        <p class="no-content-message">No recommended albums</p>
+      </ng-template>
+    </div>
+
+  </div>
+</div>

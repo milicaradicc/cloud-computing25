@@ -76,6 +76,6 @@ import { AlbumDetailsComponent } from './album-details/album-details.component';
     MatListModule,
     MatCardModule
 ],
-  exports: [UploadContentComponent, AlbumCardComponent]
+  exports: [UploadContentComponent, AlbumCardComponent, SongCardComponent]
 })
 export class ContentModule { }

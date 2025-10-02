@@ -8,6 +8,7 @@ import {environment} from '../../../env/environment';
 import { AuthService } from '../../infrastructure/auth/auth.service';
 import { Subscription } from 'rxjs';
 import {HttpClient} from '@angular/common/http';
+import { ListeningHistoryService } from '../listening-history.service';
 
 @Component({
   selector: 'app-song-details',
@@ -39,6 +40,7 @@ export class SongDetailsComponent implements OnInit, OnDestroy {
     private contentService: ContentService,
     private authService: AuthService,
     private http: HttpClient,
+    private listeningHistoryService: ListeningHistoryService
   ) {}
 
   ngOnInit(): void {
@@ -134,8 +136,17 @@ export class SongDetailsComponent implements OnInit, OnDestroy {
   togglePlayPause() {
     if (!this.audioPlayer?.nativeElement) return;
 
+    if (!this.song || !this.song.Id || !this.song.Album) {
+      console.error("Nema pesme za puštanje ili pesma nema ID.");
+      return;
+    }
     if (this.isPlaying) {
       this.audioPlayer.nativeElement.pause();
+
+      this.listeningHistoryService.recordListen(this.song?.Id, this.song?.Album).subscribe({
+        next: () => console.log(`Beleži se slušanje za pesmu: ${this.song?.title}`),
+        error: (err) => console.error('Greška pri beleženju slušanja:', err)
+      });
     } else {
       this.audioPlayer.nativeElement.play();
     }

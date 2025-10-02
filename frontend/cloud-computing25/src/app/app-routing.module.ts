@@ -15,7 +15,7 @@ import { SubscriptionsComponent } from './subscription/subscriptions/subscriptio
 import { AlbumDetailsComponent } from './content/album-details/album-details.component';
 
 const routes: Routes = [
-  {path: 'home', component: DiscoverContentComponent}, // ContentComponent
+  {path: 'home', component: HomeComponent}, // ContentComponent
   {path: 'subscriptions', component: SubscriptionsComponent, canActivate: [AuthGuard],
     data: {role: ['user']}},
   {path: 'discover', component: DiscoverContentComponent, canActivate: [AuthGuard],

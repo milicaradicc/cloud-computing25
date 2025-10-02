@@ -16,7 +16,7 @@ export class DownloadService {
 
   // API poziv koji vraća Observable
   downloadSong(songId: string): Observable<DownloadResponse> {
-    return this.http.get<DownloadResponse>(`${environment.apiHost}download/${songId}`);
+    return this.http.get<DownloadResponse>(`${environment.apiHost}/download/${songId}`);
   }
 
   initiateDownload(url: string, filename: string): void {
@@ -29,7 +29,7 @@ export class DownloadService {
 
   getPresignedUrl(songId: string): Observable<{ url: string; filename: string }> {
     return this.http.get<{ url: string; filename: string }>(
-      `${environment.apiHost}songs/${songId}/presigned-url`
+      `${environment.apiHost}/songs/${songId}/presigned-url`
     );
   }
 

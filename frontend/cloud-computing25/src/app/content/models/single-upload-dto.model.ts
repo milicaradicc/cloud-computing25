@@ -1,4 +1,4 @@
-import { Artist } from "../artists/artist.model";
+import { Artist } from "../../artists/artist.model";
 
 export interface SingleUploadDTO {
   fileName: string;
