@@ -1,4 +1,4 @@
-import { Artist } from "../../artists/artist.model";
+import { Artist } from "../artists/artist.model";
 
 export interface SingleUploadDTO {
   fileName: string;
@@ -15,5 +15,6 @@ export interface SingleUploadDTO {
   album: string,
   coverImage: string,
   single: boolean,
+  transcribe: boolean,
   coverFileBase64?: string;
 }

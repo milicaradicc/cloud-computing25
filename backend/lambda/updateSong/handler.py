@@ -14,6 +14,9 @@ albums_table_name = os.environ["ALBUMS_TABLE"]
 bucket_name = os.environ["BUCKET_NAME"]
 artist_song_table_name = os.environ["ARTIST_SONG_TABLE"]
 
+SNS_NEW_TRANSCRIPTION_TOPIC_ARN = os.environ["SNS_NEW_TRANSCRIPTION_ARN"]
+sns = boto3.client("sns")
+
 songs_table = dynamodb.Table(songs_table_name)
 albums_table = dynamodb.Table(albums_table_name)
 artist_song_table = dynamodb.Table(artist_song_table_name)
@@ -93,6 +96,24 @@ def lambda_handler(event, context):
                 item['fileType'] = body.get('fileType', item.get('fileType'))
                 item['fileSize'] = body.get('fileSize', item.get('fileSize'))
                 item['duration'] = body.get('duration', item.get('duration'))
+
+                if item.get('transcribe'):
+                    item['transcriptFileName'] = ''
+                    sns.publish(
+                        TopicArn=SNS_NEW_TRANSCRIPTION_TOPIC_ARN,
+                        Message=json.dumps(item, default=str),
+                        MessageAttributes={
+                            "songId": {
+                                "DataType": "String",
+                                "StringValue": song_id
+                            },
+                            "songFileName": {
+                                "DataType": "String",
+                                "StringValue": filename
+                            }
+                        },
+                        Subject="New Transcription Request"
+                    )
 
             except Exception as e:
                 print(f"S3 audio upload error: {str(e)}")

@@ -12,11 +12,15 @@ from aws_cdk import (
     aws_sns_subscriptions as subs,
     aws_s3 as s3,
     aws_apigateway as apigateway,
-    aws_iam as iam
+    aws_iam as iam,
+    Duration,
+    aws_stepfunctions as sfn,
+    aws_stepfunctions_tasks as tasks,
 )
 
 from backend.utils.create_lambda import create_lambda_function
 from backend.utils.cognito_setup import setup_cognito
+from backend.utils.transcription_sf_setup import setup_transcription_sf
 
 from backend.constructs.songs_construct import SongsConstruct
 from backend.constructs.albums_construct import AlbumConstruct
@@ -179,8 +183,8 @@ class BackendStack(Stack):
 
         user_pool, user_pool_client = setup_cognito(self)
 
-        # SNS
-        topic = sns.Topic(
+        # SNS :(
+        new_content_topic = sns.Topic(
             self, "NewContentTopic",
             display_name="NewContentTopic"
         )
@@ -190,7 +194,7 @@ class BackendStack(Stack):
             queue_name="NewContentQueue"
         )
 
-        topic.add_subscription(subs.SqsSubscription(new_content_queue))
+        new_content_topic.add_subscription(subs.SqsSubscription(new_content_queue))
 
         send_email_lambda = create_lambda_function(
             self,
@@ -218,6 +222,65 @@ class BackendStack(Stack):
             )
         )
 
+        transcription_bucket = s3.Bucket(
+            self, "my-music-app-transcriptions",
+            versioned=True,
+            removal_policy=RemovalPolicy.DESTROY,
+            block_public_access=s3.BlockPublicAccess(
+                block_public_acls=True,
+                block_public_policy=False,
+                ignore_public_acls=True,
+                restrict_public_buckets=False
+            ),
+            public_read_access=True,
+            cors=[
+                s3.CorsRule(
+                    allowed_methods=[s3.HttpMethods.GET],
+                    allowed_origins=["*"],
+                    allowed_headers=["*"]
+                )
+            ]
+        )
+
+        CfnOutput(
+            self,
+            "TranscriptionBucketURL",
+            value=f"https://{transcription_bucket.bucket_name}.s3.{self.region}.amazonaws.com/",
+            description="Transcription Bucket URL",
+        )
+
+        state_machine = setup_transcription_sf(self, transcription_bucket, music_bucket, songs_table)
+
+        new_transcription_topic = sns.Topic(
+            self, "NewTranscriptionTopic",
+            display_name="NewTranscriptionTopic"
+        )
+        # SQS Queue
+        new_transcription_queue = sqs.Queue(
+            self, "NewTranscriptionQueue",
+            queue_name="NewTranscriptionQueue"
+        )
+
+        new_transcription_topic.add_subscription(subs.SqsSubscription(new_transcription_queue))
+
+        handle_new_transcription_lambda = create_lambda_function(
+            self,
+            "HandleNewTranscription",
+            "handler.lambda_handler",
+            "lambda/handleNewTranscription",
+            [],
+            {
+                "MUSIC_BUCKET_NAME": music_bucket.bucket_name,
+                "TRANSCRIPTION_STEP_FUNCTION_ARN": state_machine.state_machine_arn
+            }
+        )
+
+        handle_new_transcription_lambda.add_event_source(
+            lambda_event_sources.SqsEventSource(new_transcription_queue)
+        )
+
+        state_machine.grant_start_execution(handle_new_transcription_lambda)
+
         # API
         api = apigateway.RestApi(
             self, "MusicStreamingApi",
@@ -236,8 +299,8 @@ class BackendStack(Stack):
 
         # API constructs (sve Artists rute idu preko ArtistsConstruct!)
         ArtistsConstruct(self, "ArtistsConstruct", api, artists_table, songs_table, albums_table, artist_album_table, artist_song_table, authorizer)
-        SongsConstruct(self, "SongsConstruct", api, songs_table, albums_table, artist_song_table, music_bucket, topic, authorizer, artists_table, rating_table), 
-        AlbumConstruct(self, "AlbumConstruct", api, songs_table, albums_table, artist_album_table, artist_song_table, artists_table, music_bucket, topic, authorizer)
+        SongsConstruct(self, "SongsConstruct", api, songs_table, albums_table, artist_song_table, music_bucket, new_content_topic, new_transcription_topic, authorizer, artists_table, rating_table)
+        AlbumConstruct(self, "AlbumConstruct", api, songs_table, albums_table, artist_album_table, artist_song_table, artists_table, music_bucket, new_content_topic, authorizer)
         SubscriptionsConstruct(self, "SubscriptionsConstruct", api, subscriptions_table, authorizer)
 
         # FILTERS
@@ -246,10 +309,10 @@ class BackendStack(Stack):
         get_filtered_lambda = create_lambda_function(
             self,
             "GetFilteredContentLambda",
-            "handler.lambda_handler", 
-            "lambda/filterByGenre",  
+            "handler.lambda_handler",
+            "lambda/filterByGenre",
             [],
-            environment={      
+            environment={
                 'ARTISTS_TABLE': artists_table.table_name,
                 'ALBUMS_TABLE': albums_table.table_name
             }
@@ -265,17 +328,17 @@ class BackendStack(Stack):
         generate_download_lambda = create_lambda_function(
             self,
             "GenerateDownloadUrlLambda",
-            "handler.lambda_handler", 
+            "handler.lambda_handler",
             "lambda/downloadSong",
             [],
             environment={
                 "SONG_BUCKET_NAME": music_bucket.bucket_name,
-                "SONGS_TABLE": songs_table.table_name, 
-                "CORS_ORIGIN": "*", 
+                "SONGS_TABLE": songs_table.table_name,
+                "CORS_ORIGIN": "*",
             }
         )
 
-        music_bucket.grant_read(generate_download_lambda)        
+        music_bucket.grant_read(generate_download_lambda)
         songs_table.grant_read_data(generate_download_lambda)
 
         download_resource = api.root.add_resource("download")
@@ -286,12 +349,12 @@ class BackendStack(Stack):
         download_id_resource.add_method(
             "GET",
             download_integration,
-            authorization_type=apigateway.AuthorizationType.NONE, 
+            authorization_type=apigateway.AuthorizationType.NONE,
         )
 
         # OFFLINE LISTENING
         songs_resource = api.root.get_resource("songs")
-        song_id_resource = songs_resource.get_resource("{id}") 
+        song_id_resource = songs_resource.get_resource("{id}")
 
         presigned_resource = song_id_resource.add_resource("presigned-url")
 

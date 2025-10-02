@@ -230,6 +230,7 @@ export class UploadContentComponent implements OnInit {
           coverFileBase64: coverBase64 ?? undefined,
           album: albumId,
           single: true,
+          transcribe:true
         };
 
         console.log('Single DTO:', dto);
@@ -286,6 +287,7 @@ export class UploadContentComponent implements OnInit {
             coverImage: name,
             coverFileBase64: this.coverBase64 ?? undefined,
             album: albumId,
+            transcribe:true,
             single: false
           };
 

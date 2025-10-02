@@ -9,7 +9,8 @@ import os
 BUCKET_NAME = os.environ["BUCKET_NAME"]
 SONG_TABLE = os.environ["SONGS_TABLE"]
 ARTIST_SONG_TABLE = os.environ["ARTIST_SONG_TABLE"]
-SNS_TOPIC_ARN = os.environ["SNS_TOPIC_ARN"]
+SNS_NEW_SINGLE_TOPIC_ARN = os.environ["SNS_NEW_CONTENT_ARN"]
+SNS_NEW_TRANSCRIPTION_TOPIC_ARN = os.environ["SNS_NEW_TRANSCRIPTION_ARN"]
 
 s3 = boto3.client('s3')
 dynamodb = boto3.resource('dynamodb')
@@ -26,6 +27,7 @@ def lambda_handler(event, context):
         genres = body.get('genres', [])
         single = body.get('single')
         album_id = body.get('album', 'Unknown')
+        transcribe = body.get('transcribe', False)
 
         # Upload pesme u S3
         s3.put_object(Bucket=BUCKET_NAME, Key=filename, Body=base64.b64decode(fileBase64))
@@ -48,7 +50,8 @@ def lambda_handler(event, context):
             "createdDate": str(datetime.now()),
             "modifiedDate": str(datetime.now()),
             "duration": body.get('duration'),
-            "deleted": "false"
+            "deleted": "false",
+            "transcribe": transcribe
         }
         song_table.put_item(Item=item)
         print(song_id)
@@ -65,7 +68,7 @@ def lambda_handler(event, context):
         print(f"Single: {single}")
         if single:
             sns.publish(
-                TopicArn=SNS_TOPIC_ARN,
+                TopicArn=SNS_NEW_SINGLE_TOPIC_ARN,
                 Message=json.dumps(item, default=str),
                 MessageAttributes={
                     "contentType": {
@@ -75,7 +78,24 @@ def lambda_handler(event, context):
                 },
                 Subject="New Single"
             )
-            print(f"Published single '{body['title']}' to SNS topic {SNS_TOPIC_ARN}")
+            print(f"Published single '{body['title']}' to SNS topic {SNS_NEW_SINGLE_TOPIC_ARN}")
+
+        if transcribe:
+            sns.publish(
+                    TopicArn=SNS_NEW_TRANSCRIPTION_TOPIC_ARN,
+                    Message=json.dumps(item, default=str),
+                    MessageAttributes={
+                        "songId": {
+                            "DataType": "String",
+                            "StringValue": song_id
+                        },
+                        "songFileName": {
+                            "DataType": "String",
+                            "StringValue": filename
+                        }
+                    },
+                    Subject="New Transcription Request"
+                )
 
         return {
             "statusCode": 201,
