@@ -2,8 +2,8 @@ import {Component, ElementRef, inject, OnDestroy, OnInit, ViewChild} from '@angu
 import {ActivatedRoute} from '@angular/router';
 import {ContentService} from '../content.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {Song} from '../song.model';
-import {Rating} from '../rating.model';
+import { Song } from '../models/song.model';
+import {Rating} from '../models/rating.model';
 import {environment} from '../../../env/environment';
 import { AuthService } from '../../infrastructure/auth/auth.service';
 import { Subscription } from 'rxjs';

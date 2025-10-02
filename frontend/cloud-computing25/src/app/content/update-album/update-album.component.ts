@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ArtistService } from '../../artists/artist.service';
 import { Artist } from '../../artists/artist.model';
-import { Album } from '../album.model';
+import { Album } from '../models/album.model';
 import { ContentService } from '../content.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { environment } from '../../../env/environment';

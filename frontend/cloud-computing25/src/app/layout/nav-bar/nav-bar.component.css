@@ -1,12 +1,17 @@
+/* Navbar toolbar */
 mat-toolbar {
   position: sticky;
   z-index: 1;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white; /* tekst i ikonice su bele boje */
 }
 
+/* Ikonice u toolbaru */
 mat-icon {
-  color: #3a2d30;
+  color: #ffffff;
 }
 
+/* Navigacija unutar toolbar-a */
 .navigation-container {
   display: flex;
   justify-content: right;
@@ -14,21 +19,32 @@ mat-icon {
   align-items: center;
 }
 
+/* Stavke navigacije */
 .navigation-item {
   font-size: larger;
+  color: white;
+  margin-left: 8px; /* razmak između dugmadi */
 }
+
+/* Badge za notifikacije */
 .notification-badge {
   position: absolute;
   top: 8px;
   right: 8px;
-
   width: 8px;
   height: 8px;
-
   background-color: rgb(221, 48, 48);
   border-radius: 50%;
 }
 
+/* Logo / naslov aplikacije */
 span {
   font-family: 'Fira Sans Condensed', serif;
+  color: white;
+  cursor: pointer; /* pokazuje da je klikabilno */
+}
+
+/* Dugmad sa hover efektom (opciono) */
+button.mat-icon-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }

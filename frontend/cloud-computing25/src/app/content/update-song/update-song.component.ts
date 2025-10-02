@@ -4,8 +4,8 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ArtistService } from '../../artists/artist.service';
 import { Artist } from '../../artists/artist.model';
 import { ContentService } from '../content.service';
-import { Song } from '../song.model';
 import { environment } from '../../../env/environment';
+import { Song } from '../models/song.model';
 
 @Component({
   selector: 'app-update-song',

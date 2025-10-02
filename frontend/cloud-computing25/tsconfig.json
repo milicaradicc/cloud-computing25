@@ -16,7 +16,12 @@
     "moduleResolution": "bundler",
     "importHelpers": true,
     "target": "ES2022",
-    "module": "ES2022"
+    "module": "ES2022",
+
+    "lib": [
+      "ES2022", // Cilja ES2022, što uključuje Promise, async/await, itd.
+      "dom"     // Neophodno za sve veb aplikacije (npr. 'document', 'window')
+    ]
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

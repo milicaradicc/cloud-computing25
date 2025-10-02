@@ -10,15 +10,15 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatRadioModule } from '@angular/material/radio';
-import { MatCardModule } from '@angular/material/card';
-import { MatDividerModule } from '@angular/material/divider';
+import { MatCardActions, MatCardModule, MatCard } from '@angular/material/card';
+import { MatDividerModule, MatDivider } from '@angular/material/divider';
 import { MatChipsModule } from '@angular/material/chips'; 
 import { MatDatepickerModule } from '@angular/material/datepicker'; 
 import { MatNativeDateModule } from '@angular/material/core'; 
 import { MatTableModule } from '@angular/material/table'; 
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'; 
-import { MatListModule } from '@angular/material/list'; 
+import { MatListModule, MatList } from '@angular/material/list'; 
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -31,6 +31,8 @@ import { SongDetailsComponent } from './song-details/song-details.component';
 import { ContentManagementComponent, ConfirmDeleteDialog } from './content-management/content-management.component';
 import { UpdateAlbumComponent } from './update-album/update-album.component';
 import { UpdateSongComponent } from './update-song/update-song.component';
+import { DiscoverContentComponent } from './discover-content/discover-content.component';
+import { AlbumDetailsComponent } from './album-details/album-details.component';
 
 @NgModule({
   declarations: [
@@ -42,13 +44,14 @@ import { UpdateSongComponent } from './update-song/update-song.component';
     ContentManagementComponent,
     UpdateAlbumComponent,
     UpdateSongComponent,
+    DiscoverContentComponent,
+    AlbumDetailsComponent
   ],
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
     RouterModule,
-
     // Angular Material
     MatToolbarModule,
     MatIconModule,
@@ -57,21 +60,22 @@ import { UpdateSongComponent } from './update-song/update-song.component';
     MatInputModule,
     MatSelectModule,
     MatRadioModule,
-    MatCardModule,
-    MatDividerModule,
     MatChipsModule,
     MatDatepickerModule,
     MatNativeDateModule,
     MatTableModule,
     MatProgressSpinnerModule,
-    MatListModule,
     MatDialogModule,
     MatTabsModule,
     MatTooltipModule,
     MatDialogModule,
-
-    ConfirmDeleteDialog
-  ],
-  exports: [UploadContentComponent]
+    ConfirmDeleteDialog,
+    MatCard,
+    MatDivider,
+    MatList,
+    MatListModule,
+    MatCardModule
+],
+  exports: [UploadContentComponent, AlbumCardComponent]
 })
 export class ContentModule { }

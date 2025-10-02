@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { ArtistService } from '../../artists/artist.service';
 import { Artist } from '../../artists/artist.model';
-import { SingleUploadDTO } from '../single-upload-dto.model';
+import { SingleUploadDTO } from '../models/single-upload-dto.model';
 import { ContentService } from '../content.service';
-import { AlbumUploadDTO } from '../album-upload-dto.model';
+import { AlbumUploadDTO } from '../models/album-upload-dto.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({

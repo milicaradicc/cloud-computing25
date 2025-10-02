@@ -1,9 +1,11 @@
 .song-details-container {
   display: flex;
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  flex-direction: row;
+  background: #080808; 
   color: white;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow-y: auto;
 }
 
 .player-section {
@@ -12,11 +14,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  backdrop-filter: blur(10px);
-  top: 60px;
-  height: calc(100vh - 60px);
-  position: fixed;
+  top: auto;
+  position: relative;
   width: 20%;
+  background: #111;
 }
 
 .cover-image-container {
@@ -25,7 +26,7 @@
   margin-bottom: 2rem;
   border-radius: 15px;
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  background: #222; 
 }
 
 .cover-image {
@@ -53,12 +54,12 @@
   font-size: 1.8rem;
   font-weight: bold;
   margin: 0 0 0.5rem 0;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  color: white;
 }
 
 .artist-names {
   font-size: 1.1rem;
-  color: #e0e0e0;
+  color: #ccc;
   margin: 0;
   opacity: 0.9;
 }
@@ -70,7 +71,7 @@
 .progress-bar {
   width: 100%;
   height: 6px;
-  background: rgba(255, 255, 255, 0.3);
+  background: #333;
   border-radius: 3px;
   margin-bottom: 0.5rem;
   cursor: pointer;
@@ -78,7 +79,7 @@
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #ff6b6b, #4ecdc4);
+  background: #4ecdc4;
   border-radius: 3px;
   transition: width 0.1s ease;
 }
@@ -87,7 +88,7 @@
   display: flex;
   justify-content: space-between;
   font-size: 0.9rem;
-  color: #e0e0e0;
+  color: #ccc;
 }
 
 .control-buttons {
@@ -99,13 +100,12 @@
 }
 
 .control-btn, .play-pause-btn {
-  background: rgba(255, 255, 255, 0.2);
+  background: #444;
   border: none;
   color: white;
   padding: 0.8rem;
   border-radius: 50%;
   cursor: pointer;
-  transition: all 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -113,17 +113,12 @@
 
 .play-pause-btn {
   padding: 1rem;
-  background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  background: #4ecdc4;
 }
 
 .control-btn:hover, .play-pause-btn:hover {
-  background: rgba(255, 255, 255, 0.3);
-  transform: scale(1.1);
-}
-
-.play-pause-btn:hover {
-  background: linear-gradient(135deg, #ff5252, #26c6da);
+  background: #66e0d9;
+  transform: scale(1.05);
 }
 
 .volume-control {
@@ -135,7 +130,7 @@
 .volume-slider {
   flex: 1;
   height: 4px;
-  background: rgba(255, 255, 255, 0.3);
+  background: #333;
   border-radius: 2px;
   outline: none;
   cursor: pointer;
@@ -144,9 +139,6 @@
 .details-section {
   flex: 1;
   padding: 2rem;
-  overflow-y: auto;
-  height: 100%;
-  margin-left: 25%;
 }
 
 .details-title {
@@ -154,8 +146,7 @@
   font-weight: bold;
   margin-bottom: 1.5rem;
   color: #fff;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-  border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+  border-bottom: 2px solid #333;
   padding-bottom: 0.5rem;
 }
 
@@ -172,7 +163,7 @@
 
 .detail-item label {
   font-weight: bold;
-  color: #e0e0e0;
+  color: #ccc;
   font-size: 0.9rem;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -184,7 +175,7 @@
 
 .description {
   line-height: 1.6;
-  color: #f0f0f0;
+  color: #eee;
   margin: 0;
 }
 
@@ -195,7 +186,7 @@
 }
 
 .genre-tag {
-  background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+  background: #4ecdc4;
   padding: 0.3rem 0.8rem;
   border-radius: 20px;
   font-size: 0.8rem;
@@ -205,16 +196,14 @@
 }
 
 .artist-genre {
-  background: linear-gradient(135deg, #a8e6cf, #88d8c0);
+  background: #a8e6cf;
 }
 
 .artist-card {
-  background: rgba(255, 255, 255, 0.1);
+  background: #111;
   padding: 1.5rem;
   border-radius: 15px;
   margin-bottom: 1.5rem;
-  backdrop-filter: blur(5px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .artist-name {
@@ -230,7 +219,7 @@
 
 .artist-genres label, .artist-biography label {
   font-weight: bold;
-  color: #e0e0e0;
+  color: #ccc;
   font-size: 0.9rem;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -240,7 +229,7 @@
 
 .biography-text {
   line-height: 1.6;
-  color: #f0f0f0;
+  color: #eee;
   margin: 0;
 }
 
@@ -265,143 +254,94 @@
   }
 }
 
-/* Custom scrollbar */
+/* Scrollbar */
 .details-section::-webkit-scrollbar {
   width: 6px;
 }
 
 .details-section::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.1);
+  background: #222;
   border-radius: 3px;
 }
 
 .details-section::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.3);
+  background: #444;
   border-radius: 3px;
 }
 
 .details-section::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.5);
+  background: #555;
 }
 
-.placeholder-image {
+.songs-table {
   width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-  color: white;
-  position: relative;
+  border-collapse: collapse;
+  margin-top: 1.5rem;
+  background: #111;
+  border-radius: 12px;
+  overflow: hidden;
 }
 
-.placeholder-image::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.2) 0%, transparent 50%);
+.songs-table th, .songs-table td {
+  padding: 12px 16px;
+  text-align: center; 
+  color: #fff;
 }
 
-.music-icon {
-  font-size: 48px !important;
-  width: 48px !important;
-  height: 48px !important;
-  margin-bottom: 8px;
-  opacity: 0.9;
-  z-index: 1;
+.songs-table th {
+  background: #222;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  letter-spacing: 1px;
 }
 
-.placeholder-text {
-  font-size: 14px;
-  font-weight: 500;
-  opacity: 0.8;
-  z-index: 1;
-}
-/* Rating Section Styles */
-.rating-section {
-  margin: 20px 0;
-  padding: 15px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
-  text-align: center;
+.songs-table tr:nth-child(even) {
+  background: #111;
 }
 
-.rating-label {
-  display: block;
-  font-size: 14px;
-  color: #ccc;
-  margin-bottom: 10px;
-  font-weight: 500;
+.songs-table tr:hover {
+  background: #222;
 }
 
 .star-rating {
   display: flex;
-  justify-content: center;
-  gap: 4px;
-  margin-bottom: 8px;
+  flex-direction: row;
 }
 
-.star-rating.loading {
-  opacity: 0.6;
-  pointer-events: none;
+.rating-section {
+  display: flex;
+  flex-direction: column; 
+  align-items: center;    
+  justify-content: center; 
+  gap: 0.5rem; 
+}
+
+.star-rating {
+  display: flex;
+  flex-direction: row;
+  justify-content: center; 
+  align-items: center;     
 }
 
 .star-button {
   background: none;
   border: none;
   cursor: pointer;
-  padding: 4px;
-  border-radius: 4px;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.star-button:hover {
-  transform: scale(1.1);
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.star-button:disabled {
-  cursor: not-allowed;
-  transform: none;
-}
-
-.star-button.star-empty {
-  color: #666;
+  font-size: 2rem;
+  color: white; 
+  transition: color 0.2s;
+  margin-right: 0.2rem;
 }
 
 .star-button.star-filled {
-  color: #ffd700;
+  color: gold; 
 }
 
-.star-button:hover.star-empty,
-.star-button:hover.star-filled {
-  color: #ffed4e;
+.star-button.star-empty {
+  color: white; 
 }
 
-.rating-info {
-  margin-top: 8px;
+.star-button:disabled {
+  cursor: default;
 }
 
-.current-rating {
-  font-size: 12px;
-  color: #999;
-  font-style: italic;
-}
-
-/* Animation for rating submission */
-@keyframes ratingPulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
-}
-
-.star-rating.loading .star-button {
-  animation: ratingPulse 1s infinite;
-}

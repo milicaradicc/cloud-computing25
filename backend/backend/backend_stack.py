@@ -124,6 +124,14 @@ class BackendStack(Stack):
             removal_policy=RemovalPolicy.DESTROY
         )
 
+        artist_song_table.add_global_secondary_index(
+            index_name="AlbumId-index",
+            partition_key=dynamodb.Attribute(name="AlbumId", type=dynamodb.AttributeType.STRING),
+            sort_key=dynamodb.Attribute(name="ArtistId", type=dynamodb.AttributeType.STRING),
+            projection_type=dynamodb.ProjectionType.ALL
+        )
+
+
         # ARTIST ALBUM TABLE
         artist_album_table = dynamodb.Table(
             self, "ArtistAlbum",
@@ -131,6 +139,14 @@ class BackendStack(Stack):
             sort_key=dynamodb.Attribute(name="AlbumId", type=dynamodb.AttributeType.STRING),
             removal_policy=RemovalPolicy.DESTROY
         )
+
+        artist_album_table.add_global_secondary_index(
+            index_name="AlbumId-index",
+            partition_key=dynamodb.Attribute(name="AlbumId", type=dynamodb.AttributeType.STRING),
+            sort_key=dynamodb.Attribute(name="ArtistId", type=dynamodb.AttributeType.STRING),  # opcionalno
+            projection_type=dynamodb.ProjectionType.ALL
+        )
+
 
         # RATING TABLE
         rating_table = dynamodb.Table(
@@ -218,8 +234,74 @@ class BackendStack(Stack):
             cognito_user_pools=[user_pool],
         )
 
-        # API constructs
+        # API constructs (sve Artists rute idu preko ArtistsConstruct!)
         ArtistsConstruct(self, "ArtistsConstruct", api, artists_table, songs_table, albums_table, artist_album_table, artist_song_table, authorizer)
-        SongsConstruct(self, "SongsConstruct", api, songs_table, albums_table, artist_song_table, music_bucket, topic,authorizer, artists_table, rating_table)
-        AlbumConstruct(self, "AlbumConstruct", api, songs_table, albums_table, artist_album_table, music_bucket, topic,authorizer)
+        SongsConstruct(self, "SongsConstruct", api, songs_table, albums_table, artist_song_table, music_bucket, topic, authorizer, artists_table, rating_table), 
+        AlbumConstruct(self, "AlbumConstruct", api, songs_table, albums_table, artist_album_table, artist_song_table, artists_table, music_bucket, topic, authorizer)
         SubscriptionsConstruct(self, "SubscriptionsConstruct", api, subscriptions_table, authorizer)
+
+        # FILTERS
+        filter_api_resource = api.root.add_resource("discover").add_resource("filter")
+
+        get_filtered_lambda = create_lambda_function(
+            self,
+            "GetFilteredContentLambda",
+            "handler.lambda_handler", 
+            "lambda/filterByGenre",  
+            [],
+            environment={      
+                'ARTISTS_TABLE': artists_table.table_name,
+                'ALBUMS_TABLE': albums_table.table_name
+            }
+        )
+        artists_table.grant_read_data(get_filtered_lambda)
+        albums_table.grant_read_data(get_filtered_lambda)
+
+        get_filtered_integration = apigateway.LambdaIntegration(get_filtered_lambda, proxy=True)
+
+        filter_api_resource.add_method("GET", get_filtered_integration)
+
+        # DOWNLOAD
+        generate_download_lambda = create_lambda_function(
+            self,
+            "GenerateDownloadUrlLambda",
+            "handler.lambda_handler", 
+            "lambda/downloadSong",
+            [],
+            environment={
+                "SONG_BUCKET_NAME": music_bucket.bucket_name,
+                "SONGS_TABLE": songs_table.table_name, 
+                "CORS_ORIGIN": "*", 
+            }
+        )
+
+        music_bucket.grant_read(generate_download_lambda)        
+        songs_table.grant_read_data(generate_download_lambda)
+
+        download_resource = api.root.add_resource("download")
+        download_id_resource = download_resource.add_resource("{songId}")
+
+        download_integration = apigateway.LambdaIntegration(generate_download_lambda, proxy=True)
+
+        download_id_resource.add_method(
+            "GET",
+            download_integration,
+            authorization_type=apigateway.AuthorizationType.NONE, 
+        )
+
+        # OFFLINE LISTENING
+        songs_resource = api.root.get_resource("songs")
+        song_id_resource = songs_resource.get_resource("{id}") 
+
+        presigned_resource = song_id_resource.add_resource("presigned-url")
+
+        presigned_integration = apigateway.LambdaIntegration(
+            generate_download_lambda,
+            proxy=True
+        )
+
+        presigned_resource.add_method(
+            "GET",
+            presigned_integration,
+            authorization_type=apigateway.AuthorizationType.NONE
+        )
