@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Song } from '../song.model';
-import { Album } from '../album.model';
+import { Album } from '../models/album.model';
 import { ContentService } from '../content.service';
+import { Song } from '../models/song.model';
 
 @Component({
   selector: 'app-content',

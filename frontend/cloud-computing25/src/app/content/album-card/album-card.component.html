@@ -2,10 +2,11 @@
   <div class="album-header">
     <div class="album-image-container">
       <img *ngIf="album.coverImage"
-           [src]="album.coverImage"
-           [alt]="album.title + ' cover'"
-           class="album-cover"
-           (error)="onCoverError()">
+      [src]="getAlbumCoverUrl()"
+      [alt]="album.title + ' cover'"
+      class="album-cover"
+      (error)="onCoverError()">
+
       
       <div *ngIf="!album.coverImage" class="album-placeholder">
         <mat-icon class="album-icon">album</mat-icon>

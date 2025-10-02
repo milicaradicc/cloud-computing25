@@ -1,12 +1,13 @@
 import { Component, Inject } from '@angular/core';
-import { Album } from '../album.model';
-import { Song } from '../song.model';
+import { Album } from '../models/album.model';
 import { ContentService } from '../content.service';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatButtonModule } from '@angular/material/button';
 import { UpdateAlbumComponent } from '../update-album/update-album.component';
 import { UpdateSongComponent } from '../update-song/update-song.component';
+import { environment } from '../../../env/environment';
+import { Song } from '../models/song.model';
 
 @Component({
   selector: 'app-content-management',
@@ -31,6 +32,18 @@ albums: Album[] = [];
 
   ngOnInit(): void {
     this.loadData();
+  }
+
+  getAlbumCoverUrl(album: Album): string {
+    if (!album.coverImage) return "assets/placeholder.png";
+    console.log( environment.s3BucketLink + '/' + album.coverImage)
+    return environment.s3BucketLink + '/' + album.coverImage;
+  }
+
+  getSongCoverUrl(song: Song): string {
+    if (!song.coverImage) return "assets/default-song.png";
+    console.log( environment.s3BucketLink + '/' + song.coverImage)
+    return environment.s3BucketLink + '/' + song.coverImage;
   }
 
   loadData(): void {

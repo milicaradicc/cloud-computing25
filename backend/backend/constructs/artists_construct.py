@@ -80,3 +80,35 @@ class ArtistsConstruct(Construct):
             authorizer=authorizer,
             authorization_type=apigateway.AuthorizationType.COGNITO
         )
+
+        # Get Artist by Id + Albums/Songs
+        get_artist_lambda = create_lambda_function(
+            self,
+            "GetArtistByIdLambda",
+            "handler.lambda_handler",
+            "lambda/getArtistById",
+            [],
+            environment={
+                "ALBUMS_TABLE": albums_table.table_name,
+                "ARTIST_ALBUM_TABLE": artist_album_table.table_name,
+                "ARTISTS_TABLE": table.table_name,
+                "SONGS_TABLE": songs_table.table_name,
+                "ARTIST_SONG_TABLE": artist_song_table.table_name
+            }
+        )
+
+        albums_table.grant_read_data(get_artist_lambda)
+        artist_album_table.grant_read_data(get_artist_lambda)
+        artist_song_table.grant_read_data(get_artist_lambda)
+        songs_table.grant_read_data(get_artist_lambda)
+        table.grant_read_data(get_artist_lambda)
+
+        get_artist_integration = apigateway.LambdaIntegration(get_artist_lambda, proxy=True)
+
+        artist_id_resource.add_method(
+            "GET",
+            get_artist_integration,
+            authorizer=authorizer,
+            authorization_type=apigateway.AuthorizationType.COGNITO
+        )
+

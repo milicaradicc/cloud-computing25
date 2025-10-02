@@ -16,4 +16,5 @@ export interface SingleUploadDTO {
   coverImage: string,
   single: boolean,
   transcribe: boolean,
+  coverFileBase64?: string;
 }
