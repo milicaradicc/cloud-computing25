@@ -236,8 +236,8 @@ class BackendStack(Stack):
 
         # API constructs (sve Artists rute idu preko ArtistsConstruct!)
         ArtistsConstruct(self, "ArtistsConstruct", api, artists_table, songs_table, albums_table, artist_album_table, artist_song_table, authorizer)
-        SongsConstruct(self, "SongsConstruct", api, songs_table, albums_table, artist_song_table, music_bucket, topic, authorizer, artists_table, rating_table)
-        AlbumConstruct(self, "AlbumConstruct", api, songs_table, albums_table, artist_album_table, music_bucket, topic, authorizer)
+        SongsConstruct(self, "SongsConstruct", api, songs_table, albums_table, artist_song_table, music_bucket, topic, authorizer, artists_table, rating_table), 
+        AlbumConstruct(self, "AlbumConstruct", api, songs_table, albums_table, artist_album_table, artist_song_table, artists_table, music_bucket, topic, authorizer)
         SubscriptionsConstruct(self, "SubscriptionsConstruct", api, subscriptions_table, authorizer)
 
         # FILTERS
@@ -260,88 +260,6 @@ class BackendStack(Stack):
         get_filtered_integration = apigateway.LambdaIntegration(get_filtered_lambda, proxy=True)
 
         filter_api_resource.add_method("GET", get_filtered_integration)
-
-        albums_resource = api.root.get_resource("albums")
-        if albums_resource is None:
-            albums_resource = api.root.add_resource("albums")
-
-        album_id_resource = albums_resource.get_resource("{id}")
-        if album_id_resource is None:
-            album_id_resource = albums_resource.add_resource("{id}")
-
-        get_album_lambda = create_lambda_function(
-            self,
-            "GetAlbumByIdLambda",
-            "handler.lambda_handler",
-            "lambda/getAlbumById",
-            [],
-            environment={
-                "ALBUMS_TABLE": albums_table.table_name,
-                "SONGS_TABLE": songs_table.table_name,
-                "ARTIST_ALBUM_TABLE": artist_album_table.table_name,
-                "ARTIST_SONG_TABLE": artist_song_table.table_name,
-                "ARTISTS_TABLE": artists_table.table_name
-            }
-        )
-        get_album_lambda.add_to_role_policy(
-            iam.PolicyStatement(
-                actions=["dynamodb:Query", "dynamodb:GetItem"],
-                resources=[
-                    artist_album_table.table_arn,
-                    f"{artist_album_table.table_arn}/index/AlbumId-index"
-                ]
-            )
-        )
-
-        albums_table.grant_read_data(get_album_lambda)
-        artist_album_table.grant_read_data(get_album_lambda)
-        artist_song_table.grant_read_data(get_album_lambda)
-        songs_table.grant_read_data(get_album_lambda)
-        artists_table.grant_read_data(get_album_lambda)
-
-        get_album_integration = apigateway.LambdaIntegration(get_album_lambda, proxy=True)
-
-        album_id_resource.add_method(
-            "GET",
-            get_album_integration,
-            authorization_type=apigateway.AuthorizationType.NONE,
-        )
-
-        # ARTIST + ALBUMS
-        artists_resource = api.root.get_resource("artists")
-        if artists_resource is None:
-            artists_resource = api.root.add_resource("artists")
-
-        artist_id_resource = artists_resource.get_resource("{id}")
-        if artist_id_resource is None:
-            artist_id_resource = artists_resource.add_resource("{id}")
-
-        get_artist_lambda = create_lambda_function(
-            self,
-            "GetArtistByIdLambda",
-            "handler.lambda_handler",
-            "lambda/getArtistById",
-            [],
-            environment={
-                "ALBUMS_TABLE": albums_table.table_name,
-                "ARTIST_ALBUM_TABLE": artist_album_table.table_name,
-                "ARTISTS_TABLE": artists_table.table_name
-            }
-        )
-
-        albums_table.grant_read_data(get_artist_lambda)
-        artist_album_table.grant_read_data(get_artist_lambda)
-        artist_song_table.grant_read_data(get_artist_lambda)
-        songs_table.grant_read_data(get_artist_lambda)
-        artists_table.grant_read_data(get_artist_lambda)
-
-        get_artist_integration = apigateway.LambdaIntegration(get_artist_lambda, proxy=True)
-
-        artist_id_resource.add_method(
-            "GET",
-            get_artist_integration,
-            authorization_type=apigateway.AuthorizationType.NONE,
-        )
 
         # DOWNLOAD
         generate_download_lambda = create_lambda_function(
@@ -371,13 +289,10 @@ class BackendStack(Stack):
             authorization_type=apigateway.AuthorizationType.NONE, 
         )
 
-       # OFFLINE LISTENING
-
-      # OFFLINE LISTENING
+        # OFFLINE LISTENING
         songs_resource = api.root.get_resource("songs")
-        song_id_resource = songs_resource.get_resource("{id}")  # koristi {id}, ne {songId}
+        song_id_resource = songs_resource.get_resource("{id}") 
 
-        # Dodaj presigned-url ispod {id}
         presigned_resource = song_id_resource.add_resource("presigned-url")
 
         presigned_integration = apigateway.LambdaIntegration(

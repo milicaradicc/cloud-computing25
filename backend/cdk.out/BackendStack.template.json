@@ -1065,7 +1065,7 @@
     "aws:cdk:path": "BackendStack/MusicStreamingApi/Resource"
    }
   },
-  "MusicStreamingApiDeployment8B4E52562795566a082def09fb470a445623fe10": {
+  "MusicStreamingApiDeployment8B4E5256ec55e3dfd0e4f423ad8d65b8199b308b": {
    "Type": "AWS::ApiGateway::Deployment",
    "Properties": {
     "Description": "Automatically created by the RestApi construct",
@@ -1136,7 +1136,7 @@
    "Type": "AWS::ApiGateway::Stage",
    "Properties": {
     "DeploymentId": {
-     "Ref": "MusicStreamingApiDeployment8B4E52562795566a082def09fb470a445623fe10"
+     "Ref": "MusicStreamingApiDeployment8B4E5256ec55e3dfd0e4f423ad8d65b8199b308b"
     },
     "MethodSettings": [
      {
@@ -1714,7 +1714,7 @@
     "Action": "lambda:InvokeFunction",
     "FunctionName": {
      "Fn::GetAtt": [
-      "GetArtistByIdLambda3FD46FA6",
+      "ArtistsConstructGetArtistByIdLambda9F00C22E",
       "Arn"
      ]
     },
@@ -1758,7 +1758,7 @@
     "Action": "lambda:InvokeFunction",
     "FunctionName": {
      "Fn::GetAtt": [
-      "GetArtistByIdLambda3FD46FA6",
+      "ArtistsConstructGetArtistByIdLambda9F00C22E",
       "Arn"
      ]
     },
@@ -1795,7 +1795,10 @@
   "MusicStreamingApiartistsidGETD723703D": {
    "Type": "AWS::ApiGateway::Method",
    "Properties": {
-    "AuthorizationType": "NONE",
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "CognitoAuthorizerF3215DBC"
+    },
     "HttpMethod": "GET",
     "Integration": {
      "IntegrationHttpMethod": "POST",
@@ -1815,7 +1818,7 @@
         ":lambda:path/2015-03-31/functions/",
         {
          "Fn::GetAtt": [
-          "GetArtistByIdLambda3FD46FA6",
+          "ArtistsConstructGetArtistByIdLambda9F00C22E",
           "Arn"
          ]
         },
@@ -3752,7 +3755,7 @@
     "Action": "lambda:InvokeFunction",
     "FunctionName": {
      "Fn::GetAtt": [
-      "GetAlbumByIdLambdaEE53C4B1",
+      "AlbumConstructGetAlbumByIdLambda4E204135",
       "Arn"
      ]
     },
@@ -3796,7 +3799,7 @@
     "Action": "lambda:InvokeFunction",
     "FunctionName": {
      "Fn::GetAtt": [
-      "GetAlbumByIdLambdaEE53C4B1",
+      "AlbumConstructGetAlbumByIdLambda4E204135",
       "Arn"
      ]
     },
@@ -3833,7 +3836,10 @@
   "MusicStreamingApialbumsidGETA7B18A9D": {
    "Type": "AWS::ApiGateway::Method",
    "Properties": {
-    "AuthorizationType": "NONE",
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "CognitoAuthorizerF3215DBC"
+    },
     "HttpMethod": "GET",
     "Integration": {
      "IntegrationHttpMethod": "POST",
@@ -3853,7 +3859,7 @@
         ":lambda:path/2015-03-31/functions/",
         {
          "Fn::GetAtt": [
-          "GetAlbumByIdLambdaEE53C4B1",
+          "AlbumConstructGetAlbumByIdLambda4E204135",
           "Arn"
          ]
         },
@@ -5551,6 +5557,286 @@
    },
    "Metadata": {
     "aws:cdk:path": "BackendStack/ArtistsConstruct/DeleteArtistLambda/invoke-function-url"
+   }
+  },
+  "ArtistsConstructGetArtistByIdLambdaRole75733797": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/ArtistsConstruct/GetArtistByIdLambdaRole/Resource"
+   }
+  },
+  "ArtistsConstructGetArtistByIdLambdaRoleDefaultPolicyDEC2BFDE": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:Query",
+        "dynamodb:Scan"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "Albums77B3A114",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::GetAtt": [
+          "ArtistAlbum6D4E520D",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::GetAtt": [
+          "ArtistSong600154F0",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::GetAtt": [
+          "ArtistsAF1BB04E",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::GetAtt": [
+          "SongsD2AA5F2A",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "Albums77B3A114",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "ArtistAlbum6D4E520D",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "ArtistSong600154F0",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "ArtistsAF1BB04E",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "SongsD2AA5F2A",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "ArtistsConstructGetArtistByIdLambdaRoleDefaultPolicyDEC2BFDE",
+    "Roles": [
+     {
+      "Ref": "ArtistsConstructGetArtistByIdLambdaRole75733797"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/ArtistsConstruct/GetArtistByIdLambdaRole/DefaultPolicy/Resource"
+   }
+  },
+  "ArtistsConstructGetArtistByIdLambda9F00C22E": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": {
+      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+     },
+     "S3Key": "e46c40d2169e5bf381ba0dc37632435a0159a4ed8befc4d08063f7186cd71306.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "ALBUMS_TABLE": {
+       "Ref": "Albums77B3A114"
+      },
+      "ARTIST_ALBUM_TABLE": {
+       "Ref": "ArtistAlbum6D4E520D"
+      },
+      "ARTISTS_TABLE": {
+       "Ref": "ArtistsAF1BB04E"
+      },
+      "SONGS_TABLE": {
+       "Ref": "SongsD2AA5F2A"
+      },
+      "ARTIST_SONG_TABLE": {
+       "Ref": "ArtistSong600154F0"
+      }
+     }
+    },
+    "Handler": "handler.lambda_handler",
+    "MemorySize": 128,
+    "Role": {
+     "Fn::GetAtt": [
+      "ArtistsConstructGetArtistByIdLambdaRole75733797",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.9",
+    "Timeout": 10
+   },
+   "DependsOn": [
+    "ArtistsConstructGetArtistByIdLambdaRoleDefaultPolicyDEC2BFDE",
+    "ArtistsConstructGetArtistByIdLambdaRole75733797"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/ArtistsConstruct/GetArtistByIdLambda/Resource",
+    "aws:asset:path": "asset.e46c40d2169e5bf381ba0dc37632435a0159a4ed8befc4d08063f7186cd71306",
+    "aws:asset:is-bundled": true,
+    "aws:asset:property": "Code"
+   }
+  },
+  "ArtistsConstructGetArtistByIdLambdaLogGroup4F85B0C7": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": {
+     "Fn::Join": [
+      "",
+      [
+       "/aws/lambda/",
+       {
+        "Ref": "ArtistsConstructGetArtistByIdLambda9F00C22E"
+       }
+      ]
+     ]
+    },
+    "RetentionInDays": 731
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/ArtistsConstruct/GetArtistByIdLambda/LogGroup/Resource"
+   }
+  },
+  "ArtistsConstructGetArtistByIdLambdaFunctionUrl79FC24A5": {
+   "Type": "AWS::Lambda::Url",
+   "Properties": {
+    "AuthType": "NONE",
+    "Cors": {
+     "AllowMethods": [
+      "*"
+     ],
+     "AllowOrigins": [
+      "*"
+     ]
+    },
+    "TargetFunctionArn": {
+     "Fn::GetAtt": [
+      "ArtistsConstructGetArtistByIdLambda9F00C22E",
+      "Arn"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/ArtistsConstruct/GetArtistByIdLambda/FunctionUrl/Resource"
+   }
+  },
+  "ArtistsConstructGetArtistByIdLambdainvokefunctionurlF1B8D56E": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunctionUrl",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "ArtistsConstructGetArtistByIdLambda9F00C22E",
+      "Arn"
+     ]
+    },
+    "FunctionUrlAuthType": "NONE",
+    "Principal": "*"
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/ArtistsConstruct/GetArtistByIdLambda/invoke-function-url"
    }
   },
   "SongsConstructUploadFileLambdaRole56100D5C": {
@@ -8007,6 +8293,315 @@
     "aws:cdk:path": "BackendStack/AlbumConstruct/DeleteAlbumLambda/invoke-function-url"
    }
   },
+  "AlbumConstructGetAlbumByIdLambdaRoleDA103226": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/AlbumConstruct/GetAlbumByIdLambdaRole/Resource"
+   }
+  },
+  "AlbumConstructGetAlbumByIdLambdaRoleDefaultPolicy0EC09080": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:GetItem",
+        "dynamodb:Query"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "ArtistAlbum6D4E520D",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "ArtistAlbum6D4E520D",
+             "Arn"
+            ]
+           },
+           "/index/AlbumId-index"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:Query",
+        "dynamodb:Scan"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "Albums77B3A114",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::GetAtt": [
+          "ArtistAlbum6D4E520D",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::GetAtt": [
+          "ArtistSong600154F0",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::GetAtt": [
+          "ArtistsAF1BB04E",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::GetAtt": [
+          "SongsD2AA5F2A",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "Albums77B3A114",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "ArtistAlbum6D4E520D",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "ArtistSong600154F0",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "ArtistsAF1BB04E",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "SongsD2AA5F2A",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "AlbumConstructGetAlbumByIdLambdaRoleDefaultPolicy0EC09080",
+    "Roles": [
+     {
+      "Ref": "AlbumConstructGetAlbumByIdLambdaRoleDA103226"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/AlbumConstruct/GetAlbumByIdLambdaRole/DefaultPolicy/Resource"
+   }
+  },
+  "AlbumConstructGetAlbumByIdLambda4E204135": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": {
+      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+     },
+     "S3Key": "6e302c615753cd68c19340a7ec54aca85d09cdedaa3338d19ebd08856354e9d6.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "ALBUMS_TABLE": {
+       "Ref": "Albums77B3A114"
+      },
+      "SONGS_TABLE": {
+       "Ref": "SongsD2AA5F2A"
+      },
+      "ARTIST_ALBUM_TABLE": {
+       "Ref": "ArtistAlbum6D4E520D"
+      },
+      "ARTIST_SONG_TABLE": {
+       "Ref": "ArtistSong600154F0"
+      },
+      "ARTISTS_TABLE": {
+       "Ref": "ArtistsAF1BB04E"
+      }
+     }
+    },
+    "Handler": "handler.lambda_handler",
+    "MemorySize": 128,
+    "Role": {
+     "Fn::GetAtt": [
+      "AlbumConstructGetAlbumByIdLambdaRoleDA103226",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.9",
+    "Timeout": 10
+   },
+   "DependsOn": [
+    "AlbumConstructGetAlbumByIdLambdaRoleDefaultPolicy0EC09080",
+    "AlbumConstructGetAlbumByIdLambdaRoleDA103226"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/AlbumConstruct/GetAlbumByIdLambda/Resource",
+    "aws:asset:path": "asset.6e302c615753cd68c19340a7ec54aca85d09cdedaa3338d19ebd08856354e9d6",
+    "aws:asset:is-bundled": true,
+    "aws:asset:property": "Code"
+   }
+  },
+  "AlbumConstructGetAlbumByIdLambdaLogGroupA26CAD3F": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": {
+     "Fn::Join": [
+      "",
+      [
+       "/aws/lambda/",
+       {
+        "Ref": "AlbumConstructGetAlbumByIdLambda4E204135"
+       }
+      ]
+     ]
+    },
+    "RetentionInDays": 731
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/AlbumConstruct/GetAlbumByIdLambda/LogGroup/Resource"
+   }
+  },
+  "AlbumConstructGetAlbumByIdLambdaFunctionUrl4FA866E9": {
+   "Type": "AWS::Lambda::Url",
+   "Properties": {
+    "AuthType": "NONE",
+    "Cors": {
+     "AllowMethods": [
+      "*"
+     ],
+     "AllowOrigins": [
+      "*"
+     ]
+    },
+    "TargetFunctionArn": {
+     "Fn::GetAtt": [
+      "AlbumConstructGetAlbumByIdLambda4E204135",
+      "Arn"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/AlbumConstruct/GetAlbumByIdLambda/FunctionUrl/Resource"
+   }
+  },
+  "AlbumConstructGetAlbumByIdLambdainvokefunctionurlF1225BAA": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunctionUrl",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "AlbumConstructGetAlbumByIdLambda4E204135",
+      "Arn"
+     ]
+    },
+    "FunctionUrlAuthType": "NONE",
+    "Principal": "*"
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/AlbumConstruct/GetAlbumByIdLambda/invoke-function-url"
+   }
+  },
   "SubscriptionsConstructCreateSubscriptionLambdaRoleFB12262C": {
    "Type": "AWS::IAM::Role",
    "Properties": {
@@ -8794,589 +9389,6 @@
     "aws:cdk:path": "BackendStack/GetFilteredContentLambda/invoke-function-url"
    }
   },
-  "GetAlbumByIdLambdaRole183E92B1": {
-   "Type": "AWS::IAM::Role",
-   "Properties": {
-    "AssumeRolePolicyDocument": {
-     "Statement": [
-      {
-       "Action": "sts:AssumeRole",
-       "Effect": "Allow",
-       "Principal": {
-        "Service": "lambda.amazonaws.com"
-       }
-      }
-     ],
-     "Version": "2012-10-17"
-    },
-    "ManagedPolicyArns": [
-     {
-      "Fn::Join": [
-       "",
-       [
-        "arn:",
-        {
-         "Ref": "AWS::Partition"
-        },
-        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
-       ]
-      ]
-     }
-    ]
-   },
-   "Metadata": {
-    "aws:cdk:path": "BackendStack/GetAlbumByIdLambdaRole/Resource"
-   }
-  },
-  "GetAlbumByIdLambdaRoleDefaultPolicyBA2E8369": {
-   "Type": "AWS::IAM::Policy",
-   "Properties": {
-    "PolicyDocument": {
-     "Statement": [
-      {
-       "Action": [
-        "dynamodb:GetItem",
-        "dynamodb:Query"
-       ],
-       "Effect": "Allow",
-       "Resource": [
-        {
-         "Fn::GetAtt": [
-          "ArtistAlbum6D4E520D",
-          "Arn"
-         ]
-        },
-        {
-         "Fn::Join": [
-          "",
-          [
-           {
-            "Fn::GetAtt": [
-             "ArtistAlbum6D4E520D",
-             "Arn"
-            ]
-           },
-           "/index/AlbumId-index"
-          ]
-         ]
-        }
-       ]
-      },
-      {
-       "Action": [
-        "dynamodb:BatchGetItem",
-        "dynamodb:ConditionCheckItem",
-        "dynamodb:DescribeTable",
-        "dynamodb:GetItem",
-        "dynamodb:GetRecords",
-        "dynamodb:GetShardIterator",
-        "dynamodb:Query",
-        "dynamodb:Scan"
-       ],
-       "Effect": "Allow",
-       "Resource": [
-        {
-         "Fn::GetAtt": [
-          "Albums77B3A114",
-          "Arn"
-         ]
-        },
-        {
-         "Fn::GetAtt": [
-          "ArtistAlbum6D4E520D",
-          "Arn"
-         ]
-        },
-        {
-         "Fn::GetAtt": [
-          "ArtistSong600154F0",
-          "Arn"
-         ]
-        },
-        {
-         "Fn::GetAtt": [
-          "ArtistsAF1BB04E",
-          "Arn"
-         ]
-        },
-        {
-         "Fn::GetAtt": [
-          "SongsD2AA5F2A",
-          "Arn"
-         ]
-        },
-        {
-         "Fn::Join": [
-          "",
-          [
-           {
-            "Fn::GetAtt": [
-             "Albums77B3A114",
-             "Arn"
-            ]
-           },
-           "/index/*"
-          ]
-         ]
-        },
-        {
-         "Fn::Join": [
-          "",
-          [
-           {
-            "Fn::GetAtt": [
-             "ArtistAlbum6D4E520D",
-             "Arn"
-            ]
-           },
-           "/index/*"
-          ]
-         ]
-        },
-        {
-         "Fn::Join": [
-          "",
-          [
-           {
-            "Fn::GetAtt": [
-             "ArtistSong600154F0",
-             "Arn"
-            ]
-           },
-           "/index/*"
-          ]
-         ]
-        },
-        {
-         "Fn::Join": [
-          "",
-          [
-           {
-            "Fn::GetAtt": [
-             "ArtistsAF1BB04E",
-             "Arn"
-            ]
-           },
-           "/index/*"
-          ]
-         ]
-        },
-        {
-         "Fn::Join": [
-          "",
-          [
-           {
-            "Fn::GetAtt": [
-             "SongsD2AA5F2A",
-             "Arn"
-            ]
-           },
-           "/index/*"
-          ]
-         ]
-        }
-       ]
-      }
-     ],
-     "Version": "2012-10-17"
-    },
-    "PolicyName": "GetAlbumByIdLambdaRoleDefaultPolicyBA2E8369",
-    "Roles": [
-     {
-      "Ref": "GetAlbumByIdLambdaRole183E92B1"
-     }
-    ]
-   },
-   "Metadata": {
-    "aws:cdk:path": "BackendStack/GetAlbumByIdLambdaRole/DefaultPolicy/Resource"
-   }
-  },
-  "GetAlbumByIdLambdaEE53C4B1": {
-   "Type": "AWS::Lambda::Function",
-   "Properties": {
-    "Code": {
-     "S3Bucket": {
-      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
-     },
-     "S3Key": "6e302c615753cd68c19340a7ec54aca85d09cdedaa3338d19ebd08856354e9d6.zip"
-    },
-    "Environment": {
-     "Variables": {
-      "ALBUMS_TABLE": {
-       "Ref": "Albums77B3A114"
-      },
-      "SONGS_TABLE": {
-       "Ref": "SongsD2AA5F2A"
-      },
-      "ARTIST_ALBUM_TABLE": {
-       "Ref": "ArtistAlbum6D4E520D"
-      },
-      "ARTIST_SONG_TABLE": {
-       "Ref": "ArtistSong600154F0"
-      },
-      "ARTISTS_TABLE": {
-       "Ref": "ArtistsAF1BB04E"
-      }
-     }
-    },
-    "Handler": "handler.lambda_handler",
-    "MemorySize": 128,
-    "Role": {
-     "Fn::GetAtt": [
-      "GetAlbumByIdLambdaRole183E92B1",
-      "Arn"
-     ]
-    },
-    "Runtime": "python3.9",
-    "Timeout": 10
-   },
-   "DependsOn": [
-    "GetAlbumByIdLambdaRoleDefaultPolicyBA2E8369",
-    "GetAlbumByIdLambdaRole183E92B1"
-   ],
-   "Metadata": {
-    "aws:cdk:path": "BackendStack/GetAlbumByIdLambda/Resource",
-    "aws:asset:path": "asset.6e302c615753cd68c19340a7ec54aca85d09cdedaa3338d19ebd08856354e9d6",
-    "aws:asset:is-bundled": true,
-    "aws:asset:property": "Code"
-   }
-  },
-  "GetAlbumByIdLambdaLogGroupD0E25DDF": {
-   "Type": "AWS::Logs::LogGroup",
-   "Properties": {
-    "LogGroupName": {
-     "Fn::Join": [
-      "",
-      [
-       "/aws/lambda/",
-       {
-        "Ref": "GetAlbumByIdLambdaEE53C4B1"
-       }
-      ]
-     ]
-    },
-    "RetentionInDays": 731
-   },
-   "UpdateReplacePolicy": "Retain",
-   "DeletionPolicy": "Retain",
-   "Metadata": {
-    "aws:cdk:path": "BackendStack/GetAlbumByIdLambda/LogGroup/Resource"
-   }
-  },
-  "GetAlbumByIdLambdaFunctionUrlE7FD5FA7": {
-   "Type": "AWS::Lambda::Url",
-   "Properties": {
-    "AuthType": "NONE",
-    "Cors": {
-     "AllowMethods": [
-      "*"
-     ],
-     "AllowOrigins": [
-      "*"
-     ]
-    },
-    "TargetFunctionArn": {
-     "Fn::GetAtt": [
-      "GetAlbumByIdLambdaEE53C4B1",
-      "Arn"
-     ]
-    }
-   },
-   "Metadata": {
-    "aws:cdk:path": "BackendStack/GetAlbumByIdLambda/FunctionUrl/Resource"
-   }
-  },
-  "GetAlbumByIdLambdainvokefunctionurlF4E3CDE0": {
-   "Type": "AWS::Lambda::Permission",
-   "Properties": {
-    "Action": "lambda:InvokeFunctionUrl",
-    "FunctionName": {
-     "Fn::GetAtt": [
-      "GetAlbumByIdLambdaEE53C4B1",
-      "Arn"
-     ]
-    },
-    "FunctionUrlAuthType": "NONE",
-    "Principal": "*"
-   },
-   "Metadata": {
-    "aws:cdk:path": "BackendStack/GetAlbumByIdLambda/invoke-function-url"
-   }
-  },
-  "GetArtistByIdLambdaRole98FB5728": {
-   "Type": "AWS::IAM::Role",
-   "Properties": {
-    "AssumeRolePolicyDocument": {
-     "Statement": [
-      {
-       "Action": "sts:AssumeRole",
-       "Effect": "Allow",
-       "Principal": {
-        "Service": "lambda.amazonaws.com"
-       }
-      }
-     ],
-     "Version": "2012-10-17"
-    },
-    "ManagedPolicyArns": [
-     {
-      "Fn::Join": [
-       "",
-       [
-        "arn:",
-        {
-         "Ref": "AWS::Partition"
-        },
-        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
-       ]
-      ]
-     }
-    ]
-   },
-   "Metadata": {
-    "aws:cdk:path": "BackendStack/GetArtistByIdLambdaRole/Resource"
-   }
-  },
-  "GetArtistByIdLambdaRoleDefaultPolicy8336CD36": {
-   "Type": "AWS::IAM::Policy",
-   "Properties": {
-    "PolicyDocument": {
-     "Statement": [
-      {
-       "Action": [
-        "dynamodb:BatchGetItem",
-        "dynamodb:ConditionCheckItem",
-        "dynamodb:DescribeTable",
-        "dynamodb:GetItem",
-        "dynamodb:GetRecords",
-        "dynamodb:GetShardIterator",
-        "dynamodb:Query",
-        "dynamodb:Scan"
-       ],
-       "Effect": "Allow",
-       "Resource": [
-        {
-         "Fn::GetAtt": [
-          "Albums77B3A114",
-          "Arn"
-         ]
-        },
-        {
-         "Fn::GetAtt": [
-          "ArtistAlbum6D4E520D",
-          "Arn"
-         ]
-        },
-        {
-         "Fn::GetAtt": [
-          "ArtistSong600154F0",
-          "Arn"
-         ]
-        },
-        {
-         "Fn::GetAtt": [
-          "ArtistsAF1BB04E",
-          "Arn"
-         ]
-        },
-        {
-         "Fn::GetAtt": [
-          "SongsD2AA5F2A",
-          "Arn"
-         ]
-        },
-        {
-         "Fn::Join": [
-          "",
-          [
-           {
-            "Fn::GetAtt": [
-             "Albums77B3A114",
-             "Arn"
-            ]
-           },
-           "/index/*"
-          ]
-         ]
-        },
-        {
-         "Fn::Join": [
-          "",
-          [
-           {
-            "Fn::GetAtt": [
-             "ArtistAlbum6D4E520D",
-             "Arn"
-            ]
-           },
-           "/index/*"
-          ]
-         ]
-        },
-        {
-         "Fn::Join": [
-          "",
-          [
-           {
-            "Fn::GetAtt": [
-             "ArtistSong600154F0",
-             "Arn"
-            ]
-           },
-           "/index/*"
-          ]
-         ]
-        },
-        {
-         "Fn::Join": [
-          "",
-          [
-           {
-            "Fn::GetAtt": [
-             "ArtistsAF1BB04E",
-             "Arn"
-            ]
-           },
-           "/index/*"
-          ]
-         ]
-        },
-        {
-         "Fn::Join": [
-          "",
-          [
-           {
-            "Fn::GetAtt": [
-             "SongsD2AA5F2A",
-             "Arn"
-            ]
-           },
-           "/index/*"
-          ]
-         ]
-        }
-       ]
-      }
-     ],
-     "Version": "2012-10-17"
-    },
-    "PolicyName": "GetArtistByIdLambdaRoleDefaultPolicy8336CD36",
-    "Roles": [
-     {
-      "Ref": "GetArtistByIdLambdaRole98FB5728"
-     }
-    ]
-   },
-   "Metadata": {
-    "aws:cdk:path": "BackendStack/GetArtistByIdLambdaRole/DefaultPolicy/Resource"
-   }
-  },
-  "GetArtistByIdLambda3FD46FA6": {
-   "Type": "AWS::Lambda::Function",
-   "Properties": {
-    "Code": {
-     "S3Bucket": {
-      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
-     },
-     "S3Key": "e46c40d2169e5bf381ba0dc37632435a0159a4ed8befc4d08063f7186cd71306.zip"
-    },
-    "Environment": {
-     "Variables": {
-      "ALBUMS_TABLE": {
-       "Ref": "Albums77B3A114"
-      },
-      "ARTIST_ALBUM_TABLE": {
-       "Ref": "ArtistAlbum6D4E520D"
-      },
-      "ARTISTS_TABLE": {
-       "Ref": "ArtistsAF1BB04E"
-      }
-     }
-    },
-    "Handler": "handler.lambda_handler",
-    "MemorySize": 128,
-    "Role": {
-     "Fn::GetAtt": [
-      "GetArtistByIdLambdaRole98FB5728",
-      "Arn"
-     ]
-    },
-    "Runtime": "python3.9",
-    "Timeout": 10
-   },
-   "DependsOn": [
-    "GetArtistByIdLambdaRoleDefaultPolicy8336CD36",
-    "GetArtistByIdLambdaRole98FB5728"
-   ],
-   "Metadata": {
-    "aws:cdk:path": "BackendStack/GetArtistByIdLambda/Resource",
-    "aws:asset:path": "asset.e46c40d2169e5bf381ba0dc37632435a0159a4ed8befc4d08063f7186cd71306",
-    "aws:asset:is-bundled": true,
-    "aws:asset:property": "Code"
-   }
-  },
-  "GetArtistByIdLambdaLogGroup2D458207": {
-   "Type": "AWS::Logs::LogGroup",
-   "Properties": {
-    "LogGroupName": {
-     "Fn::Join": [
-      "",
-      [
-       "/aws/lambda/",
-       {
-        "Ref": "GetArtistByIdLambda3FD46FA6"
-       }
-      ]
-     ]
-    },
-    "RetentionInDays": 731
-   },
-   "UpdateReplacePolicy": "Retain",
-   "DeletionPolicy": "Retain",
-   "Metadata": {
-    "aws:cdk:path": "BackendStack/GetArtistByIdLambda/LogGroup/Resource"
-   }
-  },
-  "GetArtistByIdLambdaFunctionUrl5F8A32F3": {
-   "Type": "AWS::Lambda::Url",
-   "Properties": {
-    "AuthType": "NONE",
-    "Cors": {
-     "AllowMethods": [
-      "*"
-     ],
-     "AllowOrigins": [
-      "*"
-     ]
-    },
-    "TargetFunctionArn": {
-     "Fn::GetAtt": [
-      "GetArtistByIdLambda3FD46FA6",
-      "Arn"
-     ]
-    }
-   },
-   "Metadata": {
-    "aws:cdk:path": "BackendStack/GetArtistByIdLambda/FunctionUrl/Resource"
-   }
-  },
-  "GetArtistByIdLambdainvokefunctionurl4F67BD2D": {
-   "Type": "AWS::Lambda::Permission",
-   "Properties": {
-    "Action": "lambda:InvokeFunctionUrl",
-    "FunctionName": {
-     "Fn::GetAtt": [
-      "GetArtistByIdLambda3FD46FA6",
-      "Arn"
-     ]
-    },
-    "FunctionUrlAuthType": "NONE",
-    "Principal": "*"
-   },
-   "Metadata": {
-    "aws:cdk:path": "BackendStack/GetArtistByIdLambda/invoke-function-url"
-   }
-  },
   "GenerateDownloadUrlLambdaRole671F1150": {
    "Type": "AWS::IAM::Role",
    "Properties": {
@@ -9602,7 +9614,7 @@
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {
-    "Analytics": "v2:deflate64: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"
+    "Analytics": "v2:deflate64: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"
    },
    "Metadata": {
     "aws:cdk:path": "BackendStack/CDKMetadata/Default"

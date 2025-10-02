@@ -18,7 +18,7 @@
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-${AWS::Region}",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-${AWS::Region}",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/516bcc626a7ce10e2c265e8e43f34c9bcd550b7d4ee1d6306e0e5c79d4ee2d4e.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/55427892d785026b4c60df790f30a200c75e6deef95f452e61e988d21c299a02.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -1448,12 +1448,28 @@
                 {}
               ]
             }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToLogicalId": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToLogicalId": [
+                {}
+              ]
+            }
           }
         ],
         "/BackendStack/MusicStreamingApi/Deployment/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "MusicStreamingApiDeployment8B4E52562795566a082def09fb470a445623fe10"
+            "data": "MusicStreamingApiDeployment8B4E5256ec55e3dfd0e4f423ad8d65b8199b308b"
           }
         ],
         "/BackendStack/MusicStreamingApi/DeploymentStage.dev": [
@@ -1739,7 +1755,8 @@
               "httpMethod": "*",
               "integration": "*",
               "options": {
-                "authorizationType": "*"
+                "authorizationType": "*",
+                "authorizer": "*"
               }
             }
           }
@@ -2489,7 +2506,8 @@
               "httpMethod": "*",
               "integration": "*",
               "options": {
-                "authorizationType": "*"
+                "authorizationType": "*",
+                "authorizer": "*"
               }
             }
           }
@@ -3615,6 +3633,273 @@
           {
             "type": "aws:cdk:logicalId",
             "data": "ArtistsConstructDeleteArtistLambdainvokefunctionurlEEBBB919"
+          }
+        ],
+        "/BackendStack/ArtistsConstruct/GetArtistByIdLambdaRole": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "assumedBy": {
+                "principalAccount": "*",
+                "assumeRoleAction": "*"
+              }
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addManagedPolicy": [
+                {
+                  "managedPolicyArn": "*"
+                }
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToPrincipalPolicy": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachInlinePolicy": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachInlinePolicy": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToPrincipalPolicy": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToPrincipalPolicy": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToPrincipalPolicy": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToPrincipalPolicy": [
+                {}
+              ]
+            }
+          }
+        ],
+        "/BackendStack/ArtistsConstruct/GetArtistByIdLambdaRole/ImportGetArtistByIdLambdaRole": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          }
+        ],
+        "/BackendStack/ArtistsConstruct/GetArtistByIdLambdaRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ArtistsConstructGetArtistByIdLambdaRole75733797"
+          }
+        ],
+        "/BackendStack/ArtistsConstruct/GetArtistByIdLambdaRole/DefaultPolicy": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachToRole": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachToRole": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addStatements": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addStatements": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addStatements": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addStatements": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addStatements": [
+                {}
+              ]
+            }
+          }
+        ],
+        "/BackendStack/ArtistsConstruct/GetArtistByIdLambdaRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ArtistsConstructGetArtistByIdLambdaRoleDefaultPolicyDEC2BFDE"
+          }
+        ],
+        "/BackendStack/ArtistsConstruct/GetArtistByIdLambda": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "environment": "*",
+              "layers": [],
+              "memorySize": "*",
+              "role": "*",
+              "timeout": "*",
+              "code": "*",
+              "handler": "*",
+              "runtime": "*"
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addEnvironment": [
+                "*",
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addEnvironment": [
+                "*",
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addEnvironment": [
+                "*",
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addEnvironment": [
+                "*",
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addEnvironment": [
+                "*",
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addLayers": []
+            }
+          }
+        ],
+        "/BackendStack/ArtistsConstruct/GetArtistByIdLambda/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ArtistsConstructGetArtistByIdLambda9F00C22E"
+          }
+        ],
+        "/BackendStack/ArtistsConstruct/GetArtistByIdLambda/LogGroup": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "logGroupName": "*"
+            }
+          }
+        ],
+        "/BackendStack/ArtistsConstruct/GetArtistByIdLambda/LogGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ArtistsConstructGetArtistByIdLambdaLogGroup4F85B0C7"
+          }
+        ],
+        "/BackendStack/ArtistsConstruct/GetArtistByIdLambda/FunctionUrl": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "function": "*",
+              "authType": "NONE",
+              "cors": {
+                "allowedOrigins": "*"
+              }
+            }
+          }
+        ],
+        "/BackendStack/ArtistsConstruct/GetArtistByIdLambda/FunctionUrl/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ArtistsConstructGetArtistByIdLambdaFunctionUrl79FC24A5"
+          }
+        ],
+        "/BackendStack/ArtistsConstruct/GetArtistByIdLambda/invoke-function-url": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ArtistsConstructGetArtistByIdLambdainvokefunctionurlF1B8D56E"
           }
         ],
         "/BackendStack/SongsConstruct/UploadFileLambdaRole": [
@@ -5829,6 +6114,289 @@
             "data": "AlbumConstructDeleteAlbumLambdainvokefunctionurlDF056BBF"
           }
         ],
+        "/BackendStack/AlbumConstruct/GetAlbumByIdLambdaRole": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "assumedBy": {
+                "principalAccount": "*",
+                "assumeRoleAction": "*"
+              }
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addManagedPolicy": [
+                {
+                  "managedPolicyArn": "*"
+                }
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToPrincipalPolicy": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachInlinePolicy": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachInlinePolicy": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToPrincipalPolicy": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToPrincipalPolicy": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToPrincipalPolicy": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToPrincipalPolicy": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToPrincipalPolicy": [
+                {}
+              ]
+            }
+          }
+        ],
+        "/BackendStack/AlbumConstruct/GetAlbumByIdLambdaRole/ImportGetAlbumByIdLambdaRole": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          }
+        ],
+        "/BackendStack/AlbumConstruct/GetAlbumByIdLambdaRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AlbumConstructGetAlbumByIdLambdaRoleDA103226"
+          }
+        ],
+        "/BackendStack/AlbumConstruct/GetAlbumByIdLambdaRole/DefaultPolicy": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachToRole": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachToRole": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addStatements": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addStatements": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addStatements": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addStatements": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addStatements": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addStatements": [
+                {}
+              ]
+            }
+          }
+        ],
+        "/BackendStack/AlbumConstruct/GetAlbumByIdLambdaRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AlbumConstructGetAlbumByIdLambdaRoleDefaultPolicy0EC09080"
+          }
+        ],
+        "/BackendStack/AlbumConstruct/GetAlbumByIdLambda": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "environment": "*",
+              "layers": [],
+              "memorySize": "*",
+              "role": "*",
+              "timeout": "*",
+              "code": "*",
+              "handler": "*",
+              "runtime": "*"
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addEnvironment": [
+                "*",
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addEnvironment": [
+                "*",
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addEnvironment": [
+                "*",
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addEnvironment": [
+                "*",
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addEnvironment": [
+                "*",
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addLayers": []
+            }
+          }
+        ],
+        "/BackendStack/AlbumConstruct/GetAlbumByIdLambda/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AlbumConstructGetAlbumByIdLambda4E204135"
+          }
+        ],
+        "/BackendStack/AlbumConstruct/GetAlbumByIdLambda/LogGroup": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "logGroupName": "*"
+            }
+          }
+        ],
+        "/BackendStack/AlbumConstruct/GetAlbumByIdLambda/LogGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AlbumConstructGetAlbumByIdLambdaLogGroupA26CAD3F"
+          }
+        ],
+        "/BackendStack/AlbumConstruct/GetAlbumByIdLambda/FunctionUrl": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "function": "*",
+              "authType": "NONE",
+              "cors": {
+                "allowedOrigins": "*"
+              }
+            }
+          }
+        ],
+        "/BackendStack/AlbumConstruct/GetAlbumByIdLambda/FunctionUrl/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AlbumConstructGetAlbumByIdLambdaFunctionUrl4FA866E9"
+          }
+        ],
+        "/BackendStack/AlbumConstruct/GetAlbumByIdLambda/invoke-function-url": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AlbumConstructGetAlbumByIdLambdainvokefunctionurlF1225BAA"
+          }
+        ],
         "/BackendStack/SubscriptionsConstruct/CreateSubscriptionLambdaRole": [
           {
             "type": "aws:cdk:analytics:construct",
@@ -6520,538 +7088,6 @@
           {
             "type": "aws:cdk:logicalId",
             "data": "GetFilteredContentLambdainvokefunctionurl41517CF9"
-          }
-        ],
-        "/BackendStack/GetAlbumByIdLambdaRole": [
-          {
-            "type": "aws:cdk:analytics:construct",
-            "data": {
-              "assumedBy": {
-                "principalAccount": "*",
-                "assumeRoleAction": "*"
-              }
-            }
-          },
-          {
-            "type": "aws:cdk:analytics:method",
-            "data": {
-              "addManagedPolicy": [
-                {
-                  "managedPolicyArn": "*"
-                }
-              ]
-            }
-          },
-          {
-            "type": "aws:cdk:analytics:method",
-            "data": {
-              "addToPrincipalPolicy": [
-                {}
-              ]
-            }
-          },
-          {
-            "type": "aws:cdk:analytics:method",
-            "data": {
-              "attachInlinePolicy": [
-                "*"
-              ]
-            }
-          },
-          {
-            "type": "aws:cdk:analytics:method",
-            "data": {
-              "attachInlinePolicy": [
-                "*"
-              ]
-            }
-          },
-          {
-            "type": "aws:cdk:analytics:method",
-            "data": {
-              "addToPrincipalPolicy": [
-                {}
-              ]
-            }
-          },
-          {
-            "type": "aws:cdk:analytics:method",
-            "data": {
-              "addToPrincipalPolicy": [
-                {}
-              ]
-            }
-          },
-          {
-            "type": "aws:cdk:analytics:method",
-            "data": {
-              "addToPrincipalPolicy": [
-                {}
-              ]
-            }
-          },
-          {
-            "type": "aws:cdk:analytics:method",
-            "data": {
-              "addToPrincipalPolicy": [
-                {}
-              ]
-            }
-          },
-          {
-            "type": "aws:cdk:analytics:method",
-            "data": {
-              "addToPrincipalPolicy": [
-                {}
-              ]
-            }
-          }
-        ],
-        "/BackendStack/GetAlbumByIdLambdaRole/ImportGetAlbumByIdLambdaRole": [
-          {
-            "type": "aws:cdk:analytics:construct",
-            "data": "*"
-          }
-        ],
-        "/BackendStack/GetAlbumByIdLambdaRole/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "GetAlbumByIdLambdaRole183E92B1"
-          }
-        ],
-        "/BackendStack/GetAlbumByIdLambdaRole/DefaultPolicy": [
-          {
-            "type": "aws:cdk:analytics:construct",
-            "data": "*"
-          },
-          {
-            "type": "aws:cdk:analytics:method",
-            "data": {
-              "attachToRole": [
-                "*"
-              ]
-            }
-          },
-          {
-            "type": "aws:cdk:analytics:method",
-            "data": {
-              "attachToRole": [
-                "*"
-              ]
-            }
-          },
-          {
-            "type": "aws:cdk:analytics:method",
-            "data": {
-              "addStatements": [
-                {}
-              ]
-            }
-          },
-          {
-            "type": "aws:cdk:analytics:method",
-            "data": {
-              "addStatements": [
-                {}
-              ]
-            }
-          },
-          {
-            "type": "aws:cdk:analytics:method",
-            "data": {
-              "addStatements": [
-                {}
-              ]
-            }
-          },
-          {
-            "type": "aws:cdk:analytics:method",
-            "data": {
-              "addStatements": [
-                {}
-              ]
-            }
-          },
-          {
-            "type": "aws:cdk:analytics:method",
-            "data": {
-              "addStatements": [
-                {}
-              ]
-            }
-          },
-          {
-            "type": "aws:cdk:analytics:method",
-            "data": {
-              "addStatements": [
-                {}
-              ]
-            }
-          }
-        ],
-        "/BackendStack/GetAlbumByIdLambdaRole/DefaultPolicy/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "GetAlbumByIdLambdaRoleDefaultPolicyBA2E8369"
-          }
-        ],
-        "/BackendStack/GetAlbumByIdLambda": [
-          {
-            "type": "aws:cdk:analytics:construct",
-            "data": {
-              "environment": "*",
-              "layers": [],
-              "memorySize": "*",
-              "role": "*",
-              "timeout": "*",
-              "code": "*",
-              "handler": "*",
-              "runtime": "*"
-            }
-          },
-          {
-            "type": "aws:cdk:analytics:method",
-            "data": {
-              "addEnvironment": [
-                "*",
-                "*"
-              ]
-            }
-          },
-          {
-            "type": "aws:cdk:analytics:method",
-            "data": {
-              "addEnvironment": [
-                "*",
-                "*"
-              ]
-            }
-          },
-          {
-            "type": "aws:cdk:analytics:method",
-            "data": {
-              "addEnvironment": [
-                "*",
-                "*"
-              ]
-            }
-          },
-          {
-            "type": "aws:cdk:analytics:method",
-            "data": {
-              "addEnvironment": [
-                "*",
-                "*"
-              ]
-            }
-          },
-          {
-            "type": "aws:cdk:analytics:method",
-            "data": {
-              "addEnvironment": [
-                "*",
-                "*"
-              ]
-            }
-          },
-          {
-            "type": "aws:cdk:analytics:method",
-            "data": {
-              "addLayers": []
-            }
-          }
-        ],
-        "/BackendStack/GetAlbumByIdLambda/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "GetAlbumByIdLambdaEE53C4B1"
-          }
-        ],
-        "/BackendStack/GetAlbumByIdLambda/LogGroup": [
-          {
-            "type": "aws:cdk:analytics:construct",
-            "data": {
-              "logGroupName": "*"
-            }
-          }
-        ],
-        "/BackendStack/GetAlbumByIdLambda/LogGroup/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "GetAlbumByIdLambdaLogGroupD0E25DDF"
-          }
-        ],
-        "/BackendStack/GetAlbumByIdLambda/FunctionUrl": [
-          {
-            "type": "aws:cdk:analytics:construct",
-            "data": {
-              "function": "*",
-              "authType": "NONE",
-              "cors": {
-                "allowedOrigins": "*"
-              }
-            }
-          }
-        ],
-        "/BackendStack/GetAlbumByIdLambda/FunctionUrl/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "GetAlbumByIdLambdaFunctionUrlE7FD5FA7"
-          }
-        ],
-        "/BackendStack/GetAlbumByIdLambda/invoke-function-url": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "GetAlbumByIdLambdainvokefunctionurlF4E3CDE0"
-          }
-        ],
-        "/BackendStack/GetArtistByIdLambdaRole": [
-          {
-            "type": "aws:cdk:analytics:construct",
-            "data": {
-              "assumedBy": {
-                "principalAccount": "*",
-                "assumeRoleAction": "*"
-              }
-            }
-          },
-          {
-            "type": "aws:cdk:analytics:method",
-            "data": {
-              "addManagedPolicy": [
-                {
-                  "managedPolicyArn": "*"
-                }
-              ]
-            }
-          },
-          {
-            "type": "aws:cdk:analytics:method",
-            "data": {
-              "addToPrincipalPolicy": [
-                {}
-              ]
-            }
-          },
-          {
-            "type": "aws:cdk:analytics:method",
-            "data": {
-              "attachInlinePolicy": [
-                "*"
-              ]
-            }
-          },
-          {
-            "type": "aws:cdk:analytics:method",
-            "data": {
-              "attachInlinePolicy": [
-                "*"
-              ]
-            }
-          },
-          {
-            "type": "aws:cdk:analytics:method",
-            "data": {
-              "addToPrincipalPolicy": [
-                {}
-              ]
-            }
-          },
-          {
-            "type": "aws:cdk:analytics:method",
-            "data": {
-              "addToPrincipalPolicy": [
-                {}
-              ]
-            }
-          },
-          {
-            "type": "aws:cdk:analytics:method",
-            "data": {
-              "addToPrincipalPolicy": [
-                {}
-              ]
-            }
-          },
-          {
-            "type": "aws:cdk:analytics:method",
-            "data": {
-              "addToPrincipalPolicy": [
-                {}
-              ]
-            }
-          }
-        ],
-        "/BackendStack/GetArtistByIdLambdaRole/ImportGetArtistByIdLambdaRole": [
-          {
-            "type": "aws:cdk:analytics:construct",
-            "data": "*"
-          }
-        ],
-        "/BackendStack/GetArtistByIdLambdaRole/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "GetArtistByIdLambdaRole98FB5728"
-          }
-        ],
-        "/BackendStack/GetArtistByIdLambdaRole/DefaultPolicy": [
-          {
-            "type": "aws:cdk:analytics:construct",
-            "data": "*"
-          },
-          {
-            "type": "aws:cdk:analytics:method",
-            "data": {
-              "attachToRole": [
-                "*"
-              ]
-            }
-          },
-          {
-            "type": "aws:cdk:analytics:method",
-            "data": {
-              "attachToRole": [
-                "*"
-              ]
-            }
-          },
-          {
-            "type": "aws:cdk:analytics:method",
-            "data": {
-              "addStatements": [
-                {}
-              ]
-            }
-          },
-          {
-            "type": "aws:cdk:analytics:method",
-            "data": {
-              "addStatements": [
-                {}
-              ]
-            }
-          },
-          {
-            "type": "aws:cdk:analytics:method",
-            "data": {
-              "addStatements": [
-                {}
-              ]
-            }
-          },
-          {
-            "type": "aws:cdk:analytics:method",
-            "data": {
-              "addStatements": [
-                {}
-              ]
-            }
-          },
-          {
-            "type": "aws:cdk:analytics:method",
-            "data": {
-              "addStatements": [
-                {}
-              ]
-            }
-          }
-        ],
-        "/BackendStack/GetArtistByIdLambdaRole/DefaultPolicy/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "GetArtistByIdLambdaRoleDefaultPolicy8336CD36"
-          }
-        ],
-        "/BackendStack/GetArtistByIdLambda": [
-          {
-            "type": "aws:cdk:analytics:construct",
-            "data": {
-              "environment": "*",
-              "layers": [],
-              "memorySize": "*",
-              "role": "*",
-              "timeout": "*",
-              "code": "*",
-              "handler": "*",
-              "runtime": "*"
-            }
-          },
-          {
-            "type": "aws:cdk:analytics:method",
-            "data": {
-              "addEnvironment": [
-                "*",
-                "*"
-              ]
-            }
-          },
-          {
-            "type": "aws:cdk:analytics:method",
-            "data": {
-              "addEnvironment": [
-                "*",
-                "*"
-              ]
-            }
-          },
-          {
-            "type": "aws:cdk:analytics:method",
-            "data": {
-              "addEnvironment": [
-                "*",
-                "*"
-              ]
-            }
-          },
-          {
-            "type": "aws:cdk:analytics:method",
-            "data": {
-              "addLayers": []
-            }
-          }
-        ],
-        "/BackendStack/GetArtistByIdLambda/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "GetArtistByIdLambda3FD46FA6"
-          }
-        ],
-        "/BackendStack/GetArtistByIdLambda/LogGroup": [
-          {
-            "type": "aws:cdk:analytics:construct",
-            "data": {
-              "logGroupName": "*"
-            }
-          }
-        ],
-        "/BackendStack/GetArtistByIdLambda/LogGroup/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "GetArtistByIdLambdaLogGroup2D458207"
-          }
-        ],
-        "/BackendStack/GetArtistByIdLambda/FunctionUrl": [
-          {
-            "type": "aws:cdk:analytics:construct",
-            "data": {
-              "function": "*",
-              "authType": "NONE",
-              "cors": {
-                "allowedOrigins": "*"
-              }
-            }
-          }
-        ],
-        "/BackendStack/GetArtistByIdLambda/FunctionUrl/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "GetArtistByIdLambdaFunctionUrl5F8A32F3"
-          }
-        ],
-        "/BackendStack/GetArtistByIdLambda/invoke-function-url": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "GetArtistByIdLambdainvokefunctionurl4F67BD2D"
           }
         ],
         "/BackendStack/GenerateDownloadUrlLambdaRole": [
