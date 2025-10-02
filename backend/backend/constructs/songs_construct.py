@@ -86,12 +86,14 @@ class SongsConstruct(Construct):
                 "ALBUMS_TABLE": albums_table.table_name,
                 "ARTIST_SONG_TABLE": artist_song_table.table_name,
                 "BUCKET_NAME": bucket.bucket_name,
+                "SNS_NEW_TRANSCRIPTION_ARN": new_transcription_topic.topic_arn,
             }
         )
         table.grant_read_write_data(update_song_lambda)
         albums_table.grant_read_write_data(update_song_lambda)
         artist_song_table.grant_read_write_data(update_song_lambda)
         bucket.grant_read_write(update_song_lambda)
+        new_transcription_topic.grant_publish(update_song_lambda)
 
         song_id_resource = songs_api_resource.add_resource("{id}")
         song_id_resource.add_method(

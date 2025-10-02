@@ -80,21 +80,22 @@ def lambda_handler(event, context):
             )
             print(f"Published single '{body['title']}' to SNS topic {SNS_NEW_SINGLE_TOPIC_ARN}")
 
-        sns.publish(
-                TopicArn=SNS_NEW_TRANSCRIPTION_TOPIC_ARN,
-                Message=json.dumps(item, default=str),
-                MessageAttributes={
-                    "songId": {
-                        "DataType": "String",
-                        "StringValue": song_id
+        if transcribe:
+            sns.publish(
+                    TopicArn=SNS_NEW_TRANSCRIPTION_TOPIC_ARN,
+                    Message=json.dumps(item, default=str),
+                    MessageAttributes={
+                        "songId": {
+                            "DataType": "String",
+                            "StringValue": song_id
+                        },
+                        "songFileName": {
+                            "DataType": "String",
+                            "StringValue": filename
+                        }
                     },
-                    "songFileName": {
-                        "DataType": "String",
-                        "StringValue": filename
-                    }
-                },
-                Subject="New Transcription Request"
-            )
+                    Subject="New Transcription Request"
+                )
 
         return {
             "statusCode": 201,
