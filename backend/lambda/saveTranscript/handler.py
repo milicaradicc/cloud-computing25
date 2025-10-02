@@ -27,7 +27,7 @@ def lambda_handler(event, context):
             songs_table_partition_key: item[songs_table_partition_key],
             songs_table_sort_key: item[songs_table_sort_key]
         },
-        UpdateExpression="SET transcriptPath = :tp",
+        UpdateExpression="SET transcriptFileName = :tp",
         ExpressionAttributeValues={
             ":tp": transcript_filename
         }

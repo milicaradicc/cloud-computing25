@@ -83,7 +83,8 @@ def lambda_handler(event, context):
             "duration": item.get("duration"),
             "releaseDate": item.get("releaseDate"),
             "type": item.get("type", "single"),
-            "fileName": item.get("fileName", "")
+            "fileName": item.get("fileName", ""),
+            "transcriptFileName": item.get("transcriptFileName", "")
         }
 
         return {
