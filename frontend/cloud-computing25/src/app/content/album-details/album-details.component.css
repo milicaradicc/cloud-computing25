@@ -2,7 +2,7 @@
   display: flex;
   min-height: 100vh;
   flex-direction: row;
-  background: #080808; /* crna pozadina */
+  background: #080808; 
   color: white;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   overflow-y: auto;
@@ -14,8 +14,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  top: auto; /* uklonjeno */
-  position: relative; /* promijenjeno */
+  top: auto; 
+  position: relative; 
   width: 20%;
   background: #111;
 }
@@ -26,7 +26,7 @@
   margin-bottom: 2rem;
   border-radius: 15px;
   overflow: hidden;
-  background: #222; /* jednostavna tamna pozadina */
+  background: #222; 
 }
 
 .cover-image {
@@ -254,7 +254,6 @@
   }
 }
 
-/* Scrollbar */
 .details-section::-webkit-scrollbar {
   width: 6px;
 }

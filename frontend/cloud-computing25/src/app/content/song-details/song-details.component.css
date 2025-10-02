@@ -2,7 +2,7 @@
   display: flex;
   min-height: 100vh;
   flex-direction: row;
-  background: #080808; /* crna pozadina */
+  background: #080808; 
   color: white;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   overflow-y: auto;
@@ -14,8 +14,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  top: auto; /* uklonjeno */
-  position: relative; /* promijenjeno */
+  top: auto;
+  position: relative;
   width: 20%;
   background: #111;
 }
@@ -26,7 +26,7 @@
   margin-bottom: 2rem;
   border-radius: 15px;
   overflow: hidden;
-  background: #222; /* jednostavna tamna pozadina */
+  background: #222; 
 }
 
 .cover-image {
@@ -308,39 +308,37 @@
   flex-direction: row;
 }
 
-
 .rating-section {
   display: flex;
-  flex-direction: column; /* ili row, ovisno šta ti treba */
-  align-items: center;    /* horizontalno centriranje */
-  justify-content: center; /* vertikalno centriranje */
-  gap: 0.5rem; /* razmak između label i zvjezdica */
+  flex-direction: column; 
+  align-items: center;    
+  justify-content: center; 
+  gap: 0.5rem; 
 }
 
 .star-rating {
   display: flex;
   flex-direction: row;
-  justify-content: center; /* centriranje zvjezdica horizontalno */
-  align-items: center;     /* vertikalno centriranje zvjezdica */
+  justify-content: center; 
+  align-items: center;     
 }
-
 
 .star-button {
   background: none;
   border: none;
   cursor: pointer;
   font-size: 2rem;
-  color: white; /* default bijelo */
+  color: white; 
   transition: color 0.2s;
   margin-right: 0.2rem;
 }
 
 .star-button.star-filled {
-  color: gold; /* kliknute zvjezdice žute */
+  color: gold; 
 }
 
 .star-button.star-empty {
-  color: white; /* prazne zvjezdice bijele */
+  color: white; 
 }
 
 .star-button:disabled {
