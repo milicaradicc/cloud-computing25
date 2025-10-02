@@ -47,6 +47,9 @@
   <!-- Right Side - Songs Table -->
   <div class="details-section">
     <h1 class="details-title">Songs</h1>
+
+    <audio #audioPlayer controls style="display:none"></audio>
+
     <table class="songs-table">
       <thead>
         <tr>
@@ -55,10 +58,12 @@
           <th>Artists</th>
           <th>Genres</th>
           <th>Type</th>
+          <th>Listen offline</th>
+          <th>Download</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let song of album.songs">
+        <tr *ngFor="let song of album.songs"  (click)="goToSongDetails(song.Id)">
           <td>{{ song.title }}</td>
           <td>{{ formatTime(song.duration || 0) }}</td>
           <td>
@@ -72,6 +77,47 @@
             </span>
           </td>
           <td>{{ song.type }}</td>
+          <td>
+            <button 
+              (click)="onOfflineButtonClick(song, audioPlayer)"
+              [disabled]="isProcessing"
+              [class.offline-saved]="isSongCached(song.Id)"
+              title="{{ isSongCached(song.Id) ? 'Play offline' : 'Save offline' }}"
+            >
+              <i 
+                class="fas" 
+                [ngClass]="{
+                  'fa-cloud-download-alt': !isSongCached(song.Id) && !isProcessing,
+                  'fa-play-circle': isSongCached(song.Id) && !isProcessing,
+                  'fa-spinner fa-spin': isProcessing 
+                }"
+              ></i>
+            </button>
+
+            <!-- Stop dugme -->
+            <button
+              (click)="stopSong()"
+              class="stop-btn"
+              title="Stop"
+            >
+              <i class="fas fa-stop"></i>
+            </button>
+          </td>
+
+          <td>
+            <button
+              (click)="onDownloadClick(song.Id)"
+              [disabled]="isLoading"
+              class="download-btn"
+            >
+              <ng-container *ngIf="!isLoading">
+                <i class="fas fa-download"></i> 
+              </ng-container>
+              <ng-container *ngIf="isLoading">
+                <i class="fas fa-spinner fa-spin"></i> 
+              </ng-container>
+            </button>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -80,4 +126,5 @@
       <p>No songs found for this album.</p>
     </ng-template>
   </div>
+
 </div>

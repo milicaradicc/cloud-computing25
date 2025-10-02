@@ -343,5 +343,50 @@ class BackendStack(Stack):
             authorization_type=apigateway.AuthorizationType.NONE,
         )
 
+        # DOWNLOAD
+        generate_download_lambda = create_lambda_function(
+            self,
+            "GenerateDownloadUrlLambda",
+            "handler.lambda_handler", 
+            "lambda/downloadSong",
+            [],
+            environment={
+                "SONG_BUCKET_NAME": music_bucket.bucket_name,
+                "SONGS_TABLE": songs_table.table_name, 
+                "CORS_ORIGIN": "*", 
+            }
+        )
 
+        music_bucket.grant_read(generate_download_lambda)        
+        songs_table.grant_read_data(generate_download_lambda)
 
+        download_resource = api.root.add_resource("download")
+        download_id_resource = download_resource.add_resource("{songId}")
+
+        download_integration = apigateway.LambdaIntegration(generate_download_lambda, proxy=True)
+
+        download_id_resource.add_method(
+            "GET",
+            download_integration,
+            authorization_type=apigateway.AuthorizationType.NONE, 
+        )
+
+       # OFFLINE LISTENING
+
+      # OFFLINE LISTENING
+        songs_resource = api.root.get_resource("songs")
+        song_id_resource = songs_resource.get_resource("{id}")  # koristi {id}, ne {songId}
+
+        # Dodaj presigned-url ispod {id}
+        presigned_resource = song_id_resource.add_resource("presigned-url")
+
+        presigned_integration = apigateway.LambdaIntegration(
+            generate_download_lambda,
+            proxy=True
+        )
+
+        presigned_resource.add_method(
+            "GET",
+            presigned_integration,
+            authorization_type=apigateway.AuthorizationType.NONE
+        )
