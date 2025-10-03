@@ -100,7 +100,8 @@ export class DiscoverContentComponent implements OnInit {
     // TODO: fallback image logic
   }
   getAlbumCoverUrl(album: Album): string {
-    if (!album.coverImage) return 'assets/default-album.png'; // fallback
-    return `${environment.s3BucketLink}/${album.coverImage}`;
+    return album.coverImage 
+      ? `${environment.s3BucketLink}/${album.coverImage}`
+      : 'assets/placeholder.png'; // fallback placeholder
   }
 }

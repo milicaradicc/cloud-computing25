@@ -18,8 +18,8 @@ import { Song } from '../models/song.model';
 export class ContentManagementComponent {
 albums: Album[] = [];
   songs: Song[] = [];
-  filteredAlbums: Album[] = [];
-  filteredSongs: Song[] = [];
+  filteredAlbums: any[] = [];
+  filteredSongs: any[] = [];
   albumSearchTerm: string = '';
   songSearchTerm: string = '';
   loading = false;
@@ -36,13 +36,11 @@ albums: Album[] = [];
 
   getAlbumCoverUrl(album: Album): string {
     if (!album.coverImage) return "assets/placeholder.png";
-    console.log( environment.s3BucketLink + '/' + album.coverImage)
     return environment.s3BucketLink + '/' + album.coverImage;
   }
 
   getSongCoverUrl(song: Song): string {
     if (!song.coverImage) return "assets/default-song.png";
-    console.log( environment.s3BucketLink + '/' + song.coverImage)
     return environment.s3BucketLink + '/' + song.coverImage;
   }
 
@@ -54,6 +52,7 @@ albums: Album[] = [];
       next: (albums) => {
         this.albums = albums;
         this.filteredAlbums = [...albums];
+        console.log(albums)
       },
       error: (error) => {
         console.error('Error loading albums:', error);
@@ -67,6 +66,7 @@ albums: Album[] = [];
         this.songs = songs;
         this.filteredSongs = [...songs];
         this.loading = false;
+        console.log(songs)
       },
       error: (error) => {
         console.error('Error loading songs:', error);

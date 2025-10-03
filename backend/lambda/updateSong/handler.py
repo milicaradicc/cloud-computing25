@@ -6,51 +6,39 @@ from decimal import Decimal
 
 import boto3
 
-# AWS resursi
 s3 = boto3.client('s3')
 dynamodb = boto3.resource("dynamodb")
 songs_table_name = os.environ["SONGS_TABLE"]
 albums_table_name = os.environ["ALBUMS_TABLE"]
 bucket_name = os.environ["BUCKET_NAME"]
-artist_song_table_name = os.environ["ARTIST_SONG_TABLE"]
 
 SNS_NEW_TRANSCRIPTION_TOPIC_ARN = os.environ["SNS_NEW_TRANSCRIPTION_ARN"]
 sns = boto3.client("sns")
 
 songs_table = dynamodb.Table(songs_table_name)
 albums_table = dynamodb.Table(albums_table_name)
-artist_song_table = dynamodb.Table(artist_song_table_name)
 
 
 def convert_to_dynamodb_types(obj, path="root"):
-    """Konvertuje Python tipove u DynamoDB tipove"""
-    try:
-        if isinstance(obj, dict):
-            return {k: convert_to_dynamodb_types(v, f"{path}.{k}") for k, v in obj.items()}
-        elif isinstance(obj, list):
-            return [convert_to_dynamodb_types(v, f"{path}[{i}]") for i, v in enumerate(obj)]
-        elif isinstance(obj, datetime):
-            return obj.isoformat()
-        elif isinstance(obj, bool):
-            return obj
-        elif isinstance(obj, str):
-            return obj
-        elif obj is None:
-            return obj
-        elif isinstance(obj, (float, int)):
-            return Decimal(str(obj))
-        else:
-            # Za sve ostale tipove, konvertuj u string
-            print(f"WARNING: Converting unknown type at {path}: {type(obj)} = {obj}")
-            return str(obj)
-    except Exception as e:
-        print(f"ERROR converting at path {path}: {type(obj)} = {obj}")
-        print(f"Error: {str(e)}")
-        raise
+    if isinstance(obj, dict):
+        return {k: convert_to_dynamodb_types(v, f"{path}.{k}") for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [convert_to_dynamodb_types(v, f"{path}[{i}]") for i, v in enumerate(obj)]
+    elif isinstance(obj, datetime):
+        return obj.isoformat()
+    elif isinstance(obj, bool):
+        return obj
+    elif isinstance(obj, str):
+        return obj
+    elif obj is None:
+        return obj
+    elif isinstance(obj, (float, int)):
+        return Decimal(str(obj))
+    else:
+        return str(obj)
 
 
 def convert_decimals(obj):
-    """Konvertuje Decimal nazad u float/int za JSON response"""
     if isinstance(obj, list):
         return [convert_decimals(v) for v in obj]
     elif isinstance(obj, dict):
@@ -73,7 +61,6 @@ def lambda_handler(event, context):
 
     try:
         body = json.loads(event.get('body', '{}'))
-
         print("Received body:", json.dumps(body, default=str))
 
         if 'Id' not in body or 'Album' not in body:
@@ -84,7 +71,7 @@ def lambda_handler(event, context):
             }
 
         song_id = str(body['Id'])
-        album = str(body['Album'])
+        album = str(body['Album']['Id'])
 
         response = songs_table.get_item(Key={'Album': album, 'Id': song_id})
         item = response.get('Item')
@@ -95,7 +82,6 @@ def lambda_handler(event, context):
                 "body": json.dumps({"error": "Song not found"})
             }
 
-        # Handle audio file upload
         filename = body.get('fileName')
         fileBase64 = body.get('fileBase64')
 
@@ -147,7 +133,6 @@ def lambda_handler(event, context):
                     "body": json.dumps({"error": f"Audio upload failed: {str(e)}"})
                 }
 
-        # Handle cover image upload
         cover_filename = body.get('coverImage')
         coverBase64 = body.get('coverBase64')
 
@@ -180,7 +165,6 @@ def lambda_handler(event, context):
                     "body": json.dumps({"error": f"Cover upload failed: {str(e)}"})
                 }
 
-        # Update basic fields
         if 'title' in body:
             item['title'] = str(body['title'])
         if 'description' in body:
@@ -190,41 +174,6 @@ def lambda_handler(event, context):
 
         item['modifiedDate'] = datetime.now().isoformat()
 
-        # Handle artist updates
-        new_artists = body.get('artists')
-        if new_artists is not None:
-            try:
-                old_artists = item.get('artists', [])
-
-                # Remove old artist associations
-                for artist_id in old_artists:
-                    try:
-                        artist_song_table.delete_item(
-                            Key={'ArtistId': str(artist_id), 'SongId': song_id}
-                        )
-                    except Exception as e:
-                        print(f"Warning: Failed to delete artist association {artist_id}: {str(e)}")
-
-                # Add new artist associations
-                for artist_id in new_artists:
-                    artist_song_table.put_item(Item={
-                        'ArtistId': str(artist_id),
-                        'SongId': song_id,
-                        'AlbumId': album,
-                        'createdDate': datetime.now().isoformat()
-                    })
-
-                item['artists'] = [str(a) for a in new_artists]
-
-            except Exception as e:
-                print(f"Artist update error: {str(e)}")
-                return {
-                    "statusCode": 500,
-                    "headers": {"Access-Control-Allow-Origin": "*"},
-                    "body": json.dumps({"error": f"Artist update failed: {str(e)}"})
-                }
-
-        # Convert to DynamoDB types and save
         print("Item before conversion:", json.dumps(item, default=str))
         item = convert_to_dynamodb_types(item)
         songs_table.put_item(Item=item)

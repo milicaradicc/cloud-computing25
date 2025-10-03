@@ -18,7 +18,7 @@
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::791096175070:role/cdk-hnb659fds-deploy-role-791096175070-eu-central-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::791096175070:role/cdk-hnb659fds-cfn-exec-role-791096175070-eu-central-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-791096175070-eu-central-1/0f8ca8a7d7063f726bec6a79a4f4e968adf5dac151a9c4d8b6f64cbd5a5cff59.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-791096175070-eu-central-1/032ccc12fbb87784f294827edc568e06217dd1adaffd5bba0dee55c03c0a5afc.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -5934,6 +5934,22 @@
                 "*"
               ]
             }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToPrincipalPolicy": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToPrincipalPolicy": [
+                {}
+              ]
+            }
           }
         ],
         "/BackendStack/SongsConstruct/GetSongsLambdaRole/ImportGetSongsLambdaRole": [
@@ -5976,6 +5992,22 @@
                 {}
               ]
             }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addStatements": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addStatements": [
+                {}
+              ]
+            }
           }
         ],
         "/BackendStack/SongsConstruct/GetSongsLambdaRole/DefaultPolicy/Resource": [
@@ -5996,6 +6028,24 @@
               "code": "*",
               "handler": "*",
               "runtime": "*"
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addEnvironment": [
+                "*",
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addEnvironment": [
+                "*",
+                "*"
+              ]
             }
           },
           {
@@ -7403,6 +7453,14 @@
                 "*"
               ]
             }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToPrincipalPolicy": [
+                {}
+              ]
+            }
           }
         ],
         "/BackendStack/AlbumConstruct/GetAlbumsLambdaRole/ImportGetAlbumsLambdaRole": [
@@ -7445,6 +7503,14 @@
                 {}
               ]
             }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addStatements": [
+                {}
+              ]
+            }
           }
         ],
         "/BackendStack/AlbumConstruct/GetAlbumsLambdaRole/DefaultPolicy/Resource": [
@@ -7465,6 +7531,15 @@
               "code": "*",
               "handler": "*",
               "runtime": "*"
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addEnvironment": [
+                "*",
+                "*"
+              ]
             }
           },
           {

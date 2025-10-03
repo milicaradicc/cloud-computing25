@@ -7490,8 +7490,48 @@
        "Resource": [
         {
          "Fn::GetAtt": [
+          "Albums77B3A114",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::GetAtt": [
+          "ArtistsAF1BB04E",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::GetAtt": [
           "SongsD2AA5F2A",
           "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "Albums77B3A114",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "ArtistsAF1BB04E",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
          ]
         },
         {
@@ -7529,12 +7569,18 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-791096175070-eu-central-1",
-     "S3Key": "910b979ef9a71ac0a0f094edea17dee2e561cd886b7445e5a346f800985d4659.zip"
+     "S3Key": "c46a410366b28d37636d766793cddc6e396415e1b5e050dd9cf1a4e6df04fc2c.zip"
     },
     "Environment": {
      "Variables": {
       "SONGS_TABLE": {
        "Ref": "SongsD2AA5F2A"
+      },
+      "ALBUMS_TABLE": {
+       "Ref": "Albums77B3A114"
+      },
+      "ARTISTS_TABLE": {
+       "Ref": "ArtistsAF1BB04E"
       }
      }
     },
@@ -7555,7 +7601,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "BackendStack/SongsConstruct/GetSongsLambda/Resource",
-    "aws:asset:path": "asset.910b979ef9a71ac0a0f094edea17dee2e561cd886b7445e5a346f800985d4659",
+    "aws:asset:path": "asset.c46a410366b28d37636d766793cddc6e396415e1b5e050dd9cf1a4e6df04fc2c",
     "aws:asset:is-bundled": true,
     "aws:asset:property": "Code"
    }
@@ -7803,7 +7849,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-791096175070-eu-central-1",
-     "S3Key": "c27964933e36d49e45209161c9b147db229477d4c734441c04a9d31a5cbd9729.zip"
+     "S3Key": "568207238d6111ad9e18a04e2438dd378393773881ae9ab8a97ab90b53e965c2.zip"
     },
     "Environment": {
      "Variables": {
@@ -7841,7 +7887,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "BackendStack/SongsConstruct/UpdateSongLambda/Resource",
-    "aws:asset:path": "asset.c27964933e36d49e45209161c9b147db229477d4c734441c04a9d31a5cbd9729",
+    "aws:asset:path": "asset.568207238d6111ad9e18a04e2438dd378393773881ae9ab8a97ab90b53e965c2",
     "aws:asset:is-bundled": true,
     "aws:asset:property": "Code"
    }
@@ -9112,12 +9158,32 @@
          ]
         },
         {
+         "Fn::GetAtt": [
+          "ArtistsAF1BB04E",
+          "Arn"
+         ]
+        },
+        {
          "Fn::Join": [
           "",
           [
            {
             "Fn::GetAtt": [
              "Albums77B3A114",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "ArtistsAF1BB04E",
              "Arn"
             ]
            },
@@ -9152,6 +9218,9 @@
      "Variables": {
       "ALBUMS_TABLE": {
        "Ref": "Albums77B3A114"
+      },
+      "ARTISTS_TABLE": {
+       "Ref": "ArtistsAF1BB04E"
       }
      }
     },
@@ -9393,7 +9462,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-791096175070-eu-central-1",
-     "S3Key": "95cc28d4868facdde742e7affdc2bd751eea1cf5fd565070ed00a305229ceb0c.zip"
+     "S3Key": "9d08cd782346674ad183ef40903e5db2948fe7076e80e4165f71ac60f4e81a0d.zip"
     },
     "Environment": {
      "Variables": {
@@ -9425,7 +9494,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "BackendStack/AlbumConstruct/UpdateAlbumLambda/Resource",
-    "aws:asset:path": "asset.95cc28d4868facdde742e7affdc2bd751eea1cf5fd565070ed00a305229ceb0c",
+    "aws:asset:path": "asset.9d08cd782346674ad183ef40903e5db2948fe7076e80e4165f71ac60f4e81a0d",
     "aws:asset:is-bundled": true,
     "aws:asset:property": "Code"
    }
@@ -11723,7 +11792,7 @@
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {
-    "Analytics": "v2:deflate64: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"
+    "Analytics": "v2:deflate64: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"
    },
    "Metadata": {
     "aws:cdk:path": "BackendStack/CDKMetadata/Default"

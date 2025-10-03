@@ -63,9 +63,11 @@ class AlbumConstruct(Construct):
             "handler.lambda_handler",
             "lambda/getAlbums",
             [],
-            {"ALBUMS_TABLE": albums_table.table_name}
+            {"ALBUMS_TABLE": albums_table.table_name,
+             "ARTISTS_TABLE": artists_table.table_name,}
         )
         albums_table.grant_read_data(get_albums_lambda)
+        artists_table.grant_read_data(get_albums_lambda)
 
         albums_api_resource.add_method(
             "GET",

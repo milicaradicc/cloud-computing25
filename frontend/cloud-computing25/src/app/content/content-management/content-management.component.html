@@ -17,9 +17,6 @@
                       class="cover-image">
                   <div class="item-info">
                     <h3 class="item-title">{{album.title}}</h3>
-                    <p class="item-artists">
-                      <span>{{ album.artists[0]?.name || 'Unknown Artist' }}</span>
-                    </p>
                     <p class="item-genres">
                       <mat-chip-listbox>
                         <mat-chip *ngFor="let genre of album.genres">{{genre}}</mat-chip>
@@ -61,11 +58,11 @@
                   <div class="song-info">
                     <h4 class="song-title">{{song.title}}</h4>
                     <p class="song-artists">
-                      <span *ngFor="let artist of song.artists; let last = last">
+                      <span *ngFor="let artist of song.Artists; let last = last">
                         {{artist.name}}<span *ngIf="!last">, </span>
                       </span>
                     </p>
-                    <p class="song-album">Album: {{song.Album || 'Single'}}</p>
+                    <p class="song-album">Album: {{song.Album.title || 'Single'}}</p>
                     <p class="song-duration" *ngIf="song.duration">
                       Duration: {{formatDuration(song.duration)}}
                     </p>
