@@ -6,6 +6,7 @@ import {Artist} from '../artist.model';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {MatSort} from '@angular/material/sort';
 import {CreateArtistComponent} from '../create-artist/create-artist.component';
+import { FeedService } from '../../layout/feed.service';
 
 @Component({
   selector: 'app-artists',
@@ -15,7 +16,8 @@ import {CreateArtistComponent} from '../create-artist/create-artist.component';
 })
 export class ArtistsComponent implements OnInit {
   constructor(private service:ArtistService,
-              private dialog: MatDialog) {}
+              private dialog: MatDialog,
+              private feedService: FeedService) {}
 
   dataSource: MatTableDataSource<Artist> = new MatTableDataSource<Artist>([]);
   displayedColumns: string[] = ['name', 'biography','genres','actions']; 
@@ -53,23 +55,37 @@ export class ArtistsComponent implements OnInit {
       }
     });
   }
-  openEditArtistDialog(artist: Artist) {
-    const dialogRef = this.dialog.open(CreateArtistComponent, {
-      width: '400px',
-      data: artist 
-    });
+openEditArtistDialog(artist: Artist) {
+  const dialogRef = this.dialog.open(CreateArtistComponent, {
+    width: '400px',
+    data: artist 
+  });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.service.update(artist.Id, result).subscribe({
-          next: () => {
-            this.refreshDataSource();
-            this.snackBar.open('Artist updated successfully','OK',{duration:3000});
-          }
-        });
-      }
-    });
-  }
+  dialogRef.afterClosed().subscribe(result => {
+    if (result) {
+      this.service.update(artist.Id, result).subscribe({
+        next: () => {
+          this.refreshDataSource();
+          this.snackBar.open('Artist updated successfully','OK',{duration:3000});
+
+          this.feedService.updateUserScore('SUBSCRIBE', {
+            User: 'admin',       
+            Target: artist.Id    
+          }).subscribe({
+            next: () => console.log(`Feed updated for artist: ${artist.Id}`),
+            error: (err) => console.error('Error updating feed:', err)
+          });
+
+        },
+        error: (err) => {
+          this.snackBar.open('Error updating artist','OK',{duration:3000});
+          console.error(err);
+        }
+      });
+    }
+  });
+}
+
 
   deleteArtist(artist: Artist) {
     if(confirm(`Are you sure you want to delete ${artist.name}?`)) {

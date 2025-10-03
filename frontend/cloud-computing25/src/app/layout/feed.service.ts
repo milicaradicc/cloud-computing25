@@ -12,6 +12,11 @@ export interface FeedResponse {
   recommendedAlbums: Album[];
 }
 
+export interface ScoreUpdateRequest {
+  action: 'LISTEN' | 'RATE' | 'SUBSCRIBE';
+  details: any;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -19,10 +24,21 @@ export class FeedService {
 
   constructor(private http: HttpClient) { }
 
-  // === ISPRAVKA JE OVDE ===
-  // Sada funkcija ispravno deklariše da vraća Observable<FeedResponse>
   getPersonalizedFeed(): Observable<FeedResponse> {
-    // I http.get očekuje isti tip <FeedResponse>
     return this.http.get<FeedResponse>(`${environment.apiHost}/feed`);
   }
+
+  updateUserScore(action: 'LISTEN' | 'RATE' | 'SUBSCRIBE', details: any): Observable<any> {
+    const payload: ScoreUpdateRequest = {
+      action,
+      details
+    };
+
+    return this.http.post(`${environment.apiHost}/feed`, payload);
+  }
+
+  pushNewContent(payload: { contentId: string, genres: string[], artists: string[] }) {
+    return this.http.post(`${environment.apiHost}/feed/new-content`, payload);
+  }
+
 }

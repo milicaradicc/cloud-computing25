@@ -6,6 +6,7 @@ import { SingleUploadDTO } from '../models/single-upload-dto.model';
 import { ContentService } from '../content.service';
 import { AlbumUploadDTO } from '../models/album-upload-dto.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { FeedService } from '../../layout/feed.service';
 
 @Component({
   standalone: false,
@@ -30,7 +31,8 @@ export class UploadContentComponent implements OnInit {
     private fb: FormBuilder,
     private artistService: ArtistService,
     private musicService: ContentService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private feedService: FeedService
   ) {
     this.uploadForm = this.fb.group({
       type: ['single', Validators.required],
@@ -235,9 +237,22 @@ export class UploadContentComponent implements OnInit {
 
         console.log('Single DTO:', dto);
         this.musicService.addSong(dto).subscribe({
-          next: res => console.log('Single uploaded successfully', res),
+          next: res => {
+            console.log('Single uploaded successfully', res);
+
+            // === NEW CONTENT FEED CALL ===
+            this.feedService.pushNewContent({
+              contentId: res.item.Id,
+              genres: dto.genres,
+              artists: dto.artists.map(a => a.Id)
+            }).subscribe({
+              next: () => console.log(`New content pushed to feed: ${res.item.Id}`),
+              error: err => console.error('Error pushing new content to feed', err)
+            });
+          },
           error: err => console.error('Single upload failed', err)
         });
+
       },
       error: err => console.error('Album creation for single failed', err)
     });
@@ -265,6 +280,18 @@ export class UploadContentComponent implements OnInit {
       next: albumRes => {
         const albumId = albumRes.item.Id;
 
+        const artistsStringArray: string[] = albumDto.artists.map(a => a.toString());
+
+        this.feedService.pushNewContent({
+          contentId: albumId,
+          genres: albumDto.genres,
+          artists: artistsStringArray
+        }).subscribe({
+          next: () => console.log(`New album pushed to feed: ${albumId}`),
+          error: err => console.error('Error pushing album to feed', err)
+        });
+
+        // Upload svih pesama iz albuma
         this.songs.controls.forEach(async (songCtrl) => {
           const songControl = songCtrl as FormGroup;
           const songFile: File = songControl.value.audioFile;

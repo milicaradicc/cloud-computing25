@@ -5,6 +5,7 @@ import { DownloadService } from '../download.service';
 import { firstValueFrom } from 'rxjs'; // Dodati import za Observable ako nije prisutan
 import { IndexedDbService } from '../indexed-db.service';
 import { ListeningHistoryService } from '../listening-history.service';
+import { FeedService } from '../../layout/feed.service';
 
 @Component({
   selector: 'app-album-details',
@@ -40,7 +41,8 @@ export class AlbumDetailsComponent implements OnInit {
     private downloadService: DownloadService, 
     private dbService: IndexedDbService,
     private router: Router,
-    private listeningHistoryService: ListeningHistoryService
+    private listeningHistoryService: ListeningHistoryService,
+    private feedService: FeedService
   ) {}
 
   ngOnInit(): void {
@@ -235,6 +237,18 @@ export class AlbumDetailsComponent implements OnInit {
         this.listeningHistoryService.recordListen(song.Id, this.album.Id).subscribe({
           next: () => console.log(`Beleži se slušanje za pesmu: ${song.title}`),
           error: (err) => console.error('Greška pri beleženju slušanja:', err)
+        });
+
+        const details = {
+          User: this.album.artists,
+          Song: song.Id,
+          Genre: this.album.Genre,
+          Timestamp: new Date().toISOString()
+        };
+
+        this.feedService.updateUserScore('LISTEN', details).subscribe({
+          next: () => console.log(`Score updated for song: ${song.title}`),
+          error: (err) => console.error('Greška pri update-u skora:', err)
         });
       }
     } else {

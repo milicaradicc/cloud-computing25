@@ -9,6 +9,7 @@ import { AuthService } from '../../infrastructure/auth/auth.service';
 import { Subscription } from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import { ListeningHistoryService } from '../listening-history.service';
+import { FeedService } from '../../layout/feed.service';
 
 @Component({
   selector: 'app-song-details',
@@ -40,7 +41,8 @@ export class SongDetailsComponent implements OnInit, OnDestroy {
     private contentService: ContentService,
     private authService: AuthService,
     private http: HttpClient,
-    private listeningHistoryService: ListeningHistoryService
+    private listeningHistoryService: ListeningHistoryService,
+    private feedService: FeedService
   ) {}
 
   ngOnInit(): void {
@@ -214,7 +216,7 @@ export class SongDetailsComponent implements OnInit, OnDestroy {
   }
 
   async onStarClick(rating: number) {
-    if (!this.song || this.isRatingLoading) return;
+    if (!this.song || this.isRatingLoading || !this.song.genres || !this.song.artists) return;
 
     this.isRatingLoading = true;
 
@@ -228,12 +230,31 @@ export class SongDetailsComponent implements OnInit, OnDestroy {
         ratedAt: Date.now()
       };
 
-      console.log(ratingData);
+      console.log('Submitting rating:', ratingData);
+
+      const songId = this.song.Id;
+      const artist = this.song.artists[0];
+      const genre = this.song.genres[0];
+      const songTitle = this.song.title;
 
       const ratingSubscription = this.contentService.rateSong(ratingData).subscribe({
         next: (response) => {
           this.currentRating = rating;
           this.snackBar.open('Rating submitted successfully!', 'OK', { duration: 3000 });
+
+          const details = {
+            User: user.userId,
+            Song: songId,
+            Artist: artist,
+            Genre: genre,
+            Rating: rating
+          };
+
+          this.feedService.updateUserScore('RATE', details).subscribe({
+            next: () => console.log(`Score updated for rating of song: ${songTitle}`),
+            error: (err) => console.error('Error updating score:', err)
+          });
+
           this.isRatingLoading = false;
         },
         error: (error) => {
@@ -244,6 +265,7 @@ export class SongDetailsComponent implements OnInit, OnDestroy {
       });
 
       this.subscriptions.add(ratingSubscription);
+
     } catch (error) {
       this.isRatingLoading = false;
       console.error("Error getting user:", error);
