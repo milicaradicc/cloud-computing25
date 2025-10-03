@@ -2,10 +2,11 @@
   <!-- Left Side - Album Info -->
   <div class="player-section">
     <div class="cover-image-container">
-      <img *ngIf="album?.coverImage"
-        [src]="album.coverImage"
-        [alt]="(album.title || 'Unknown') + ' cover'"
+      <img 
+        [src]="getAlbumCoverUrl()"
+        [alt]="album.title + ' cover'"
         class="cover-image"
+        (error)="onAlbumImageError($event)"
       />
       <div *ngIf="!album?.coverImage" class="placeholder-image">
         <mat-icon class="music-icon">album</mat-icon>
