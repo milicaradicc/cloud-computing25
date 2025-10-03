@@ -1,0 +1,45 @@
+.details-section {
+  background-color: #000; 
+  color: #fff;
+  padding: 1rem;
+  min-height: 100vh; 
+  box-sizing: border-box;
+}
+
+.details-title {
+    color: #fff;
+}
+
+.songs-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1.5rem;
+  background-color: #000; 
+  color: #fff; 
+}
+
+.songs-table th, .songs-table td {
+  padding: 12px 16px;
+  text-align: center;
+  color: #fff; 
+}
+
+.songs-table th {
+  background-color: #111; 
+}
+
+.songs-table tr:nth-child(even) {
+  background-color: #000;
+}
+
+.songs-table tr:hover {
+  background-color: #111;
+}
+
+.genre-tag {
+  color: #fff; 
+}
+
+ng-template p {
+  color: #fff;
+}

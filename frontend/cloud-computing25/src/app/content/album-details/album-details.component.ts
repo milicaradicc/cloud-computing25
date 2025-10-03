@@ -42,7 +42,6 @@ export class AlbumDetailsComponent implements OnInit {
     private dbService: IndexedDbService,
     private router: Router,
     private listeningHistoryService: ListeningHistoryService,
-    private feedService: FeedService
   ) {}
 
   ngOnInit(): void {
@@ -237,18 +236,6 @@ export class AlbumDetailsComponent implements OnInit {
         this.listeningHistoryService.recordListen(song.Id, this.album.Id).subscribe({
           next: () => console.log(`Beleži se slušanje za pesmu: ${song.title}`),
           error: (err) => console.error('Greška pri beleženju slušanja:', err)
-        });
-
-        const details = {
-          User: this.album.artists,
-          Song: song.Id,
-          Genre: this.album.Genre,
-          Timestamp: new Date().toISOString()
-        };
-
-        this.feedService.updateUserScore('LISTEN', details).subscribe({
-          next: () => console.log(`Score updated for song: ${song.title}`),
-          error: (err) => console.error('Greška pri update-u skora:', err)
         });
       }
     } else {
