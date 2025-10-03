@@ -40,6 +40,7 @@ def lambda_handler(event, context):
             "title": body['title'],
             "type": body.get('type', 'single'),
             "artists": artists,
+            "artist": artists[0], #primary
             "genres": genres,
             "releaseDate": body.get('releaseDate', str(datetime.now())),
             "description": body.get('description', ''),

@@ -147,6 +147,14 @@
      {
       "AttributeName": "deleted",
       "AttributeType": "S"
+     },
+     {
+      "AttributeName": "artist",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "genre",
+      "AttributeType": "S"
      }
     ],
     "GlobalSecondaryIndexes": [
@@ -197,6 +205,38 @@
        "ReadCapacityUnits": 5,
        "WriteCapacityUnits": 5
       }
+     },
+     {
+      "IndexName": "artist-index",
+      "KeySchema": [
+       {
+        "AttributeName": "artist",
+        "KeyType": "HASH"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      },
+      "ProvisionedThroughput": {
+       "ReadCapacityUnits": 5,
+       "WriteCapacityUnits": 5
+      }
+     },
+     {
+      "IndexName": "genre-index",
+      "KeySchema": [
+       {
+        "AttributeName": "genre",
+        "KeyType": "HASH"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      },
+      "ProvisionedThroughput": {
+       "ReadCapacityUnits": 5,
+       "WriteCapacityUnits": 5
+      }
      }
     ],
     "KeySchema": [
@@ -235,6 +275,10 @@
      {
       "AttributeName": "deleted",
       "AttributeType": "S"
+     },
+     {
+      "AttributeName": "artist",
+      "AttributeType": "S"
      }
     ],
     "GlobalSecondaryIndexes": [
@@ -259,6 +303,22 @@
       "KeySchema": [
        {
         "AttributeName": "Id",
+        "KeyType": "HASH"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      },
+      "ProvisionedThroughput": {
+       "ReadCapacityUnits": 5,
+       "WriteCapacityUnits": 5
+      }
+     },
+     {
+      "IndexName": "artist-index",
+      "KeySchema": [
+       {
+        "AttributeName": "artist",
         "KeyType": "HASH"
        }
       ],
@@ -618,23 +678,15 @@
      {
       "AttributeName": "Content",
       "AttributeType": "S"
-     },
-     {
-      "AttributeName": "TotalScore",
-      "AttributeType": "N"
      }
     ],
     "GlobalSecondaryIndexes": [
      {
-      "IndexName": "UserTotalScoreIndex",
+      "IndexName": "User-index",
       "KeySchema": [
        {
         "AttributeName": "User",
         "KeyType": "HASH"
-       },
-       {
-        "AttributeName": "TotalScore",
-        "KeyType": "RANGE"
        }
       ],
       "Projection": {
@@ -659,6 +711,9 @@
     "ProvisionedThroughput": {
      "ReadCapacityUnits": 5,
      "WriteCapacityUnits": 5
+    },
+    "StreamSpecification": {
+     "StreamViewType": "NEW_IMAGE"
     }
    },
    "UpdateReplacePolicy": "Delete",
@@ -1094,9 +1149,7 @@
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Code": {
-     "S3Bucket": {
-      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
-     },
+     "S3Bucket": "cdk-hnb659fds-assets-791096175070-eu-central-1",
      "S3Key": "3f8b3f25fbdb8a205535596cd4b44548b5dac424c1e1b1b9ef52c482910b6ef8.zip"
     },
     "Environment": {
@@ -1411,9 +1464,7 @@
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Code": {
-     "S3Bucket": {
-      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
-     },
+     "S3Bucket": "cdk-hnb659fds-assets-791096175070-eu-central-1",
      "S3Key": "8d2e35048962c9065728db83cf642bf5a9407586f6f75551edae6358af2b31ef.zip"
     },
     "Environment": {
@@ -1604,9 +1655,7 @@
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Code": {
-     "S3Bucket": {
-      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
-     },
+     "S3Bucket": "cdk-hnb659fds-assets-791096175070-eu-central-1",
      "S3Key": "9caaa1b0d8b40bd02c50e84bb28bafac09c5ef4ddcc039adfd7cbab8aa52eed8.zip"
     },
     "Handler": "handler.lambda_handler",
@@ -1789,9 +1838,7 @@
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Code": {
-     "S3Bucket": {
-      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
-     },
+     "S3Bucket": "cdk-hnb659fds-assets-791096175070-eu-central-1",
      "S3Key": "5c1dc4e5b069fb205c9882e3602ee910f0ed76bb28a2920c718d058db05b6f97.zip"
     },
     "Environment": {
@@ -2212,9 +2259,7 @@
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Code": {
-     "S3Bucket": {
-      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
-     },
+     "S3Bucket": "cdk-hnb659fds-assets-791096175070-eu-central-1",
      "S3Key": "a0149070421a29b8cee495b1981df98d49489679cdcf8e12a94c8416087252b0.zip"
     },
     "Environment": {
@@ -2337,7 +2382,7 @@
     "aws:cdk:path": "BackendStack/MusicStreamingApi/Resource"
    }
   },
-  "MusicStreamingApiDeployment8B4E5256f5a4453d710161dad0fceb6131a4c1cd": {
+  "MusicStreamingApiDeployment8B4E52562f9bf101bd5d48ea9741127e9b50164d": {
    "Type": "AWS::ApiGateway::Deployment",
    "Properties": {
     "Description": "Automatically created by the RestApi construct",
@@ -2415,7 +2460,7 @@
    "Type": "AWS::ApiGateway::Stage",
    "Properties": {
     "DeploymentId": {
-     "Ref": "MusicStreamingApiDeployment8B4E5256f5a4453d710161dad0fceb6131a4c1cd"
+     "Ref": "MusicStreamingApiDeployment8B4E52562f9bf101bd5d48ea9741127e9b50164d"
     },
     "MethodSettings": [
      {
@@ -2557,19 +2602,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:",
-       {
-        "Ref": "AWS::Partition"
-       },
-       ":execute-api:",
-       {
-        "Ref": "AWS::Region"
-       },
-       ":",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:eu-central-1:791096175070:",
        {
         "Ref": "MusicStreamingApiC954D41A"
        },
@@ -2601,19 +2634,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:",
-       {
-        "Ref": "AWS::Partition"
-       },
-       ":execute-api:",
-       {
-        "Ref": "AWS::Region"
-       },
-       ":",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:eu-central-1:791096175070:",
        {
         "Ref": "MusicStreamingApiC954D41A"
        },
@@ -2641,15 +2662,7 @@
       "Fn::Join": [
        "",
        [
-        "arn:",
-        {
-         "Ref": "AWS::Partition"
-        },
-        ":apigateway:",
-        {
-         "Ref": "AWS::Region"
-        },
-        ":lambda:path/2015-03-31/functions/",
+        "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/",
         {
          "Fn::GetAtt": [
           "ArtistsConstructCreateArtistLambdaF144778B",
@@ -2687,19 +2700,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:",
-       {
-        "Ref": "AWS::Partition"
-       },
-       ":execute-api:",
-       {
-        "Ref": "AWS::Region"
-       },
-       ":",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:eu-central-1:791096175070:",
        {
         "Ref": "MusicStreamingApiC954D41A"
        },
@@ -2731,19 +2732,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:",
-       {
-        "Ref": "AWS::Partition"
-       },
-       ":execute-api:",
-       {
-        "Ref": "AWS::Region"
-       },
-       ":",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:eu-central-1:791096175070:",
        {
         "Ref": "MusicStreamingApiC954D41A"
        },
@@ -2768,15 +2757,7 @@
       "Fn::Join": [
        "",
        [
-        "arn:",
-        {
-         "Ref": "AWS::Partition"
-        },
-        ":apigateway:",
-        {
-         "Ref": "AWS::Region"
-        },
-        ":lambda:path/2015-03-31/functions/",
+        "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/",
         {
          "Fn::GetAtt": [
           "ArtistsConstructGetArtistsLambda021C89D7",
@@ -2872,19 +2853,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:",
-       {
-        "Ref": "AWS::Partition"
-       },
-       ":execute-api:",
-       {
-        "Ref": "AWS::Region"
-       },
-       ":",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:eu-central-1:791096175070:",
        {
         "Ref": "MusicStreamingApiC954D41A"
        },
@@ -2916,19 +2885,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:",
-       {
-        "Ref": "AWS::Partition"
-       },
-       ":execute-api:",
-       {
-        "Ref": "AWS::Region"
-       },
-       ":",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:eu-central-1:791096175070:",
        {
         "Ref": "MusicStreamingApiC954D41A"
        },
@@ -2956,15 +2913,7 @@
       "Fn::Join": [
        "",
        [
-        "arn:",
-        {
-         "Ref": "AWS::Partition"
-        },
-        ":apigateway:",
-        {
-         "Ref": "AWS::Region"
-        },
-        ":lambda:path/2015-03-31/functions/",
+        "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/",
         {
          "Fn::GetAtt": [
           "ArtistsConstructDeleteArtistLambda18C5C4BB",
@@ -3002,19 +2951,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:",
-       {
-        "Ref": "AWS::Partition"
-       },
-       ":execute-api:",
-       {
-        "Ref": "AWS::Region"
-       },
-       ":",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:eu-central-1:791096175070:",
        {
         "Ref": "MusicStreamingApiC954D41A"
        },
@@ -3046,19 +2983,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:",
-       {
-        "Ref": "AWS::Partition"
-       },
-       ":execute-api:",
-       {
-        "Ref": "AWS::Region"
-       },
-       ":",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:eu-central-1:791096175070:",
        {
         "Ref": "MusicStreamingApiC954D41A"
        },
@@ -3086,15 +3011,7 @@
       "Fn::Join": [
        "",
        [
-        "arn:",
-        {
-         "Ref": "AWS::Partition"
-        },
-        ":apigateway:",
-        {
-         "Ref": "AWS::Region"
-        },
-        ":lambda:path/2015-03-31/functions/",
+        "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/",
         {
          "Fn::GetAtt": [
           "ArtistsConstructGetArtistByIdLambda9F00C22E",
@@ -3193,19 +3110,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:",
-       {
-        "Ref": "AWS::Partition"
-       },
-       ":execute-api:",
-       {
-        "Ref": "AWS::Region"
-       },
-       ":",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:eu-central-1:791096175070:",
        {
         "Ref": "MusicStreamingApiC954D41A"
        },
@@ -3237,19 +3142,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:",
-       {
-        "Ref": "AWS::Partition"
-       },
-       ":execute-api:",
-       {
-        "Ref": "AWS::Region"
-       },
-       ":",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:eu-central-1:791096175070:",
        {
         "Ref": "MusicStreamingApiC954D41A"
        },
@@ -3277,15 +3170,7 @@
       "Fn::Join": [
        "",
        [
-        "arn:",
-        {
-         "Ref": "AWS::Partition"
-        },
-        ":apigateway:",
-        {
-         "Ref": "AWS::Region"
-        },
-        ":lambda:path/2015-03-31/functions/",
+        "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/",
         {
          "Fn::GetAtt": [
           "SongsConstructUploadFileLambdaEA442856",
@@ -3323,19 +3208,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:",
-       {
-        "Ref": "AWS::Partition"
-       },
-       ":execute-api:",
-       {
-        "Ref": "AWS::Region"
-       },
-       ":",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:eu-central-1:791096175070:",
        {
         "Ref": "MusicStreamingApiC954D41A"
        },
@@ -3367,19 +3240,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:",
-       {
-        "Ref": "AWS::Partition"
-       },
-       ":execute-api:",
-       {
-        "Ref": "AWS::Region"
-       },
-       ":",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:eu-central-1:791096175070:",
        {
         "Ref": "MusicStreamingApiC954D41A"
        },
@@ -3407,15 +3268,7 @@
       "Fn::Join": [
        "",
        [
-        "arn:",
-        {
-         "Ref": "AWS::Partition"
-        },
-        ":apigateway:",
-        {
-         "Ref": "AWS::Region"
-        },
-        ":lambda:path/2015-03-31/functions/",
+        "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/",
         {
          "Fn::GetAtt": [
           "SongsConstructGetSongsLambda6144445D",
@@ -3511,19 +3364,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:",
-       {
-        "Ref": "AWS::Partition"
-       },
-       ":execute-api:",
-       {
-        "Ref": "AWS::Region"
-       },
-       ":",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:eu-central-1:791096175070:",
        {
         "Ref": "MusicStreamingApiC954D41A"
        },
@@ -3555,19 +3396,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:",
-       {
-        "Ref": "AWS::Partition"
-       },
-       ":execute-api:",
-       {
-        "Ref": "AWS::Region"
-       },
-       ":",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:eu-central-1:791096175070:",
        {
         "Ref": "MusicStreamingApiC954D41A"
        },
@@ -3595,15 +3424,7 @@
       "Fn::Join": [
        "",
        [
-        "arn:",
-        {
-         "Ref": "AWS::Partition"
-        },
-        ":apigateway:",
-        {
-         "Ref": "AWS::Region"
-        },
-        ":lambda:path/2015-03-31/functions/",
+        "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/",
         {
          "Fn::GetAtt": [
           "SongsConstructUpdateSongLambda8037EF22",
@@ -3641,19 +3462,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:",
-       {
-        "Ref": "AWS::Partition"
-       },
-       ":execute-api:",
-       {
-        "Ref": "AWS::Region"
-       },
-       ":",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:eu-central-1:791096175070:",
        {
         "Ref": "MusicStreamingApiC954D41A"
        },
@@ -3685,19 +3494,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:",
-       {
-        "Ref": "AWS::Partition"
-       },
-       ":execute-api:",
-       {
-        "Ref": "AWS::Region"
-       },
-       ":",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:eu-central-1:791096175070:",
        {
         "Ref": "MusicStreamingApiC954D41A"
        },
@@ -3725,15 +3522,7 @@
       "Fn::Join": [
        "",
        [
-        "arn:",
-        {
-         "Ref": "AWS::Partition"
-        },
-        ":apigateway:",
-        {
-         "Ref": "AWS::Region"
-        },
-        ":lambda:path/2015-03-31/functions/",
+        "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/",
         {
          "Fn::GetAtt": [
           "SongsConstructDeleteSongLambda3C147F9C",
@@ -3771,19 +3560,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:",
-       {
-        "Ref": "AWS::Partition"
-       },
-       ":execute-api:",
-       {
-        "Ref": "AWS::Region"
-       },
-       ":",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:eu-central-1:791096175070:",
        {
         "Ref": "MusicStreamingApiC954D41A"
        },
@@ -3815,19 +3592,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:",
-       {
-        "Ref": "AWS::Partition"
-       },
-       ":execute-api:",
-       {
-        "Ref": "AWS::Region"
-       },
-       ":",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:eu-central-1:791096175070:",
        {
         "Ref": "MusicStreamingApiC954D41A"
        },
@@ -3855,15 +3620,7 @@
       "Fn::Join": [
        "",
        [
-        "arn:",
-        {
-         "Ref": "AWS::Partition"
-        },
-        ":apigateway:",
-        {
-         "Ref": "AWS::Region"
-        },
-        ":lambda:path/2015-03-31/functions/",
+        "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/",
         {
          "Fn::GetAtt": [
           "SongsConstructGetSongLambdaE803F1EA",
@@ -3959,19 +3716,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:",
-       {
-        "Ref": "AWS::Partition"
-       },
-       ":execute-api:",
-       {
-        "Ref": "AWS::Region"
-       },
-       ":",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:eu-central-1:791096175070:",
        {
         "Ref": "MusicStreamingApiC954D41A"
        },
@@ -4003,19 +3748,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:",
-       {
-        "Ref": "AWS::Partition"
-       },
-       ":execute-api:",
-       {
-        "Ref": "AWS::Region"
-       },
-       ":",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:eu-central-1:791096175070:",
        {
         "Ref": "MusicStreamingApiC954D41A"
        },
@@ -4043,15 +3776,7 @@
       "Fn::Join": [
        "",
        [
-        "arn:",
-        {
-         "Ref": "AWS::Partition"
-        },
-        ":apigateway:",
-        {
-         "Ref": "AWS::Region"
-        },
-        ":lambda:path/2015-03-31/functions/",
+        "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/",
         {
          "Fn::GetAtt": [
           "SongsConstructRateSongLambda6B27F156",
@@ -4089,19 +3814,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:",
-       {
-        "Ref": "AWS::Partition"
-       },
-       ":execute-api:",
-       {
-        "Ref": "AWS::Region"
-       },
-       ":",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:eu-central-1:791096175070:",
        {
         "Ref": "MusicStreamingApiC954D41A"
        },
@@ -4133,19 +3846,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:",
-       {
-        "Ref": "AWS::Partition"
-       },
-       ":execute-api:",
-       {
-        "Ref": "AWS::Region"
-       },
-       ":",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:eu-central-1:791096175070:",
        {
         "Ref": "MusicStreamingApiC954D41A"
        },
@@ -4173,15 +3874,7 @@
       "Fn::Join": [
        "",
        [
-        "arn:",
-        {
-         "Ref": "AWS::Partition"
-        },
-        ":apigateway:",
-        {
-         "Ref": "AWS::Region"
-        },
-        ":lambda:path/2015-03-31/functions/",
+        "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/",
         {
          "Fn::GetAtt": [
           "SongsConstructGetSongRatingLambda72CC02E9",
@@ -4277,19 +3970,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:",
-       {
-        "Ref": "AWS::Partition"
-       },
-       ":execute-api:",
-       {
-        "Ref": "AWS::Region"
-       },
-       ":",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:eu-central-1:791096175070:",
        {
         "Ref": "MusicStreamingApiC954D41A"
        },
@@ -4321,19 +4002,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:",
-       {
-        "Ref": "AWS::Partition"
-       },
-       ":execute-api:",
-       {
-        "Ref": "AWS::Region"
-       },
-       ":",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:eu-central-1:791096175070:",
        {
         "Ref": "MusicStreamingApiC954D41A"
        },
@@ -4358,15 +4027,7 @@
       "Fn::Join": [
        "",
        [
-        "arn:",
-        {
-         "Ref": "AWS::Partition"
-        },
-        ":apigateway:",
-        {
-         "Ref": "AWS::Region"
-        },
-        ":lambda:path/2015-03-31/functions/",
+        "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/",
         {
          "Fn::GetAtt": [
           "GenerateDownloadUrlLambda21498A65",
@@ -4465,19 +4126,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:",
-       {
-        "Ref": "AWS::Partition"
-       },
-       ":execute-api:",
-       {
-        "Ref": "AWS::Region"
-       },
-       ":",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:eu-central-1:791096175070:",
        {
         "Ref": "MusicStreamingApiC954D41A"
        },
@@ -4509,19 +4158,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:",
-       {
-        "Ref": "AWS::Partition"
-       },
-       ":execute-api:",
-       {
-        "Ref": "AWS::Region"
-       },
-       ":",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:eu-central-1:791096175070:",
        {
         "Ref": "MusicStreamingApiC954D41A"
        },
@@ -4549,15 +4186,7 @@
       "Fn::Join": [
        "",
        [
-        "arn:",
-        {
-         "Ref": "AWS::Partition"
-        },
-        ":apigateway:",
-        {
-         "Ref": "AWS::Region"
-        },
-        ":lambda:path/2015-03-31/functions/",
+        "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/",
         {
          "Fn::GetAtt": [
           "AlbumConstructCreateAlbumLambda9E7DAC17",
@@ -4595,19 +4224,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:",
-       {
-        "Ref": "AWS::Partition"
-       },
-       ":execute-api:",
-       {
-        "Ref": "AWS::Region"
-       },
-       ":",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:eu-central-1:791096175070:",
        {
         "Ref": "MusicStreamingApiC954D41A"
        },
@@ -4639,19 +4256,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:",
-       {
-        "Ref": "AWS::Partition"
-       },
-       ":execute-api:",
-       {
-        "Ref": "AWS::Region"
-       },
-       ":",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:eu-central-1:791096175070:",
        {
         "Ref": "MusicStreamingApiC954D41A"
        },
@@ -4679,15 +4284,7 @@
       "Fn::Join": [
        "",
        [
-        "arn:",
-        {
-         "Ref": "AWS::Partition"
-        },
-        ":apigateway:",
-        {
-         "Ref": "AWS::Region"
-        },
-        ":lambda:path/2015-03-31/functions/",
+        "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/",
         {
          "Fn::GetAtt": [
           "AlbumConstructGetAlbumsLambda214F25FB",
@@ -4783,19 +4380,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:",
-       {
-        "Ref": "AWS::Partition"
-       },
-       ":execute-api:",
-       {
-        "Ref": "AWS::Region"
-       },
-       ":",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:eu-central-1:791096175070:",
        {
         "Ref": "MusicStreamingApiC954D41A"
        },
@@ -4827,19 +4412,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:",
-       {
-        "Ref": "AWS::Partition"
-       },
-       ":execute-api:",
-       {
-        "Ref": "AWS::Region"
-       },
-       ":",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:eu-central-1:791096175070:",
        {
         "Ref": "MusicStreamingApiC954D41A"
        },
@@ -4867,15 +4440,7 @@
       "Fn::Join": [
        "",
        [
-        "arn:",
-        {
-         "Ref": "AWS::Partition"
-        },
-        ":apigateway:",
-        {
-         "Ref": "AWS::Region"
-        },
-        ":lambda:path/2015-03-31/functions/",
+        "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/",
         {
          "Fn::GetAtt": [
           "AlbumConstructUpdateAlbumLambdaB9632FEC",
@@ -4913,19 +4478,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:",
-       {
-        "Ref": "AWS::Partition"
-       },
-       ":execute-api:",
-       {
-        "Ref": "AWS::Region"
-       },
-       ":",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:eu-central-1:791096175070:",
        {
         "Ref": "MusicStreamingApiC954D41A"
        },
@@ -4957,19 +4510,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:",
-       {
-        "Ref": "AWS::Partition"
-       },
-       ":execute-api:",
-       {
-        "Ref": "AWS::Region"
-       },
-       ":",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:eu-central-1:791096175070:",
        {
         "Ref": "MusicStreamingApiC954D41A"
        },
@@ -4997,15 +4538,7 @@
       "Fn::Join": [
        "",
        [
-        "arn:",
-        {
-         "Ref": "AWS::Partition"
-        },
-        ":apigateway:",
-        {
-         "Ref": "AWS::Region"
-        },
-        ":lambda:path/2015-03-31/functions/",
+        "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/",
         {
          "Fn::GetAtt": [
           "AlbumConstructDeleteAlbumLambda63B51E55",
@@ -5043,19 +4576,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:",
-       {
-        "Ref": "AWS::Partition"
-       },
-       ":execute-api:",
-       {
-        "Ref": "AWS::Region"
-       },
-       ":",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:eu-central-1:791096175070:",
        {
         "Ref": "MusicStreamingApiC954D41A"
        },
@@ -5087,19 +4608,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:",
-       {
-        "Ref": "AWS::Partition"
-       },
-       ":execute-api:",
-       {
-        "Ref": "AWS::Region"
-       },
-       ":",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:eu-central-1:791096175070:",
        {
         "Ref": "MusicStreamingApiC954D41A"
        },
@@ -5127,15 +4636,7 @@
       "Fn::Join": [
        "",
        [
-        "arn:",
-        {
-         "Ref": "AWS::Partition"
-        },
-        ":apigateway:",
-        {
-         "Ref": "AWS::Region"
-        },
-        ":lambda:path/2015-03-31/functions/",
+        "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/",
         {
          "Fn::GetAtt": [
           "AlbumConstructGetAlbumByIdLambda4E204135",
@@ -5234,19 +4735,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:",
-       {
-        "Ref": "AWS::Partition"
-       },
-       ":execute-api:",
-       {
-        "Ref": "AWS::Region"
-       },
-       ":",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:eu-central-1:791096175070:",
        {
         "Ref": "MusicStreamingApiC954D41A"
        },
@@ -5278,19 +4767,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:",
-       {
-        "Ref": "AWS::Partition"
-       },
-       ":execute-api:",
-       {
-        "Ref": "AWS::Region"
-       },
-       ":",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:eu-central-1:791096175070:",
        {
         "Ref": "MusicStreamingApiC954D41A"
        },
@@ -5318,15 +4795,7 @@
       "Fn::Join": [
        "",
        [
-        "arn:",
-        {
-         "Ref": "AWS::Partition"
-        },
-        ":apigateway:",
-        {
-         "Ref": "AWS::Region"
-        },
-        ":lambda:path/2015-03-31/functions/",
+        "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/",
         {
          "Fn::GetAtt": [
           "SubscriptionsConstructCreateSubscriptionLambdaC57285D3",
@@ -5364,19 +4833,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:",
-       {
-        "Ref": "AWS::Partition"
-       },
-       ":execute-api:",
-       {
-        "Ref": "AWS::Region"
-       },
-       ":",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:eu-central-1:791096175070:",
        {
         "Ref": "MusicStreamingApiC954D41A"
        },
@@ -5408,19 +4865,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:",
-       {
-        "Ref": "AWS::Partition"
-       },
-       ":execute-api:",
-       {
-        "Ref": "AWS::Region"
-       },
-       ":",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:eu-central-1:791096175070:",
        {
         "Ref": "MusicStreamingApiC954D41A"
        },
@@ -5448,15 +4893,7 @@
       "Fn::Join": [
        "",
        [
-        "arn:",
-        {
-         "Ref": "AWS::Partition"
-        },
-        ":apigateway:",
-        {
-         "Ref": "AWS::Region"
-        },
-        ":lambda:path/2015-03-31/functions/",
+        "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/",
         {
          "Fn::GetAtt": [
           "SubscriptionsConstructGetSubscriptionsLambda79C7D049",
@@ -5552,19 +4989,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:",
-       {
-        "Ref": "AWS::Partition"
-       },
-       ":execute-api:",
-       {
-        "Ref": "AWS::Region"
-       },
-       ":",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:eu-central-1:791096175070:",
        {
         "Ref": "MusicStreamingApiC954D41A"
        },
@@ -5596,19 +5021,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:",
-       {
-        "Ref": "AWS::Partition"
-       },
-       ":execute-api:",
-       {
-        "Ref": "AWS::Region"
-       },
-       ":",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:eu-central-1:791096175070:",
        {
         "Ref": "MusicStreamingApiC954D41A"
        },
@@ -5636,15 +5049,7 @@
       "Fn::Join": [
        "",
        [
-        "arn:",
-        {
-         "Ref": "AWS::Partition"
-        },
-        ":apigateway:",
-        {
-         "Ref": "AWS::Region"
-        },
-        ":lambda:path/2015-03-31/functions/",
+        "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/",
         {
          "Fn::GetAtt": [
           "SubscriptionsConstructDeleteSubscriptionLambda744D28CE",
@@ -5743,19 +5148,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:",
-       {
-        "Ref": "AWS::Partition"
-       },
-       ":execute-api:",
-       {
-        "Ref": "AWS::Region"
-       },
-       ":",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:eu-central-1:791096175070:",
        {
         "Ref": "MusicStreamingApiC954D41A"
        },
@@ -5787,19 +5180,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:",
-       {
-        "Ref": "AWS::Partition"
-       },
-       ":execute-api:",
-       {
-        "Ref": "AWS::Region"
-       },
-       ":",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:eu-central-1:791096175070:",
        {
         "Ref": "MusicStreamingApiC954D41A"
        },
@@ -5827,15 +5208,7 @@
       "Fn::Join": [
        "",
        [
-        "arn:",
-        {
-         "Ref": "AWS::Partition"
-        },
-        ":apigateway:",
-        {
-         "Ref": "AWS::Region"
-        },
-        ":lambda:path/2015-03-31/functions/",
+        "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/",
         {
          "Fn::GetAtt": [
           "ListeningHistoryConstructRecordListenLambda5455361E",
@@ -5873,19 +5246,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:",
-       {
-        "Ref": "AWS::Partition"
-       },
-       ":execute-api:",
-       {
-        "Ref": "AWS::Region"
-       },
-       ":",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:eu-central-1:791096175070:",
        {
         "Ref": "MusicStreamingApiC954D41A"
        },
@@ -5917,19 +5278,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:",
-       {
-        "Ref": "AWS::Partition"
-       },
-       ":execute-api:",
-       {
-        "Ref": "AWS::Region"
-       },
-       ":",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:eu-central-1:791096175070:",
        {
         "Ref": "MusicStreamingApiC954D41A"
        },
@@ -5957,15 +5306,7 @@
       "Fn::Join": [
        "",
        [
-        "arn:",
-        {
-         "Ref": "AWS::Partition"
-        },
-        ":apigateway:",
-        {
-         "Ref": "AWS::Region"
-        },
-        ":lambda:path/2015-03-31/functions/",
+        "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/",
         {
          "Fn::GetAtt": [
           "ListeningHistoryConstructGetListeningHistoryLambda9F99BDF2",
@@ -6064,19 +5405,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:",
-       {
-        "Ref": "AWS::Partition"
-       },
-       ":execute-api:",
-       {
-        "Ref": "AWS::Region"
-       },
-       ":",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:eu-central-1:791096175070:",
        {
         "Ref": "MusicStreamingApiC954D41A"
        },
@@ -6108,19 +5437,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:",
-       {
-        "Ref": "AWS::Partition"
-       },
-       ":execute-api:",
-       {
-        "Ref": "AWS::Region"
-       },
-       ":",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:eu-central-1:791096175070:",
        {
         "Ref": "MusicStreamingApiC954D41A"
        },
@@ -6148,15 +5465,7 @@
       "Fn::Join": [
        "",
        [
-        "arn:",
-        {
-         "Ref": "AWS::Partition"
-        },
-        ":apigateway:",
-        {
-         "Ref": "AWS::Region"
-        },
-        ":lambda:path/2015-03-31/functions/",
+        "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/",
         {
          "Fn::GetAtt": [
           "FeedConstructGetFeedLambda0D478810",
@@ -6313,19 +5622,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:",
-       {
-        "Ref": "AWS::Partition"
-       },
-       ":execute-api:",
-       {
-        "Ref": "AWS::Region"
-       },
-       ":",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:eu-central-1:791096175070:",
        {
         "Ref": "MusicStreamingApiC954D41A"
        },
@@ -6357,19 +5654,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:",
-       {
-        "Ref": "AWS::Partition"
-       },
-       ":execute-api:",
-       {
-        "Ref": "AWS::Region"
-       },
-       ":",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:eu-central-1:791096175070:",
        {
         "Ref": "MusicStreamingApiC954D41A"
        },
@@ -6394,15 +5679,7 @@
       "Fn::Join": [
        "",
        [
-        "arn:",
-        {
-         "Ref": "AWS::Partition"
-        },
-        ":apigateway:",
-        {
-         "Ref": "AWS::Region"
-        },
-        ":lambda:path/2015-03-31/functions/",
+        "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/",
         {
          "Fn::GetAtt": [
           "GetFilteredContentLambda838D3EFC",
@@ -6559,19 +5836,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:",
-       {
-        "Ref": "AWS::Partition"
-       },
-       ":execute-api:",
-       {
-        "Ref": "AWS::Region"
-       },
-       ":",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:eu-central-1:791096175070:",
        {
         "Ref": "MusicStreamingApiC954D41A"
        },
@@ -6603,19 +5868,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:",
-       {
-        "Ref": "AWS::Partition"
-       },
-       ":execute-api:",
-       {
-        "Ref": "AWS::Region"
-       },
-       ":",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:eu-central-1:791096175070:",
        {
         "Ref": "MusicStreamingApiC954D41A"
        },
@@ -6640,15 +5893,7 @@
       "Fn::Join": [
        "",
        [
-        "arn:",
-        {
-         "Ref": "AWS::Partition"
-        },
-        ":apigateway:",
-        {
-         "Ref": "AWS::Region"
-        },
-        ":lambda:path/2015-03-31/functions/",
+        "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/",
         {
          "Fn::GetAtt": [
           "GenerateDownloadUrlLambda21498A65",
@@ -6782,9 +6027,7 @@
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Code": {
-     "S3Bucket": {
-      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
-     },
+     "S3Bucket": "cdk-hnb659fds-assets-791096175070-eu-central-1",
      "S3Key": "67037c19d449b68d77febac3ebb5807796b44a9bfbcb60926b7b2731cad67290.zip"
     },
     "Environment": {
@@ -6970,9 +6213,7 @@
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Code": {
-     "S3Bucket": {
-      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
-     },
+     "S3Bucket": "cdk-hnb659fds-assets-791096175070-eu-central-1",
      "S3Key": "45a1a4808f0cb411220f4fe87d1b5172905a7d59bae4a6a3548cbd89b8cc9550.zip"
     },
     "Environment": {
@@ -7242,9 +6483,7 @@
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Code": {
-     "S3Bucket": {
-      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
-     },
+     "S3Bucket": "cdk-hnb659fds-assets-791096175070-eu-central-1",
      "S3Key": "3e100278c0d126cc011b889b58950c4e661cb24d8fcdc99f10666739ed039f84.zip"
     },
     "Environment": {
@@ -7522,9 +6761,7 @@
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Code": {
-     "S3Bucket": {
-      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
-     },
+     "S3Bucket": "cdk-hnb659fds-assets-791096175070-eu-central-1",
      "S3Key": "e46c40d2169e5bf381ba0dc37632435a0159a4ed8befc4d08063f7186cd71306.zip"
     },
     "Environment": {
@@ -7788,10 +7025,8 @@
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Code": {
-     "S3Bucket": {
-      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
-     },
-     "S3Key": "321517e165e8e4ca4c02c85b50b429161edaaf648cdc3270e0dd3899a5c5e09c.zip"
+     "S3Bucket": "cdk-hnb659fds-assets-791096175070-eu-central-1",
+     "S3Key": "cf0efaf52cae9a862c3632b9a1253023d68cde1f2ea8d1621ec91ddf5f3d2b5a.zip"
     },
     "Environment": {
      "Variables": {
@@ -7829,7 +7064,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "BackendStack/SongsConstruct/UploadFileLambda/Resource",
-    "aws:asset:path": "asset.321517e165e8e4ca4c02c85b50b429161edaaf648cdc3270e0dd3899a5c5e09c",
+    "aws:asset:path": "asset.cf0efaf52cae9a862c3632b9a1253023d68cde1f2ea8d1621ec91ddf5f3d2b5a",
     "aws:asset:is-bundled": true,
     "aws:asset:property": "Code"
    }
@@ -7988,9 +7223,7 @@
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Code": {
-     "S3Bucket": {
-      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
-     },
+     "S3Bucket": "cdk-hnb659fds-assets-791096175070-eu-central-1",
      "S3Key": "910b979ef9a71ac0a0f094edea17dee2e561cd886b7445e5a346f800985d4659.zip"
     },
     "Environment": {
@@ -8264,9 +7497,7 @@
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Code": {
-     "S3Bucket": {
-      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
-     },
+     "S3Bucket": "cdk-hnb659fds-assets-791096175070-eu-central-1",
      "S3Key": "ff93983b6b78278d0858798f4e08bdecdbf17c9c0f04b4e732741d987bfa2f47.zip"
     },
     "Environment": {
@@ -8488,9 +7719,7 @@
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Code": {
-     "S3Bucket": {
-      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
-     },
+     "S3Bucket": "cdk-hnb659fds-assets-791096175070-eu-central-1",
      "S3Key": "ff2010ce61dc643a9b880ce9543e2b8b16fed814eb2aa5b675b71311fe1b5c0f.zip"
     },
     "Environment": {
@@ -8719,10 +7948,8 @@
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Code": {
-     "S3Bucket": {
-      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
-     },
-     "S3Key": "ff69e7d08615053ad6b263b3b865134b22ab5953a32b4c3cbba6bb78979a49b2.zip"
+     "S3Bucket": "cdk-hnb659fds-assets-791096175070-eu-central-1",
+     "S3Key": "9d910f3eda85cfd1a7117195519a1e5715b07916cd3758e404e3a7951391cb19.zip"
     },
     "Environment": {
      "Variables": {
@@ -8754,7 +7981,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "BackendStack/SongsConstruct/GetSongLambda/Resource",
-    "aws:asset:path": "asset.ff69e7d08615053ad6b263b3b865134b22ab5953a32b4c3cbba6bb78979a49b2",
+    "aws:asset:path": "asset.9d910f3eda85cfd1a7117195519a1e5715b07916cd3758e404e3a7951391cb19",
     "aws:asset:is-bundled": true,
     "aws:asset:property": "Code"
    }
@@ -8884,12 +8111,67 @@
          ]
         },
         {
+         "Fn::GetAtt": [
+          "Score56CB761D",
+          "Arn"
+         ]
+        },
+        {
          "Fn::Join": [
           "",
           [
            {
             "Fn::GetAtt": [
              "Ratings9CD1D222",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "Score56CB761D",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:Query",
+        "dynamodb:Scan"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "SongsD2AA5F2A",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "SongsD2AA5F2A",
              "Arn"
             ]
            },
@@ -8917,15 +8199,19 @@
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Code": {
-     "S3Bucket": {
-      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
-     },
-     "S3Key": "4710aac83e7139288fb406aae1af50fbbbf9359b00618e1bbe095058874ebff1.zip"
+     "S3Bucket": "cdk-hnb659fds-assets-791096175070-eu-central-1",
+     "S3Key": "d7f530f5ae61f740681ce5349970df7d97ec5eb4d5a8c8bc71f052c1bba305f8.zip"
     },
     "Environment": {
      "Variables": {
       "RATING_TABLE": {
        "Ref": "Ratings9CD1D222"
+      },
+      "SCORE_TABLE": {
+       "Ref": "Score56CB761D"
+      },
+      "SONGS_TABLE": {
+       "Ref": "SongsD2AA5F2A"
       }
      }
     },
@@ -8946,7 +8232,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "BackendStack/SongsConstruct/RateSongLambda/Resource",
-    "aws:asset:path": "asset.4710aac83e7139288fb406aae1af50fbbbf9359b00618e1bbe095058874ebff1",
+    "aws:asset:path": "asset.d7f530f5ae61f740681ce5349970df7d97ec5eb4d5a8c8bc71f052c1bba305f8",
     "aws:asset:is-bundled": true,
     "aws:asset:property": "Code"
    }
@@ -9105,9 +8391,7 @@
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Code": {
-     "S3Bucket": {
-      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
-     },
+     "S3Bucket": "cdk-hnb659fds-assets-791096175070-eu-central-1",
      "S3Key": "a1fbf6d74b33cd753a49885c2856828ca65dd91e1a2b590012a9d3307c43308e.zip"
     },
     "Environment": {
@@ -9361,10 +8645,8 @@
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Code": {
-     "S3Bucket": {
-      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
-     },
-     "S3Key": "864b3a994f55a56a0404ed127c8a516dac99ae9531278e54f27f40443bca2559.zip"
+     "S3Bucket": "cdk-hnb659fds-assets-791096175070-eu-central-1",
+     "S3Key": "5d31a836743907e7f19e303724cddc533d1ec43e305df47ec4d3624a393b585a.zip"
     },
     "Environment": {
      "Variables": {
@@ -9399,7 +8681,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "BackendStack/AlbumConstruct/CreateAlbumLambda/Resource",
-    "aws:asset:path": "asset.864b3a994f55a56a0404ed127c8a516dac99ae9531278e54f27f40443bca2559",
+    "aws:asset:path": "asset.5d31a836743907e7f19e303724cddc533d1ec43e305df47ec4d3624a393b585a",
     "aws:asset:is-bundled": true,
     "aws:asset:property": "Code"
    }
@@ -9558,9 +8840,7 @@
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Code": {
-     "S3Bucket": {
-      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
-     },
+     "S3Bucket": "cdk-hnb659fds-assets-791096175070-eu-central-1",
      "S3Key": "a5f081598193ee206a2d1543bd303a4d4b215ba2ad5d73fe9c0b92e910904407.zip"
     },
     "Environment": {
@@ -9807,9 +9087,7 @@
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Code": {
-     "S3Bucket": {
-      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
-     },
+     "S3Bucket": "cdk-hnb659fds-assets-791096175070-eu-central-1",
      "S3Key": "8be39a14ae895f16a1a6d3aea4c5bf515e0dfe2d2e060927fc32f4f690f28d65.zip"
     },
     "Environment": {
@@ -10025,9 +9303,7 @@
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Code": {
-     "S3Bucket": {
-      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
-     },
+     "S3Bucket": "cdk-hnb659fds-assets-791096175070-eu-central-1",
      "S3Key": "433bf878911e06c600e3e0435323adfe80e775db691be7708e86aacd859a196e.zip"
     },
     "Environment": {
@@ -10325,9 +9601,7 @@
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Code": {
-     "S3Bucket": {
-      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
-     },
+     "S3Bucket": "cdk-hnb659fds-assets-791096175070-eu-central-1",
      "S3Key": "6e302c615753cd68c19340a7ec54aca85d09cdedaa3338d19ebd08856354e9d6.zip"
     },
     "Environment": {
@@ -10491,8 +9765,28 @@
        "Resource": [
         {
          "Fn::GetAtt": [
+          "Score56CB761D",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::GetAtt": [
           "Subscriptions1F71F6D8",
           "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "Score56CB761D",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
          ]
         },
         {
@@ -10529,15 +9823,16 @@
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Code": {
-     "S3Bucket": {
-      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
-     },
-     "S3Key": "3bef59b7dcba6b5c6fb504a8f1ad7b0d834d762b0e4b8f3cc514932336802d23.zip"
+     "S3Bucket": "cdk-hnb659fds-assets-791096175070-eu-central-1",
+     "S3Key": "86189016fc2b5b61296f3510e0f968972fac624306ba58a7ad73139c0452a05e.zip"
     },
     "Environment": {
      "Variables": {
       "SUBSCRIPTIONS_TABLE": {
        "Ref": "Subscriptions1F71F6D8"
+      },
+      "SCORE_TABLE": {
+       "Ref": "Score56CB761D"
       }
      }
     },
@@ -10558,7 +9853,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "BackendStack/SubscriptionsConstruct/CreateSubscriptionLambda/Resource",
-    "aws:asset:path": "asset.3bef59b7dcba6b5c6fb504a8f1ad7b0d834d762b0e4b8f3cc514932336802d23",
+    "aws:asset:path": "asset.86189016fc2b5b61296f3510e0f968972fac624306ba58a7ad73139c0452a05e",
     "aws:asset:is-bundled": true,
     "aws:asset:property": "Code"
    }
@@ -10721,9 +10016,7 @@
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Code": {
-     "S3Bucket": {
-      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
-     },
+     "S3Bucket": "cdk-hnb659fds-assets-791096175070-eu-central-1",
      "S3Key": "e0344743793958e3cd6a6a12a46fb90ff4f99b7376638c5301096b795350e038.zip"
     },
     "Environment": {
@@ -10875,8 +10168,28 @@
        "Resource": [
         {
          "Fn::GetAtt": [
+          "Score56CB761D",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::GetAtt": [
           "Subscriptions1F71F6D8",
           "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "Score56CB761D",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
          ]
         },
         {
@@ -10913,15 +10226,16 @@
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Code": {
-     "S3Bucket": {
-      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
-     },
-     "S3Key": "086e13f04d63bd017fe65c88a93b646947bba7da8284d48db147f20b7a8c6d47.zip"
+     "S3Bucket": "cdk-hnb659fds-assets-791096175070-eu-central-1",
+     "S3Key": "e37f15a0c568360f328e05a604957d62fc90b5e8d1fafbd6bdca89e3dffa0534.zip"
     },
     "Environment": {
      "Variables": {
       "SUBSCRIPTIONS_TABLE": {
        "Ref": "Subscriptions1F71F6D8"
+      },
+      "SCORE_TABLE": {
+       "Ref": "Score56CB761D"
       }
      }
     },
@@ -10942,7 +10256,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "BackendStack/SubscriptionsConstruct/DeleteSubscriptionLambda/Resource",
-    "aws:asset:path": "asset.086e13f04d63bd017fe65c88a93b646947bba7da8284d48db147f20b7a8c6d47",
+    "aws:asset:path": "asset.e37f15a0c568360f328e05a604957d62fc90b5e8d1fafbd6bdca89e3dffa0534",
     "aws:asset:is-bundled": true,
     "aws:asset:property": "Code"
    }
@@ -11122,10 +10436,8 @@
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Code": {
-     "S3Bucket": {
-      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
-     },
-     "S3Key": "6101f92230d0271be1736e212359e274cd7a80dd435cb383cbdf03fb799c135d.zip"
+     "S3Bucket": "cdk-hnb659fds-assets-791096175070-eu-central-1",
+     "S3Key": "45d70aab6c56132f45f7fcb4095287e268625e57f225dc39f561af22e36c5b62.zip"
     },
     "Environment": {
      "Variables": {
@@ -11154,7 +10466,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "BackendStack/ListeningHistoryConstruct/RecordListenLambda/Resource",
-    "aws:asset:path": "asset.6101f92230d0271be1736e212359e274cd7a80dd435cb383cbdf03fb799c135d",
+    "aws:asset:path": "asset.45d70aab6c56132f45f7fcb4095287e268625e57f225dc39f561af22e36c5b62",
     "aws:asset:is-bundled": true,
     "aws:asset:property": "Code"
    }
@@ -11302,9 +10614,7 @@
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Code": {
-     "S3Bucket": {
-      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
-     },
+     "S3Bucket": "cdk-hnb659fds-assets-791096175070-eu-central-1",
      "S3Key": "16d8f3139ece33e3fccb7f5b95e338553daa8c58e64b394b9776497b9c2892f7.zip"
     },
     "Environment": {
@@ -11570,10 +10880,8 @@
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Code": {
-     "S3Bucket": {
-      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
-     },
-     "S3Key": "2678da53fbbc24b9a8785950354cecb75b22531c2b7be768694f9d28545abd2d.zip"
+     "S3Bucket": "cdk-hnb659fds-assets-791096175070-eu-central-1",
+     "S3Key": "bd3431832162339f8d95b9ddc1a4b9b490bdf77213fed18532754ec09c29c820.zip"
     },
     "Environment": {
      "Variables": {
@@ -11611,7 +10919,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "BackendStack/FeedConstruct/GetFeedLambda/Resource",
-    "aws:asset:path": "asset.2678da53fbbc24b9a8785950354cecb75b22531c2b7be768694f9d28545abd2d",
+    "aws:asset:path": "asset.bd3431832162339f8d95b9ddc1a4b9b490bdf77213fed18532754ec09c29c820",
     "aws:asset:is-bundled": true,
     "aws:asset:property": "Code"
    }
@@ -11790,9 +11098,7 @@
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Code": {
-     "S3Bucket": {
-      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
-     },
+     "S3Bucket": "cdk-hnb659fds-assets-791096175070-eu-central-1",
      "S3Key": "e37f40bbc11a86a3e61c1ac357f48f57ed96c39da29b96397e8a54550ab6358d.zip"
     },
     "Environment": {
@@ -12011,9 +11317,7 @@
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Code": {
-     "S3Bucket": {
-      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
-     },
+     "S3Bucket": "cdk-hnb659fds-assets-791096175070-eu-central-1",
      "S3Key": "d8e297776ea52513eea0ae72248a32f267dbddda1594c3f5b8a417c6ddfc3b31.zip"
     },
     "Environment": {
@@ -12111,630 +11415,14 @@
     "aws:cdk:path": "BackendStack/GenerateDownloadUrlLambda/invoke-function-url"
    }
   },
-  "ScoreUpdaterLambdaRoleB8A86FF1": {
-   "Type": "AWS::IAM::Role",
-   "Properties": {
-    "AssumeRolePolicyDocument": {
-     "Statement": [
-      {
-       "Action": "sts:AssumeRole",
-       "Effect": "Allow",
-       "Principal": {
-        "Service": "lambda.amazonaws.com"
-       }
-      }
-     ],
-     "Version": "2012-10-17"
-    },
-    "ManagedPolicyArns": [
-     {
-      "Fn::Join": [
-       "",
-       [
-        "arn:",
-        {
-         "Ref": "AWS::Partition"
-        },
-        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
-       ]
-      ]
-     }
-    ]
-   },
-   "Metadata": {
-    "aws:cdk:path": "BackendStack/ScoreUpdaterLambdaRole/Resource"
-   }
-  },
-  "ScoreUpdaterLambdaRoleDefaultPolicy1B256CF5": {
-   "Type": "AWS::IAM::Policy",
-   "Properties": {
-    "PolicyDocument": {
-     "Statement": [
-      {
-       "Action": [
-        "dynamodb:BatchGetItem",
-        "dynamodb:BatchWriteItem",
-        "dynamodb:ConditionCheckItem",
-        "dynamodb:DeleteItem",
-        "dynamodb:DescribeTable",
-        "dynamodb:GetItem",
-        "dynamodb:GetRecords",
-        "dynamodb:GetShardIterator",
-        "dynamodb:PutItem",
-        "dynamodb:Query",
-        "dynamodb:Scan",
-        "dynamodb:UpdateItem"
-       ],
-       "Effect": "Allow",
-       "Resource": [
-        {
-         "Fn::GetAtt": [
-          "Score56CB761D",
-          "Arn"
-         ]
-        },
-        {
-         "Fn::Join": [
-          "",
-          [
-           {
-            "Fn::GetAtt": [
-             "Score56CB761D",
-             "Arn"
-            ]
-           },
-           "/index/*"
-          ]
-         ]
-        }
-       ]
-      },
-      {
-       "Action": [
-        "dynamodb:BatchGetItem",
-        "dynamodb:ConditionCheckItem",
-        "dynamodb:DescribeTable",
-        "dynamodb:GetItem",
-        "dynamodb:GetRecords",
-        "dynamodb:GetShardIterator",
-        "dynamodb:Query",
-        "dynamodb:Scan"
-       ],
-       "Effect": "Allow",
-       "Resource": [
-        {
-         "Fn::GetAtt": [
-          "ListeningHistory4EE39CF7",
-          "Arn"
-         ]
-        },
-        {
-         "Fn::GetAtt": [
-          "Ratings9CD1D222",
-          "Arn"
-         ]
-        },
-        {
-         "Fn::GetAtt": [
-          "Subscriptions1F71F6D8",
-          "Arn"
-         ]
-        },
-        {
-         "Fn::Join": [
-          "",
-          [
-           {
-            "Fn::GetAtt": [
-             "Ratings9CD1D222",
-             "Arn"
-            ]
-           },
-           "/index/*"
-          ]
-         ]
-        },
-        {
-         "Fn::Join": [
-          "",
-          [
-           {
-            "Fn::GetAtt": [
-             "Subscriptions1F71F6D8",
-             "Arn"
-            ]
-           },
-           "/index/*"
-          ]
-         ]
-        },
-        {
-         "Ref": "AWS::NoValue"
-        }
-       ]
-      },
-      {
-       "Action": "dynamodb:ListStreams",
-       "Effect": "Allow",
-       "Resource": "*"
-      },
-      {
-       "Action": [
-        "dynamodb:DescribeStream",
-        "dynamodb:GetRecords",
-        "dynamodb:GetShardIterator"
-       ],
-       "Effect": "Allow",
-       "Resource": [
-        {
-         "Fn::GetAtt": [
-          "ListeningHistory4EE39CF7",
-          "StreamArn"
-         ]
-        },
-        {
-         "Fn::GetAtt": [
-          "Ratings9CD1D222",
-          "StreamArn"
-         ]
-        },
-        {
-         "Fn::GetAtt": [
-          "Subscriptions1F71F6D8",
-          "StreamArn"
-         ]
-        }
-       ]
-      }
-     ],
-     "Version": "2012-10-17"
-    },
-    "PolicyName": "ScoreUpdaterLambdaRoleDefaultPolicy1B256CF5",
-    "Roles": [
-     {
-      "Ref": "ScoreUpdaterLambdaRoleB8A86FF1"
-     }
-    ]
-   },
-   "Metadata": {
-    "aws:cdk:path": "BackendStack/ScoreUpdaterLambdaRole/DefaultPolicy/Resource"
-   }
-  },
-  "ScoreUpdaterLambda4C036DD2": {
-   "Type": "AWS::Lambda::Function",
-   "Properties": {
-    "Code": {
-     "S3Bucket": {
-      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
-     },
-     "S3Key": "a9f0d3b9fbfa007dfc7ca1c746845b95f0e8982ccccc2cbc2760121b83d55bc3.zip"
-    },
-    "Environment": {
-     "Variables": {
-      "SCORE_TABLE": {
-       "Ref": "Score56CB761D"
-      },
-      "RATING_TABLE_NAME": {
-       "Ref": "Ratings9CD1D222"
-      },
-      "SUBSCRIPTIONS_TABLE_NAME": {
-       "Ref": "Subscriptions1F71F6D8"
-      }
-     }
-    },
-    "Handler": "handler.handler",
-    "MemorySize": 128,
-    "Role": {
-     "Fn::GetAtt": [
-      "ScoreUpdaterLambdaRoleB8A86FF1",
-      "Arn"
-     ]
-    },
-    "Runtime": "python3.9",
-    "Timeout": 10
-   },
-   "DependsOn": [
-    "ScoreUpdaterLambdaRoleDefaultPolicy1B256CF5",
-    "ScoreUpdaterLambdaRoleB8A86FF1"
-   ],
-   "Metadata": {
-    "aws:cdk:path": "BackendStack/ScoreUpdaterLambda/Resource",
-    "aws:asset:path": "asset.a9f0d3b9fbfa007dfc7ca1c746845b95f0e8982ccccc2cbc2760121b83d55bc3",
-    "aws:asset:is-bundled": true,
-    "aws:asset:property": "Code"
-   }
-  },
-  "ScoreUpdaterLambdaLogGroup6B74B2F1": {
-   "Type": "AWS::Logs::LogGroup",
-   "Properties": {
-    "LogGroupName": {
-     "Fn::Join": [
-      "",
-      [
-       "/aws/lambda/",
-       {
-        "Ref": "ScoreUpdaterLambda4C036DD2"
-       }
-      ]
-     ]
-    },
-    "RetentionInDays": 731
-   },
-   "UpdateReplacePolicy": "Retain",
-   "DeletionPolicy": "Retain",
-   "Metadata": {
-    "aws:cdk:path": "BackendStack/ScoreUpdaterLambda/LogGroup/Resource"
-   }
-  },
-  "ScoreUpdaterLambdaFunctionUrl01BA1E5B": {
-   "Type": "AWS::Lambda::Url",
-   "Properties": {
-    "AuthType": "NONE",
-    "Cors": {
-     "AllowMethods": [
-      "*"
-     ],
-     "AllowOrigins": [
-      "*"
-     ]
-    },
-    "TargetFunctionArn": {
-     "Fn::GetAtt": [
-      "ScoreUpdaterLambda4C036DD2",
-      "Arn"
-     ]
-    }
-   },
-   "Metadata": {
-    "aws:cdk:path": "BackendStack/ScoreUpdaterLambda/FunctionUrl/Resource"
-   }
-  },
-  "ScoreUpdaterLambdainvokefunctionurlA5132693": {
-   "Type": "AWS::Lambda::Permission",
-   "Properties": {
-    "Action": "lambda:InvokeFunctionUrl",
-    "FunctionName": {
-     "Fn::GetAtt": [
-      "ScoreUpdaterLambda4C036DD2",
-      "Arn"
-     ]
-    },
-    "FunctionUrlAuthType": "NONE",
-    "Principal": "*"
-   },
-   "Metadata": {
-    "aws:cdk:path": "BackendStack/ScoreUpdaterLambda/invoke-function-url"
-   }
-  },
-  "ScoreUpdaterLambdaDynamoDBEventSourceBackendStackRatingsC7C26C9F414FA358": {
-   "Type": "AWS::Lambda::EventSourceMapping",
-   "Properties": {
-    "BatchSize": 1,
-    "EventSourceArn": {
-     "Fn::GetAtt": [
-      "Ratings9CD1D222",
-      "StreamArn"
-     ]
-    },
-    "FunctionName": {
-     "Ref": "ScoreUpdaterLambda4C036DD2"
-    },
-    "StartingPosition": "LATEST"
-   },
-   "Metadata": {
-    "aws:cdk:path": "BackendStack/ScoreUpdaterLambda/DynamoDBEventSource:BackendStackRatingsC7C26C9F/Resource"
-   }
-  },
-  "ScoreUpdaterLambdaDynamoDBEventSourceBackendStackSubscriptions65D2BCAA64D714BD": {
-   "Type": "AWS::Lambda::EventSourceMapping",
-   "Properties": {
-    "BatchSize": 1,
-    "EventSourceArn": {
-     "Fn::GetAtt": [
-      "Subscriptions1F71F6D8",
-      "StreamArn"
-     ]
-    },
-    "FunctionName": {
-     "Ref": "ScoreUpdaterLambda4C036DD2"
-    },
-    "StartingPosition": "LATEST"
-   },
-   "Metadata": {
-    "aws:cdk:path": "BackendStack/ScoreUpdaterLambda/DynamoDBEventSource:BackendStackSubscriptions65D2BCAA/Resource"
-   }
-  },
-  "ScoreUpdaterLambdaDynamoDBEventSourceBackendStackListeningHistoryB5568F65F1AE001B": {
-   "Type": "AWS::Lambda::EventSourceMapping",
-   "Properties": {
-    "BatchSize": 1,
-    "EventSourceArn": {
-     "Fn::GetAtt": [
-      "ListeningHistory4EE39CF7",
-      "StreamArn"
-     ]
-    },
-    "FunctionName": {
-     "Ref": "ScoreUpdaterLambda4C036DD2"
-    },
-    "StartingPosition": "LATEST"
-   },
-   "Metadata": {
-    "aws:cdk:path": "BackendStack/ScoreUpdaterLambda/DynamoDBEventSource:BackendStackListeningHistoryB5568F65/Resource"
-   }
-  },
-  "NewContentHandlerLambdaRole358E3DE8": {
-   "Type": "AWS::IAM::Role",
-   "Properties": {
-    "AssumeRolePolicyDocument": {
-     "Statement": [
-      {
-       "Action": "sts:AssumeRole",
-       "Effect": "Allow",
-       "Principal": {
-        "Service": "lambda.amazonaws.com"
-       }
-      }
-     ],
-     "Version": "2012-10-17"
-    },
-    "ManagedPolicyArns": [
-     {
-      "Fn::Join": [
-       "",
-       [
-        "arn:",
-        {
-         "Ref": "AWS::Partition"
-        },
-        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
-       ]
-      ]
-     }
-    ]
-   },
-   "Metadata": {
-    "aws:cdk:path": "BackendStack/NewContentHandlerLambdaRole/Resource"
-   }
-  },
-  "NewContentHandlerLambdaRoleDefaultPolicyBFB3F572": {
-   "Type": "AWS::IAM::Policy",
-   "Properties": {
-    "PolicyDocument": {
-     "Statement": [
-      {
-       "Action": [
-        "dynamodb:BatchGetItem",
-        "dynamodb:ConditionCheckItem",
-        "dynamodb:DescribeTable",
-        "dynamodb:GetItem",
-        "dynamodb:GetRecords",
-        "dynamodb:GetShardIterator",
-        "dynamodb:Query",
-        "dynamodb:Scan"
-       ],
-       "Effect": "Allow",
-       "Resource": [
-        {
-         "Fn::GetAtt": [
-          "Subscriptions1F71F6D8",
-          "Arn"
-         ]
-        },
-        {
-         "Fn::Join": [
-          "",
-          [
-           {
-            "Fn::GetAtt": [
-             "Subscriptions1F71F6D8",
-             "Arn"
-            ]
-           },
-           "/index/*"
-          ]
-         ]
-        }
-       ]
-      },
-      {
-       "Action": [
-        "dynamodb:BatchWriteItem",
-        "dynamodb:DeleteItem",
-        "dynamodb:DescribeTable",
-        "dynamodb:PutItem",
-        "dynamodb:UpdateItem"
-       ],
-       "Effect": "Allow",
-       "Resource": [
-        {
-         "Fn::GetAtt": [
-          "Score56CB761D",
-          "Arn"
-         ]
-        },
-        {
-         "Fn::Join": [
-          "",
-          [
-           {
-            "Fn::GetAtt": [
-             "Score56CB761D",
-             "Arn"
-            ]
-           },
-           "/index/*"
-          ]
-         ]
-        }
-       ]
-      }
-     ],
-     "Version": "2012-10-17"
-    },
-    "PolicyName": "NewContentHandlerLambdaRoleDefaultPolicyBFB3F572",
-    "Roles": [
-     {
-      "Ref": "NewContentHandlerLambdaRole358E3DE8"
-     }
-    ]
-   },
-   "Metadata": {
-    "aws:cdk:path": "BackendStack/NewContentHandlerLambdaRole/DefaultPolicy/Resource"
-   }
-  },
-  "NewContentHandlerLambdaFAA8DB3B": {
-   "Type": "AWS::Lambda::Function",
-   "Properties": {
-    "Code": {
-     "S3Bucket": {
-      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
-     },
-     "S3Key": "028cab42c40922499443e6bcd00516e0c68e58a7b11c91e89b9e65f488934b8e.zip"
-    },
-    "Environment": {
-     "Variables": {
-      "SUBSCRIPTIONS_TABLE": {
-       "Ref": "Subscriptions1F71F6D8"
-      },
-      "SCORE_TABLE": {
-       "Ref": "Score56CB761D"
-      },
-      "RATING_TABLE": {
-       "Ref": "Ratings9CD1D222"
-      }
-     }
-    },
-    "Handler": "handler.lambda_handler",
-    "MemorySize": 128,
-    "Role": {
-     "Fn::GetAtt": [
-      "NewContentHandlerLambdaRole358E3DE8",
-      "Arn"
-     ]
-    },
-    "Runtime": "python3.9",
-    "Timeout": 10
-   },
-   "DependsOn": [
-    "NewContentHandlerLambdaRoleDefaultPolicyBFB3F572",
-    "NewContentHandlerLambdaRole358E3DE8"
-   ],
-   "Metadata": {
-    "aws:cdk:path": "BackendStack/NewContentHandlerLambda/Resource",
-    "aws:asset:path": "asset.028cab42c40922499443e6bcd00516e0c68e58a7b11c91e89b9e65f488934b8e",
-    "aws:asset:is-bundled": true,
-    "aws:asset:property": "Code"
-   }
-  },
-  "NewContentHandlerLambdaLogGroup5E0F2DD1": {
-   "Type": "AWS::Logs::LogGroup",
-   "Properties": {
-    "LogGroupName": {
-     "Fn::Join": [
-      "",
-      [
-       "/aws/lambda/",
-       {
-        "Ref": "NewContentHandlerLambdaFAA8DB3B"
-       }
-      ]
-     ]
-    },
-    "RetentionInDays": 731
-   },
-   "UpdateReplacePolicy": "Retain",
-   "DeletionPolicy": "Retain",
-   "Metadata": {
-    "aws:cdk:path": "BackendStack/NewContentHandlerLambda/LogGroup/Resource"
-   }
-  },
-  "NewContentHandlerLambdaFunctionUrl9095B5B6": {
-   "Type": "AWS::Lambda::Url",
-   "Properties": {
-    "AuthType": "NONE",
-    "Cors": {
-     "AllowMethods": [
-      "*"
-     ],
-     "AllowOrigins": [
-      "*"
-     ]
-    },
-    "TargetFunctionArn": {
-     "Fn::GetAtt": [
-      "NewContentHandlerLambdaFAA8DB3B",
-      "Arn"
-     ]
-    }
-   },
-   "Metadata": {
-    "aws:cdk:path": "BackendStack/NewContentHandlerLambda/FunctionUrl/Resource"
-   }
-  },
-  "NewContentHandlerLambdainvokefunctionurl7A8ED6ED": {
-   "Type": "AWS::Lambda::Permission",
-   "Properties": {
-    "Action": "lambda:InvokeFunctionUrl",
-    "FunctionName": {
-     "Fn::GetAtt": [
-      "NewContentHandlerLambdaFAA8DB3B",
-      "Arn"
-     ]
-    },
-    "FunctionUrlAuthType": "NONE",
-    "Principal": "*"
-   },
-   "Metadata": {
-    "aws:cdk:path": "BackendStack/NewContentHandlerLambda/invoke-function-url"
-   }
-  },
-  "NewContentHandlerLambdaAllowInvokeBackendStackNewContentTopic6E806F6BEAEBE177": {
-   "Type": "AWS::Lambda::Permission",
-   "Properties": {
-    "Action": "lambda:InvokeFunction",
-    "FunctionName": {
-     "Fn::GetAtt": [
-      "NewContentHandlerLambdaFAA8DB3B",
-      "Arn"
-     ]
-    },
-    "Principal": "sns.amazonaws.com",
-    "SourceArn": {
-     "Ref": "NewContentTopicE1BD8C89"
-    }
-   },
-   "Metadata": {
-    "aws:cdk:path": "BackendStack/NewContentHandlerLambda/AllowInvoke:BackendStackNewContentTopic6E806F6B"
-   }
-  },
-  "NewContentHandlerLambdaNewContentTopicA9260428": {
-   "Type": "AWS::SNS::Subscription",
-   "Properties": {
-    "Endpoint": {
-     "Fn::GetAtt": [
-      "NewContentHandlerLambdaFAA8DB3B",
-      "Arn"
-     ]
-    },
-    "Protocol": "lambda",
-    "TopicArn": {
-     "Ref": "NewContentTopicE1BD8C89"
-    }
-   },
-   "Metadata": {
-    "aws:cdk:path": "BackendStack/NewContentHandlerLambda/NewContentTopic/Resource"
-   }
-  },
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {
-    "Analytics": "v2:deflate64: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"
+    "Analytics": "v2:deflate64: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"
    },
    "Metadata": {
     "aws:cdk:path": "BackendStack/CDKMetadata/Default"
-   },
-   "Condition": "CDKMetadataAvailable"
+   }
   }
  },
  "Outputs": {
@@ -12748,11 +11436,7 @@
       {
        "Ref": "mymusicappfilesAC4E028D"
       },
-      ".s3.",
-      {
-       "Ref": "AWS::Region"
-      },
-      ".amazonaws.com/"
+      ".s3.eu-central-1.amazonaws.com/"
      ]
     ]
    }
@@ -12779,11 +11463,7 @@
       {
        "Ref": "mymusicapptranscriptionsF7A3EEA7"
       },
-      ".s3.",
-      {
-       "Ref": "AWS::Region"
-      },
-      ".amazonaws.com/"
+      ".s3.eu-central-1.amazonaws.com/"
      ]
     ]
    }
@@ -12797,11 +11477,7 @@
       {
        "Ref": "MusicStreamingApiC954D41A"
       },
-      ".execute-api.",
-      {
-       "Ref": "AWS::Region"
-      },
-      ".",
+      ".execute-api.eu-central-1.",
       {
        "Ref": "AWS::URLSuffix"
       },
@@ -12813,272 +11489,6 @@
      ]
     ]
    }
-  }
- },
- "Conditions": {
-  "CDKMetadataAvailable": {
-   "Fn::Or": [
-    {
-     "Fn::Or": [
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "af-south-1"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "ap-east-1"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "ap-northeast-1"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "ap-northeast-2"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "ap-northeast-3"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "ap-south-1"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "ap-south-2"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "ap-southeast-1"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "ap-southeast-2"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "ap-southeast-3"
-       ]
-      }
-     ]
-    },
-    {
-     "Fn::Or": [
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "ap-southeast-4"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "ca-central-1"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "ca-west-1"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "cn-north-1"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "cn-northwest-1"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "eu-central-1"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "eu-central-2"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "eu-north-1"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "eu-south-1"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "eu-south-2"
-       ]
-      }
-     ]
-    },
-    {
-     "Fn::Or": [
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "eu-west-1"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "eu-west-2"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "eu-west-3"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "il-central-1"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "me-central-1"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "me-south-1"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "sa-east-1"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "us-east-1"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "us-east-2"
-       ]
-      },
-      {
-       "Fn::Equals": [
-        {
-         "Ref": "AWS::Region"
-        },
-        "us-west-1"
-       ]
-      }
-     ]
-    },
-    {
-     "Fn::Equals": [
-      {
-       "Ref": "AWS::Region"
-      },
-      "us-west-2"
-     ]
-    }
-   ]
   }
  },
  "Parameters": {

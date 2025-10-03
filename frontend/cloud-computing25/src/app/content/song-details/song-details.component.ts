@@ -130,23 +130,27 @@ export class SongDetailsComponent implements OnInit, OnDestroy {
 
   getAudioUrl(): string {
     if (!this.song?.fileName) return '';
+    console.log(environment.s3BucketLink + '/' + this.song.fileName)
     return environment.s3BucketLink + '/' + this.song.fileName;
   }
 
   togglePlayPause() {
     if (!this.audioPlayer?.nativeElement) return;
 
-    if (!this.song || !this.song.Id || !this.song.Album) {
-      console.error("Nema pesme za puštanje ili pesma nema ID.");
-      return;
-    }
     if (this.isPlaying) {
       this.audioPlayer.nativeElement.pause();
+      console.log(this.song)
+      let s: any = this.song;
+      if (s.id && s.album) {
+        console.log(s.id,s.album);
+        this.listeningHistoryService.recordListen(s.id, s.album
+        )
+          .subscribe({
+            next: () => console.log(`Beleži se slušanje za pesmu: ${this.song?.title}`),
+            error: (err) => console.error('Greška pri beleženju slušanja:', err)
+          });
+      }
 
-      this.listeningHistoryService.recordListen(this.song?.Id, this.song?.Album).subscribe({
-        next: () => console.log(`Beleži se slušanje za pesmu: ${this.song?.title}`),
-        error: (err) => console.error('Greška pri beleženju slušanja:', err)
-      });
     } else {
       this.audioPlayer.nativeElement.play();
     }
@@ -253,5 +257,9 @@ export class SongDetailsComponent implements OnInit, OnDestroy {
 
   getStarArray(): number[] {
     return [1, 2, 3, 4, 5];
+  }
+
+  getCoverUrl(): string {
+    return this.song?.coverImage ? `${environment.s3BucketLink}/${this.song.coverImage}` : '';
   }
 }

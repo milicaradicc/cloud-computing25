@@ -3,10 +3,9 @@
   <div class="player-section">
     <div class="cover-image-container">
       <img *ngIf="song?.coverImage"
-        [src]="song.coverImage || ''"
-        [alt]="(song.title || 'Unknown') + ' cover'"
-        class="cover-image"
-      />
+           [src]="getCoverUrl()"
+           [alt]="(song.title || 'Unknown') + ' cover'"
+           class="cover-image" />
 
       <div *ngIf="!song?.coverImage" class="placeholder-image">
         <mat-icon class="music-icon">music_note</mat-icon>
@@ -16,7 +15,7 @@
 
     <div class="player-controls">
       <div class="song-info">
-        <h2 class="song-title">{{ song.title || 'Unknown Title' }}</h2>
+        <h2 class="song-title">{{ song?.title || 'Unknown Title' }}</h2>
         <p class="artist-names" *ngIf="song?.artists?.length">
           <span *ngFor="let artist of song?.artists; let last = last">
             {{ artist?.name || 'Unknown Artist' }}<span *ngIf="!last">, </span>
@@ -36,8 +35,7 @@
             (mouseenter)="onStarHover(star)"
             (mouseleave)="onStarLeave()"
             [disabled]="isRatingLoading"
-            [attr.aria-label]="'Rate ' + star + ' out of 5 stars'"
-          >
+            [attr.aria-label]="'Rate ' + star + ' out of 5 stars'">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
             </svg>
@@ -50,14 +48,11 @@
 
       <div class="progress-container">
         <div class="progress-bar" (click)="seekTo($event)">
-          <div
-            class="progress-fill"
-            [style.width.%]="getProgressPercentage() || 0"
-          ></div>
+          <div class="progress-fill" [style.width.%]="getProgressPercentage() || 0"></div>
         </div>
         <div class="time-display">
           <span class="current-time">{{ formatTime(currentTime || 0) }}</span>
-          <span class="duration">{{ formatTime(song.duration || 0) }}</span>
+          <span class="duration">{{ formatTime(song?.duration || 0) }}</span>
         </div>
       </div>
 
@@ -79,8 +74,8 @@
       [src]="getAudioUrl() || ''"
       (loadedmetadata)="onAudioLoaded()"
       (timeupdate)="onTimeUpdate()"
-      (ended)="onAudioEnded()"
-    ></audio>
+      (ended)="onAudioEnded()">
+    </audio>
   </div>
 
   <!-- Right Side - Song and Artist Details -->
@@ -90,65 +85,61 @@
 
       <div class="detail-item">
         <label>Title:</label>
-        <span>{{ song.title || 'Unknown' }}</span>
+        <span>{{ song?.title || 'Unknown' }}</span>
       </div>
 
       <div class="detail-item" *ngIf="song?.Album">
         <label>Album:</label>
-        <span>{{ song.Album }}</span>
+        <span>{{ song?.Album?.title || 'Unknown Album' }}</span>
+
+        <!-- Album Cover -->
+        <div class="album-cover" *ngIf="song?.Album?.coverImage">
+          <img [src]="getCoverUrl()" />
+        </div>
+        <div class="album-placeholder" *ngIf="!song?.Album?.coverImage">
+          <mat-icon>album</mat-icon>
+          <span>No Cover</span>
+        </div>
       </div>
 
       <div class="detail-item" *ngIf="song?.duration">
         <label>Duration:</label>
-        <span>{{ formatTime(song.duration || 0) }}</span>
+        <span>{{ formatTime(song?.duration || 0) }}</span>
       </div>
 
       <div class="detail-item" *ngIf="song?.genres?.length">
         <label>Genres:</label>
         <div class="genre-tags">
-          <span
-            *ngFor="let genre of song?.genres"
-            class="genre-tag"
-          >
-            {{ genre || 'Unknown' }}
-          </span>
+          <span *ngFor="let genre of song?.genres" class="genre-tag">{{ genre || 'Unknown' }}</span>
         </div>
       </div>
 
       <div class="detail-item" *ngIf="song?.description">
         <label>Description:</label>
-        <p class="description">{{ song.description }}</p>
+        <p class="description">{{ song?.description }}</p>
       </div>
 
       <div class="detail-item" *ngIf="song?.transcriptFileName">
         <label>Lyrics:</label>
-        <p class="description">{{ transcript }}</p>
+        <p class="description">{{ transcript || 'No lyrics available' }}</p>
       </div>
     </div>
 
     <div class="artist-details" *ngIf="song?.artists?.length">
-      <h2 class="details-title">
-        Artists
-      </h2>
+      <h2 class="details-title">Artists</h2>
 
-      <div
-        *ngFor="let artist of song?.artists"
-        class="artist-card"
-      >
+      <div *ngFor="let artist of song?.artists" class="artist-card">
         <h3 class="artist-name">{{ artist?.name || 'Unknown Artist' }}</h3>
 
+        <!-- Artist genres -->
         <div class="artist-genres" *ngIf="artist?.genres?.length">
           <label>Genres:</label>
           <div class="genre-tags">
-            <span
-              *ngFor="let genre of artist?.genres"
-              class="genre-tag artist-genre"
-            >
-              {{ genre || 'Unknown' }}
-            </span>
+            <span *ngFor="let genre of artist?.genres" class="genre-tag artist-genre">{{ genre || 'Unknown' }}</span>
           </div>
         </div>
 
+        <!-- Artist biography -->
         <div class="artist-biography" *ngIf="artist?.biography">
           <label>Biography:</label>
           <p class="biography-text">{{ artist?.biography }}</p>

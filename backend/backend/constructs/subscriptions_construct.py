@@ -9,7 +9,8 @@ class SubscriptionsConstruct(Construct):
         id: str,
         api: apigateway.RestApi,
         table: dynamodb.Table,
-        authorizer
+        authorizer,
+        score_table: dynamodb.Table,
     ):
         super().__init__(scope, id)
 
@@ -22,9 +23,11 @@ class SubscriptionsConstruct(Construct):
             "handler.lambda_handler",
             "lambda/createSubscription",
             [],
-            {"SUBSCRIPTIONS_TABLE": table.table_name}
+            {"SUBSCRIPTIONS_TABLE": table.table_name,
+             "SCORE_TABLE": score_table.table_name,}
         )
         table.grant_read_write_data(create_subscription_lambda)
+        score_table.grant_read_write_data(create_subscription_lambda)
 
         subscriptions_api_resource.add_method(
             "POST",
@@ -60,9 +63,11 @@ class SubscriptionsConstruct(Construct):
             [],
             {
              "SUBSCRIPTIONS_TABLE": table.table_name,
+             "SCORE_TABLE": score_table.table_name,
             }
         )
         table.grant_read_write_data(delete_subscription_lambda)
+        score_table.grant_read_write_data(delete_subscription_lambda)
 
         subscriptions_id_resource = subscriptions_api_resource.add_resource("{id}")
         subscriptions_id_resource.add_method(

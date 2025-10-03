@@ -13,10 +13,6 @@ export class ArtistService {
 
   constructor(private httpClient: HttpClient) { }
 
-  // get(id: string): Observable<Artist> {
-  //   return this.httpClient.get<Artist>(`${environment.apiHost}/artists/${id}`);
-  // }
-
   getAll(): Observable<Artist[]> {
     return this.httpClient.get<Artist[]>(`${environment.apiHost}/artists`);
   }

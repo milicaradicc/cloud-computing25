@@ -37,6 +37,7 @@ export class HomeComponent implements OnInit {
     this.feedService.getPersonalizedFeed().subscribe({
       // `next` se izvršava kada podaci uspešno stignu sa servera
       next: (data: FeedResponse) => {
+        console.log('Podaci su uspešno stigli:', data);
         this.recommendedSongs = data.recommendedSongs || [];
         this.recommendedAlbums = data.recommendedAlbums || [];
         this.isLoading = false; // Završili smo sa učitavanjem

@@ -23,6 +23,7 @@ class SongsConstruct(Construct):
         authorizer,
         artists_table: dynamodb.Table,
         rating_table: dynamodb.Table,
+        score_table: dynamodb.Table,
     ):
         super().__init__(scope, id)
 
@@ -162,9 +163,13 @@ class SongsConstruct(Construct):
             [],
             {
                 "RATING_TABLE": rating_table.table_name,
+                "SCORE_TABLE": score_table.table_name,
+                "SONGS_TABLE": table.table_name,
             }
         )
         rating_table.grant_read_write_data(rate_song_lambda)
+        score_table.grant_read_write_data(rate_song_lambda)
+        table.grant_read_data(rate_song_lambda)
 
         rating_resource.add_method(
             "POST",

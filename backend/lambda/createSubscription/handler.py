@@ -1,13 +1,14 @@
 import json
 import os
-
 import boto3
 import uuid
 import time
 
 table_name = os.environ["SUBSCRIPTIONS_TABLE"]
+score_table_name = os.environ["SCORE_TABLE"]
 dynamodb = boto3.resource("dynamodb")
 table = dynamodb.Table(table_name)
+score_table = dynamodb.Table(score_table_name)
 
 def lambda_handler(event, context):
     claims = event.get("requestContext", {}).get("authorizer", {}).get("claims", {})
@@ -17,7 +18,7 @@ def lambda_handler(event, context):
         return {
             "statusCode": 403,
             'headers': {'Access-Control-Allow-Origin': '*'},
-            "body": json.dumps({"message":"Forbidden: Insufficient permissions"})
+            "body": json.dumps({"message": "Forbidden: Insufficient permissions"})
         }
 
     try:
@@ -36,7 +37,6 @@ def lambda_handler(event, context):
     targetName = body.get("targetName")
     email = body.get("email")
 
-    print(userId, targetId, targetType)
     if not userId or not targetId or not targetType:
         print("Missing required fields")
         return {
@@ -46,21 +46,20 @@ def lambda_handler(event, context):
         }
 
     subscription_id = str(uuid.uuid4())
-    createdAt = int(time.time())  # <--- timestamp u sekundama
+    createdAt = int(time.time())
 
     item = {
-        "Target": targetType + "#" + str(targetId),
+        "Target": f"{targetType}#{targetId}",
         "User": userId,
         "id": subscription_id,
         "type": targetType,
         "createdAt": createdAt,
         "targetName": targetName,
-        "email":email,
+        "email": email,
         "deleted": "false"
     }
 
     try:
-        table = dynamodb.Table(table_name)
         table.put_item(Item=item)
     except Exception as e:
         print("DynamoDB error:", e)
@@ -70,8 +69,35 @@ def lambda_handler(event, context):
             "body": json.dumps({"message": "Internal server error"})
         }
 
+    score_item = {
+        "User": userId,
+        "Content": None,
+        "Timestamp": createdAt,
+        "Genre": None,
+        "Subscribed": 1
+    }
+
+    if targetType.lower() == "genre":
+        score_item["Content"] = f"GENRE#{targetName}"
+        score_item["Genre"] = targetName
+    elif targetType.lower() == "artist":
+        score_item["Content"] = f"ARTIST#{targetId}"
+        score_item["Genre"] = None
+    else:
+        score_item = None
+
+    if score_item:
+        try:
+            score_table.put_item(Item=score_item)
+        except Exception as e:
+            print("Score table error:", e)
+
     return {
         "statusCode": 201,
         "headers": {"Access-Control-Allow-Origin": "*"},
-        "body": json.dumps({"message": "Successfully created artist profile", "artist": item})
+        "body": json.dumps({
+            "message": "Successfully created subscription",
+            "subscription": item,
+            "scoreItem": score_item
+        })
     }
