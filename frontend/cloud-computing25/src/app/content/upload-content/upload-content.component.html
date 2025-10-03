@@ -1,0 +1,144 @@
+<div class="upload-container">
+  <h2 class="page-title">Upload Song/Album</h2>
+  
+  <form [formGroup]="uploadForm" (ngSubmit)="submit()" class="upload-form">
+
+    <mat-card-content>
+      <mat-radio-group formControlName="type" class="type-radio-group">
+        <mat-radio-button style="background: #ffffff0d" value="single" class="type-option">
+          <div class="radio-content">
+            <mat-icon>music_note</mat-icon>
+            <span>Single</span>
+          </div>
+        </mat-radio-button>
+        <mat-radio-button style="background: #ffffff0d;" value="album" class="type-option">
+          <div class="radio-content">
+            <mat-icon>album</mat-icon>
+            <span>Album</span>
+          </div>
+        </mat-radio-button>
+      </mat-radio-group>
+    </mat-card-content>
+
+    <mat-card class="content-info-card">
+      <mat-card-content>
+        <h3>{{ uploadForm.value.type === 'single' ? 'Single' : 'Album' }} Information</h3>
+        
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Title</mat-label>
+          <input matInput formControlName="title" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Artists</mat-label>
+          <mat-select formControlName="artists" multiple required>
+            <mat-option *ngFor="let artist of availableArtists" [value]="artist.Id">
+              {{ artist.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Genres</mat-label>
+          <mat-select formControlName="genres" multiple>
+            <mat-option *ngFor="let genre of availableGenres" [value]="genre">{{ genre }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Description</mat-label>
+          <textarea matInput formControlName="description" rows="3"></textarea>
+        </mat-form-field>
+
+        <div class="file-upload-section">
+          <input type="file" #coverFileInput accept="image/*" (change)="onCoverFileChange($event)" hidden>
+          <button type="button" mat-stroked-button (click)="coverFileInput.click()">Choose Cover Image</button>
+          <span *ngIf="coverFile">{{ coverFile.name }}</span>
+        </div>
+
+        <div class="image-preview" *ngIf="coverImagePreview">
+          <img [src]="coverImagePreview" alt="Cover preview" class="preview-image">
+        </div>
+
+        <div *ngIf="uploadForm.value.type === 'single'" class="audio-upload-section">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Audio File</mat-label>
+            <input matInput readonly [value]="selectedAudioFileName" placeholder="No audio file selected">
+          </mat-form-field>
+          <input type="file" #audioFileInput accept=".mp3,.wav,.flac,.m4a,.ogg" (change)="onSingleAudioFileChange($event)" hidden>
+          <button type="button" mat-stroked-button (click)="audioFileInput.click()">Choose Audio File</button>
+          <div *ngIf="singleAudioInfo">
+            Duration: {{ formatDuration(singleAudioInfo.duration) }}, Size: {{ formatFileSize(singleAudioInfo.fileSize) }}
+          </div>
+        </div>
+
+        <div *ngIf="uploadForm.value.type === 'album'" class="album-songs-section">
+          <h4>Songs</h4>
+          <div formArrayName="songs">
+            <div *ngFor="let song of songs.controls; let i = index" [formGroupName]="i" class="song-form-card">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Song Title</mat-label>
+                <input matInput formControlName="title">
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Artists</mat-label>
+                <mat-select formControlName="artists" multiple>
+                  <mat-option *ngFor="let artist of availableArtists" [value]="artist.Id">{{ artist.name }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Genres</mat-label>
+                <mat-select formControlName="genres" multiple>
+                  <mat-option *ngFor="let genre of availableGenres" [value]="genre">{{ genre }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Song Description</mat-label>
+                <textarea matInput formControlName="description" rows="2"></textarea>
+              </mat-form-field>
+
+              <div class="file-upload-section">
+                <input type="file" #songCoverInput accept="image/*" (change)="onAlbumSongCoverChange($event, i)" hidden>
+                <button type="button" mat-stroked-button (click)="songCoverInput.click()">Choose Song Cover</button>
+                <span *ngIf="song.value.coverFile">{{ song.value.coverFile.name }}</span>
+              </div>
+
+              <div class="image-preview" *ngIf="song.value.coverBase64">
+                <img [src]="'data:image/*;base64,'+song.value.coverBase64" alt="Song Cover preview" class="preview-image">
+              </div>
+
+              <div class="file-upload-section">
+                <input type="file" #songFileInput accept=".mp3,.wav,.flac,.m4a,.ogg" (change)="onAlbumSongFileChange($event, i)" hidden>
+                <button type="button" mat-stroked-button (click)="songFileInput.click()">Choose Audio File</button>
+                <span *ngIf="song.value.audioFile">{{ song.value.audioFile.name }}</span>
+              </div>
+
+              <div *ngIf="song.value.audioInfo">
+                Duration: {{ formatDuration(song.value.audioInfo.duration) }}, Size: {{ formatFileSize(song.value.audioInfo.fileSize) }}
+              </div>
+
+              <button type="button" mat-icon-button color="warn" (click)="removeSong(i)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+
+          <button type="button" mat-stroked-button color="primary" (click)="addSong()">
+            Add Song
+          </button>
+        </div>
+
+      </mat-card-content>
+    </mat-card>
+
+    <div class="submit-section">
+      <button mat-raised-button color="primary" type="submit" [disabled]="uploadForm.invalid">
+        <mat-icon>cloud_upload</mat-icon>
+        Upload {{ uploadForm.value.type === 'single' ? 'Single' : 'Album' }}
+      </button>
+    </div>
+  </form>
+</div>

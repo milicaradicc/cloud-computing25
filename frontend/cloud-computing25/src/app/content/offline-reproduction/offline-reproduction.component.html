@@ -1,0 +1,51 @@
+<div class="details-section">
+  <h1 class="details-title">Songs</h1>
+
+  <!-- audio element -->
+  <audio #audioPlayer controls style="display:none"></audio>
+
+  <table class="songs-table" *ngIf="songs && songs.length > 0; else noSongs">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Listen offline</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let song of songs">
+        <td>{{ song.title }}</td>
+        <td>
+          <!-- offline / play -->
+          <button 
+            (click)="onOfflineButtonClick(song); $event.stopPropagation()"
+            [disabled]="isProcessing"
+            [class.offline-saved]="isSongCached(song.Id)"
+            [title]="isSongCached(song.Id) ? 'Play offline' : 'Save offline'"
+          >
+            <i 
+              class="fas" 
+              [ngClass]="{
+                'fa-cloud-download-alt': !isSongCached(song.Id) && !isProcessing,
+                'fa-play-circle': isSongCached(song.Id) && !isProcessing,
+                'fa-spinner fa-spin': isProcessing 
+              }"
+            ></i>
+          </button>
+
+          <!-- stop -->
+          <button
+            (click)="stopSong(); $event.stopPropagation()"
+            class="stop-btn"
+            title="Stop"
+          >
+            <i class="fas fa-stop"></i>
+          </button>
+        </td>
+      </tr>      
+    </tbody>
+  </table>
+
+  <ng-template #noSongs>
+    <p>No songs found.</p>
+  </ng-template>
+</div>

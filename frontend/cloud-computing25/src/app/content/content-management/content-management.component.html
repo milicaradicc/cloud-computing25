@@ -1,0 +1,96 @@
+<div class="admin-management-container">
+  <mat-card class="management-card">
+    <mat-card-header>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <mat-tab-group>
+        <!-- Albums Tab -->
+        <mat-tab label="Albums ({{albums.length}})">
+          <div class="content-section">
+            
+            <div class="items-grid">
+              <mat-card *ngFor="let album of filteredAlbums" class="item-card">
+                <div class="item-header">
+                  <img [src]="getAlbumCoverUrl(album)" 
+                      alt="Album cover" 
+                      class="cover-image">
+                  <div class="item-info">
+                    <h3 class="item-title">{{album.title}}</h3>
+                    <p class="item-genres">
+                      <mat-chip-listbox>
+                        <mat-chip *ngFor="let genre of album.genres">{{genre}}</mat-chip>
+                      </mat-chip-listbox>
+                    </p>
+                    <p class="item-date">Released: {{album.releaseDate | date}}</p>
+                  </div>
+                </div>
+                
+                <mat-card-actions class="item-actions">
+                  <button mat-icon-button 
+                          color="accent" 
+                          matTooltip="Edit Album"
+                          (click)="editAlbum(album)">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button mat-icon-button 
+                          color="warn" 
+                          matTooltip="Delete Album"
+                          (click)="deleteAlbum(album)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </mat-card-actions>
+              </mat-card>
+            </div>
+          </div>
+        </mat-tab>
+        
+        <!-- Songs Tab -->
+        <mat-tab label="Songs ({{songs.length}})">
+          <div class="content-section">
+            
+            <div class="items-list">
+              <mat-card *ngFor="let song of filteredSongs" class="song-item-card">
+                <div class="song-item-content">
+                  <img [src]="getSongCoverUrl(song)" 
+                    alt="Song cover" 
+                    class="song-cover">
+                  <div class="song-info">
+                    <h4 class="song-title">{{song.title}}</h4>
+                    <p class="song-artists">
+                      <span *ngFor="let artist of song.Artists; let last = last">
+                        {{artist.name}}<span *ngIf="!last">, </span>
+                      </span>
+                    </p>
+                    <p class="song-album">Album: {{song.Album.title || 'Single'}}</p>
+                    <p class="song-duration" *ngIf="song.duration">
+                      Duration: {{formatDuration(song.duration)}}
+                    </p>
+                    <mat-chip-listbox class="song-genres">
+                      <mat-chip *ngFor="let genre of song.genres">{{genre}}</mat-chip>
+                    </mat-chip-listbox>
+                  </div>
+                </div>
+                
+                <mat-card-actions class="song-actions">
+                  <button mat-icon-button 
+                          color="accent" 
+                          matTooltip="Edit Song"
+                          (click)="editSong(song)">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button mat-icon-button 
+                          color="warn" 
+                          matTooltip="Delete Song"
+                          (click)="deleteSong(song)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </mat-card-actions>
+              </mat-card>
+            </div>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-card-content>
+  </mat-card>
+</div>

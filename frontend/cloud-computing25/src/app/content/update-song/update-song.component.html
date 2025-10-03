@@ -1,0 +1,45 @@
+<h2 mat-dialog-title>Update Song</h2>
+
+<mat-dialog-content [formGroup]="form">
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Title</mat-label>
+    <input matInput formControlName="title" required>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Description</mat-label>
+    <textarea matInput formControlName="description" rows="3"></textarea>
+  </mat-form-field>
+
+  <!-- COVER IMAGE UPLOAD -->
+  <div class="cover-section">
+    <p>Cover Image:</p>
+    <div class="image-preview" *ngIf="form.value.coverImage">
+      <img [src]="getCoverUrl()" alt="Cover preview" class="preview-image">
+    </div>
+    <input type="file" (change)="onCoverFileChange($event)" accept="image/*">
+  </div>
+
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Genres</mat-label>
+    <mat-select formControlName="genres" multiple>
+      <mat-option *ngFor="let genre of allGenres" [value]="genre">
+        {{ genre }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <div class="audio-section">
+    <p>
+      Current Audio: {{ audioInfo?.fileName }} ({{ formatFileSize(audioInfo?.fileSize) }}, {{ formatDuration(audioInfo?.duration) }})
+    </p>
+    <input type="file" (change)="onAudioFileChange($event)" accept="audio/*">
+  </div>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-raised-button color="primary" (click)="save()">Save</button>
+</mat-dialog-actions>

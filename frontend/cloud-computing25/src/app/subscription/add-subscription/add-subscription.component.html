@@ -1,0 +1,34 @@
+<form [formGroup]="form" (ngSubmit)="submit()">
+    <h2>Add Subscription</h2>
+  <!-- Tip pretplate -->
+  <mat-form-field appearance="fill">
+    <mat-label>Type</mat-label>
+    <mat-select formControlName="type">
+      <mat-option *ngFor="let t of typeOptions" [value]="t">{{ t }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <!-- Dropdown za artist/genre -->
+  <mat-form-field appearance="fill">
+    <mat-label *ngIf="form.get('type')?.value === 'artist'">Artist</mat-label>
+    <mat-label *ngIf="form.get('type')?.value === 'genre'">Genre</mat-label>
+
+    <mat-select formControlName="targetId">
+      <!-- Ako je artist -->
+      <ng-container *ngIf="form.get('type')?.value === 'artist'">
+        <mat-option *ngFor="let a of artists" [value]="a.Id">{{ a.name }}</mat-option>
+      </ng-container>
+
+      <!-- Ako je genre -->
+      <ng-container *ngIf="form.get('type')?.value === 'genre'">
+        <mat-option *ngFor="let g of genres" [value]="g">{{ g }}</mat-option>
+      </ng-container>
+    </mat-select>
+  </mat-form-field>
+
+  <!-- Dugmad -->
+  <div class="buttons">
+    <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">Add</button>
+    <button mat-raised-button type="button" (click)="cancel()">Cancel</button>
+  </div>
+</form>

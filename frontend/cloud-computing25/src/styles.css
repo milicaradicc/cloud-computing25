@@ -1,0 +1,97 @@
+html, body {
+  height: 100%;
+  font-family: 'Fira Sans Condensed', serif !important;
+  color: #231212;
+  background-color: #ECEAEA;
+  margin: 0;
+}
+
+h1, h2 {
+  font-family: 'Fira Sans Condensed', serif !important;
+  font-weight: 500 !important;
+  color: #231212;
+}
+
+body {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  margin: 0;
+}
+
+.mat-form-field .mat-input-element {
+  color: white !important;
+}
+
+.mat-form-field .mat-input-element::placeholder {
+  color: #bbbbbb !important;
+}
+
+.mat-form-field-label,
+.mat-form-field-label.mat-focused {
+  color: white !important;
+}
+
+.mat-form-field-appearance-outline .mat-form-field-outline,
+.mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
+  border-color: white !important;
+}
+
+.mat-error {
+  color: #ff6b6b !important;
+}
+
+.mat-checkbox-layout {
+  color: white !important;
+}
+
+.mat-checkbox-frame {
+  border-color: white !important;
+}
+
+.mat-checkbox-checked .mat-checkbox-background {
+  background-color: #bb86fc !important;
+}
+
+/* INPUT i TEXTAREA */
+.mat-input-element, textarea.mat-input-element {
+  color: #fff !important;
+  background-color: #1e1e1e !important;
+}
+
+.mat-input-element::placeholder,
+textarea.mat-input-element::placeholder {
+  color: #aaa !important;
+}
+
+/* MAT-SELECT */
+.mat-select-value {
+  color: #fff !important;
+}
+
+/* PANEL DROPDOWN */
+.mat-select-panel {
+  background-color: #1e1e1e !important;
+  color: #fff !important;
+}
+
+/* Hover opcije u selectu */
+.mat-option:hover {
+  background-color: rgba(255,255,255,0.1);
+}
+
+/* Selektovana opcija */
+.mat-option.mat-selected {
+  background-color: #667eea !important;
+  color: #fff !important;
+}
+
+/* Scrollbar opcionalno */
+.mat-select-panel::-webkit-scrollbar {
+  width: 8px;
+}
+
+.mat-select-panel::-webkit-scrollbar-thumb {
+  background-color: #555;
+  border-radius: 4px;
+}
+
+

@@ -1,0 +1,40 @@
+<div class="artist-page-container" *ngIf="artist">
+  <!-- Left side - Artist Info -->
+  <div class="artist-player-section">
+    <div class="artist-info-controls">
+      <h2 class="artist-title">{{ artist.name }}</h2>
+      <p class="artist-biography">{{ artist.biography }}</p>
+
+      <div class="artist-genres">
+        <span *ngFor="let genre of artist.genres" class="genre-tag">{{ genre }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right side - Albums -->
+  <div class="artist-albums-section">
+    <h1 class="albums-title">Albums</h1>
+
+    <div *ngIf="loading" class="loading-container">
+      <mat-spinner></mat-spinner>
+      <p>Loading albums...</p>
+    </div>
+
+    <div *ngIf="errorAlbums" class="error-container">
+      <mat-icon>error</mat-icon>
+      <p>{{ errorAlbums }}</p>
+    </div>
+
+    <div *ngIf="!loading && !errorAlbums && albums?.length" class="albums-grid">
+      <a *ngFor="let album of albums"
+        [routerLink]="['/album-details', album.Id]"
+        class="album-link">
+        <app-album-card [album]="album" [songs]="album.songs"></app-album-card>
+      </a>
+    </div>
+
+    <div *ngIf="!loading && !errorAlbums && !albums?.length" class="no-albums">
+      <p>No albums available</p>
+    </div>
+  </div>
+</div>

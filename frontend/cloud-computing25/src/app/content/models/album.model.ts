@@ -1,0 +1,15 @@
+import { Artist } from "../../artists/artist.model";
+import { Song } from '../models/song.model';
+
+export interface Album {
+  title: string;
+  description?: string;
+  coverImage: string;
+  releaseDate: Date;
+  songs: Song[];
+  artists: Artist[];
+  genres?: string[];
+  Id:string;
+  Genre:string,
+  deleted:boolean,
+}

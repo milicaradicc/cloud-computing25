@@ -1,0 +1,45 @@
+<h2 mat-dialog-title class="dialog-title">
+  Add new artist
+</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="createForm">
+    <div class="form-container">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Biography</mat-label>
+        <textarea matInput formControlName="biography" rows="3"></textarea>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Genres</mat-label>
+        <mat-select formControlName="genres" multiple>
+          <mat-option *ngFor="let genre of availableGenres" [value]="genre">
+            {{ genre }}
+          </mat-option>
+      </mat-select>
+</mat-form-field>
+
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="onSave()"
+    [disabled]="createForm.invalid">
+    Save
+  </button>
+  <button
+    mat-raised-button
+    color="warn"
+    (click)="onCancel()">
+    Cancel
+  </button>
+</mat-dialog-actions>

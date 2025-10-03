@@ -1,0 +1,120 @@
+<div class="discover-container">
+  <h1>Discover Music</h1>
+  <p>Explore artists and albums by genre.</p>
+
+  <!-- Genre buttons -->
+  <div class="genre-buttons-container">
+    <button *ngFor="let genre of genres" 
+            mat-stroked-button 
+            color="primary"
+            class="genre-button"
+            [class.active]="selectedGenre === genre"
+            (click)="selectGenre(genre)">
+      {{ genre }}
+    </button>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <div *ngIf="selectedGenre" class="filtered-content-container">
+
+    <!-- Artists Section -->
+    <div class="artists-section">
+      <h2 class="section-title">
+        Artists in {{ selectedGenre }}
+        <mat-icon>group</mat-icon>
+      </h2>
+
+      <div *ngIf="artists.length > 0; else noArtists" class="artists-list-grid">
+        <mat-card *ngFor="let artist of artists" 
+                  class="artist-card"
+                  [routerLink]="['/artist', artist.Id]">
+          <div class="artist-image-container" 
+               [ngStyle]="{'background-image': artist.profileImage ? 'url(' + artist.profileImage + ')' : 'none'}">
+            <mat-icon *ngIf="!artist.profileImage" class="artist-placeholder-icon">person</mat-icon>
+          </div>
+          <p class="artist-name">{{ artist.name }}</p>
+        </mat-card>
+      </div>
+
+      <ng-template #noArtists>
+        <p class="no-content-message">No artists found for this genre.</p>
+      </ng-template>
+    </div>
+
+    <!-- Albums Section -->
+    <div class="albums-section">
+      <h2 class="section-title">
+        Albums in {{ selectedGenre }}
+        <mat-icon>album</mat-icon>
+      </h2>
+
+      <div *ngIf="albums.length > 0; else noAlbums" class="albums-list-grid">
+        <mat-card 
+          *ngFor="let album of albums" 
+          class="album-card" 
+          [class.no-image]="!album.coverImage"
+          [routerLink]="['/album-details', album.Id]"
+          style="cursor: pointer;">
+          
+          <!-- Album Header -->
+          <div class="album-header">
+            <div class="album-image-container">
+              <img *ngIf="album.coverImage"
+                   [src]="getAlbumCoverUrl(album)"
+                   [alt]="album.title + ' cover'"
+                   class="album-cover"
+                   (error)="onCoverError()">
+              
+              <div *ngIf="!album.coverImage" class="album-placeholder">
+                <mat-icon class="album-icon">album</mat-icon>
+                <span class="placeholder-text">No Cover</span>
+              </div>
+            </div>
+
+            <div class="album-info">
+              <h2 class="album-title">{{ album.title }}</h2>
+              <p *ngIf="album.description" class="album-description">{{ album.description }}</p>
+              <p *ngIf="album.artistObjects?.length" class="album-artists">
+                <mat-icon class="detail-icon">person</mat-icon>
+                {{ getAlbumArtistNames(album) }}
+              </p>
+              <p *ngIf="album.genres?.length" class="album-genres">
+                <mat-icon class="detail-icon">category</mat-icon>
+                {{ album.genres.join(', ') }}
+              </p>
+            </div>
+          </div>
+
+          <mat-divider></mat-divider>
+
+          <!-- Songs -->
+          <div class="album-songs" *ngIf="album.songs?.length">
+            <h3>Songs:</h3>
+            <mat-list>
+              <mat-list-item *ngFor="let song of album.songs">
+                <div matLine class="song-title">{{ song.title }}</div>
+              </mat-list-item>
+            </mat-list>
+          </div>
+
+          <!-- Actions -->
+          <mat-card-actions>
+            <button style="color: #764ba2;" mat-stroked-button color="primary" (click)="playAlbum()" title="Play Album">
+              <mat-icon>play_arrow</mat-icon> Play Album
+            </button>
+            <button mat-icon-button title="Add Album to Favorites">
+              <mat-icon>favorite_border</mat-icon>
+            </button>
+          </mat-card-actions>
+
+        </mat-card>
+      </div>
+
+      <ng-template #noAlbums>
+        <p class="no-content-message">No albums found for this genre.</p>
+      </ng-template>
+    </div>
+
+  </div>
+</div>
