@@ -6,6 +6,9 @@ import { SingleUploadDTO } from '../models/single-upload-dto.model';
 import { ContentService } from '../content.service';
 import { AlbumUploadDTO } from '../models/album-upload-dto.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { FeedService } from '../../layout/feed.service';
+import { Router } from '@angular/router';
+import { forkJoin } from 'rxjs';
 
 @Component({
   standalone: false,
@@ -30,7 +33,8 @@ export class UploadContentComponent implements OnInit {
     private fb: FormBuilder,
     private artistService: ArtistService,
     private musicService: ContentService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private router: Router
   ) {
     this.uploadForm = this.fb.group({
       type: ['single', Validators.required],
@@ -235,9 +239,15 @@ export class UploadContentComponent implements OnInit {
 
         console.log('Single DTO:', dto);
         this.musicService.addSong(dto).subscribe({
-          next: res => console.log('Single uploaded successfully', res),
+          next: res => {
+            console.log('Single uploaded successfully', res);
+            this.snackBar.open('Upload successful!', 'OK', { duration: 3000 });
+            this.router.navigate(['/home']); // 👈 redirekcija
+          },
           error: err => console.error('Single upload failed', err)
         });
+
+
       },
       error: err => console.error('Album creation for single failed', err)
     });
@@ -265,10 +275,10 @@ export class UploadContentComponent implements OnInit {
       next: albumRes => {
         const albumId = albumRes.item.Id;
 
-        this.songs.controls.forEach(async (songCtrl) => {
+        const uploadRequests = this.songs.controls.map(async (songCtrl) => {
           const songControl = songCtrl as FormGroup;
           const songFile: File = songControl.value.audioFile;
-          if (!songFile) return;
+          if (!songFile) return null;
 
           const base64File = await this.convertFileToBase64(songFile);
 
@@ -287,14 +297,21 @@ export class UploadContentComponent implements OnInit {
             coverImage: name,
             coverFileBase64: this.coverBase64 ?? undefined,
             album: albumId,
-            transcribe:true,
+            transcribe: true,
             single: false
           };
 
-          this.musicService.addSong(songDto).subscribe({
-            next: res => console.log(`Song ${songDto.title} uploaded`, res),
-            error: err => console.error(`Song ${songDto.title} upload failed`, err)
-          });
+          return this.musicService.addSong(songDto);
+        }).filter(req => req !== null);
+
+        // sačekaj da svi završe
+        forkJoin(uploadRequests).subscribe({
+          next: res => {
+            console.log('Sve pesme uploadovane:', res);
+            this.snackBar.open('Album uploaded successfully!', 'OK', { duration: 3000 });
+            this.router.navigate(['/home']);
+          },
+          error: err => console.error('Neka pesma nije uploadovana', err)
         });
       },
       error: err => console.error('Album upload failed', err)

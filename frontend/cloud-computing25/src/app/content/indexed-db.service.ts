@@ -40,6 +40,12 @@ export class IndexedDbService extends Dexie {
     const song = await this.songs.get(songId);
     return song?.blob || null;
   }
+
+  // Dohvata sve pesme iz IndexedDB
+  async getAllSongs(): Promise<SongDb[]> {
+    return await this.songs.toArray();
+  }
+
 }
 
 // Interfejs za tabelu

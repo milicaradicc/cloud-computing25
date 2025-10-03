@@ -6,6 +6,7 @@ import {Artist} from '../artist.model';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {MatSort} from '@angular/material/sort';
 import {CreateArtistComponent} from '../create-artist/create-artist.component';
+import { FeedService } from '../../layout/feed.service';
 
 @Component({
   selector: 'app-artists',
@@ -53,23 +54,28 @@ export class ArtistsComponent implements OnInit {
       }
     });
   }
-  openEditArtistDialog(artist: Artist) {
-    const dialogRef = this.dialog.open(CreateArtistComponent, {
-      width: '400px',
-      data: artist 
-    });
+openEditArtistDialog(artist: Artist) {
+  const dialogRef = this.dialog.open(CreateArtistComponent, {
+    width: '400px',
+    data: artist 
+  });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.service.update(artist.Id, result).subscribe({
-          next: () => {
-            this.refreshDataSource();
-            this.snackBar.open('Artist updated successfully','OK',{duration:3000});
-          }
-        });
-      }
-    });
-  }
+  dialogRef.afterClosed().subscribe(result => {
+    if (result) {
+      this.service.update(artist.Id, result).subscribe({
+        next: () => {
+          this.refreshDataSource();
+          this.snackBar.open('Artist updated successfully','OK',{duration:3000});
+        },
+        error: (err) => {
+          this.snackBar.open('Error updating artist','OK',{duration:3000});
+          console.error(err);
+        }
+      });
+    }
+  });
+}
+
 
   deleteArtist(artist: Artist) {
     if(confirm(`Are you sure you want to delete ${artist.name}?`)) {

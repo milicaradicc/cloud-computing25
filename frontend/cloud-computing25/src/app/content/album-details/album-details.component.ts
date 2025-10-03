@@ -41,7 +41,7 @@ export class AlbumDetailsComponent implements OnInit {
     private downloadService: DownloadService, 
     private dbService: IndexedDbService,
     private router: Router,
-    private listeningHistoryService: ListeningHistoryService
+    private listeningHistoryService: ListeningHistoryService,
   ) {}
 
   ngOnInit(): void {

@@ -15,7 +15,7 @@
 
     <div class="player-controls">
       <div class="song-info">
-        <h2 class="song-title">{{ song?.title || 'Unknown Title' }}</h2>
+        <h2 class="song-title">{{ song.title || 'Unknown Title' }}</h2>
         <p class="artist-names" *ngIf="song?.artists?.length">
           <span *ngFor="let artist of song?.artists; let last = last">
             {{ artist?.name || 'Unknown Artist' }}<span *ngIf="!last">, </span>
@@ -52,7 +52,7 @@
         </div>
         <div class="time-display">
           <span class="current-time">{{ formatTime(currentTime || 0) }}</span>
-          <span class="duration">{{ formatTime(song?.duration || 0) }}</span>
+          <span class="duration">{{ formatTime(song.duration || 0) }}</span>
         </div>
       </div>
 
@@ -85,12 +85,12 @@
 
       <div class="detail-item">
         <label>Title:</label>
-        <span>{{ song?.title || 'Unknown' }}</span>
+        <span>{{ song.title || 'Unknown' }}</span>
       </div>
 
       <div class="detail-item" *ngIf="song?.Album">
         <label>Album:</label>
-        <span>{{ song?.Album?.title || 'Unknown Album' }}</span>
+        <span>{{ song.Album?.title || 'Unknown Album' }}</span>
 
         <!-- Album Cover -->
         <div class="album-cover" *ngIf="song?.Album?.coverImage">
@@ -104,7 +104,7 @@
 
       <div class="detail-item" *ngIf="song?.duration">
         <label>Duration:</label>
-        <span>{{ formatTime(song?.duration || 0) }}</span>
+        <span>{{ formatTime(song.duration || 0) }}</span>
       </div>
 
       <div class="detail-item" *ngIf="song?.genres?.length">
@@ -116,7 +116,7 @@
 
       <div class="detail-item" *ngIf="song?.description">
         <label>Description:</label>
-        <p class="description">{{ song?.description }}</p>
+        <p class="description">{{ song.description }}</p>
       </div>
 
       <div class="detail-item" *ngIf="song?.transcriptFileName">

@@ -2,17 +2,16 @@
   <h2 class="page-title">Upload Song/Album</h2>
   
   <form [formGroup]="uploadForm" (ngSubmit)="submit()" class="upload-form">
-    
-    <!-- Type Selection -->
+
     <mat-card-content>
       <mat-radio-group formControlName="type" class="type-radio-group">
-        <mat-radio-button style="background: #ffffff;" value="single" class="type-option">
+        <mat-radio-button style="background: #ffffff0d" value="single" class="type-option">
           <div class="radio-content">
             <mat-icon>music_note</mat-icon>
             <span>Single</span>
           </div>
         </mat-radio-button>
-        <mat-radio-button style="background: #ffffff;" value="album" class="type-option">
+        <mat-radio-button style="background: #ffffff0d;" value="album" class="type-option">
           <div class="radio-content">
             <mat-icon>album</mat-icon>
             <span>Album</span>
@@ -21,7 +20,6 @@
       </mat-radio-group>
     </mat-card-content>
 
-    <!-- Main Content Information -->
     <mat-card class="content-info-card">
       <mat-card-content>
         <h3>{{ uploadForm.value.type === 'single' ? 'Single' : 'Album' }} Information</h3>
@@ -52,20 +50,16 @@
           <textarea matInput formControlName="description" rows="3"></textarea>
         </mat-form-field>
 
-        <!-- Cover Image Upload -->
         <div class="file-upload-section">
           <input type="file" #coverFileInput accept="image/*" (change)="onCoverFileChange($event)" hidden>
           <button type="button" mat-stroked-button (click)="coverFileInput.click()">Choose Cover Image</button>
           <span *ngIf="coverFile">{{ coverFile.name }}</span>
         </div>
 
-        <h1></h1>
-
         <div class="image-preview" *ngIf="coverImagePreview">
           <img [src]="coverImagePreview" alt="Cover preview" class="preview-image">
         </div>
 
-        <!-- Single Audio Upload -->
         <div *ngIf="uploadForm.value.type === 'single'" class="audio-upload-section">
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Audio File</mat-label>
@@ -78,7 +72,6 @@
           </div>
         </div>
 
-        <!-- Album Songs Section -->
         <div *ngIf="uploadForm.value.type === 'album'" class="album-songs-section">
           <h4>Songs</h4>
           <div formArrayName="songs">
@@ -107,7 +100,6 @@
                 <textarea matInput formControlName="description" rows="2"></textarea>
               </mat-form-field>
 
-              <!-- Song Cover Upload -->
               <div class="file-upload-section">
                 <input type="file" #songCoverInput accept="image/*" (change)="onAlbumSongCoverChange($event, i)" hidden>
                 <button type="button" mat-stroked-button (click)="songCoverInput.click()">Choose Song Cover</button>
@@ -118,9 +110,6 @@
                 <img [src]="'data:image/*;base64,'+song.value.coverBase64" alt="Song Cover preview" class="preview-image">
               </div>
 
-              <h1></h1>
-
-              <!-- Audio File Upload for Song -->
               <div class="file-upload-section">
                 <input type="file" #songFileInput accept=".mp3,.wav,.flac,.m4a,.ogg" (change)="onAlbumSongFileChange($event, i)" hidden>
                 <button type="button" mat-stroked-button (click)="songFileInput.click()">Choose Audio File</button>

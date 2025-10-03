@@ -8,8 +8,20 @@ import { Song } from '../content/models/song.model';
 import { Album } from '../content/models/album.model'
 
 export interface FeedResponse {
-  recommendedSongs: Song[];
-  recommendedAlbums: Album[];
+  albums: Album[];
+  songs: Song[];
+  topArtist: TopArtist;
+  topGenre: string | null;
+}
+
+export interface TopArtist {
+  Content: string; // npr. "ARTIST#b003942a-62e7-42b6-9323-970f0676c7d2"
+  Average: number;
+}
+
+export interface ScoreUpdateRequest {
+  action: 'LISTEN' | 'RATE' | 'SUBSCRIBE';
+  details: any;
 }
 
 @Injectable({
@@ -19,10 +31,21 @@ export class FeedService {
 
   constructor(private http: HttpClient) { }
 
-  // === ISPRAVKA JE OVDE ===
-  // Sada funkcija ispravno deklariše da vraća Observable<FeedResponse>
   getPersonalizedFeed(): Observable<FeedResponse> {
-    // I http.get očekuje isti tip <FeedResponse>
     return this.http.get<FeedResponse>(`${environment.apiHost}/feed`);
   }
+
+  updateUserScore(action: 'LISTEN' | 'RATE' | 'SUBSCRIBE', details: any): Observable<any> {
+    const payload: ScoreUpdateRequest = {
+      action,
+      details
+    };
+
+    return this.http.post(`${environment.apiHost}/feed`, payload);
+  }
+
+  pushNewContent(payload: { contentId: string, genres: string[], artists: string[] }) {
+    return this.http.post(`${environment.apiHost}/feed/new-content`, payload);
+  }
+
 }

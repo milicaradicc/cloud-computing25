@@ -1,0 +1,84 @@
+<div class="details-section">
+  <h1 class="details-title">Songs</h1>
+
+  <!-- audio element -->
+  <audio #audioPlayer controls style="display:none"></audio>
+
+  <table class="songs-table" *ngIf="songs && songs.length > 0; else noSongs">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Duration</th>
+        <th>Artists</th>
+        <th>Genres</th>
+        <th>Type</th>
+        <th>Listen offline</th>
+        <th>Download</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let song of songs">
+        <td>{{ song.title }}</td>
+        <td>{{ formatTime(song.duration || 0) }}</td>
+        <td>
+          <span *ngFor="let artist of song.artists; let last = last">
+            {{ artist?.name }}<span *ngIf="!last">, </span>
+          </span>
+        </td>
+        <td>
+          <span *ngFor="let genre of song.genres" class="genre-tag">
+            {{ genre }}
+          </span>
+        </td>
+        <td>{{ song.type }}</td>
+        <td>
+          <!-- offline / play -->
+          <button 
+            (click)="onOfflineButtonClick(song); $event.stopPropagation()"
+            [disabled]="isProcessing"
+            [class.offline-saved]="isSongCached(song.Id)"
+            [title]="isSongCached(song.Id) ? 'Play offline' : 'Save offline'"
+          >
+            <i 
+              class="fas" 
+              [ngClass]="{
+                'fa-cloud-download-alt': !isSongCached(song.Id) && !isProcessing,
+                'fa-play-circle': isSongCached(song.Id) && !isProcessing,
+                'fa-spinner fa-spin': isProcessing 
+              }"
+            ></i>
+          </button>
+
+          <!-- stop -->
+          <button
+            (click)="stopSong(); $event.stopPropagation()"
+            class="stop-btn"
+            title="Stop"
+          >
+            <i class="fas fa-stop"></i>
+          </button>
+        </td>
+
+        <td>
+          <!-- download -->
+          <button
+            (click)="onDownloadClick(song.Id); $event.stopPropagation()"
+            [disabled]="isLoading"
+            class="download-btn"
+          >
+            <ng-container *ngIf="!isLoading">
+              <i class="fas fa-download"></i> 
+            </ng-container>
+            <ng-container *ngIf="isLoading">
+              <i class="fas fa-spinner fa-spin"></i> 
+            </ng-container>
+          </button>
+        </td>
+      </tr>      
+    </tbody>
+  </table>
+
+  <ng-template #noSongs>
+    <p>No songs found.</p>
+  </ng-template>
+</div>

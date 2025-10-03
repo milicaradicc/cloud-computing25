@@ -103,18 +103,6 @@ class BackendStack(Stack):
             projection_type=dynamodb.ProjectionType.ALL
         )
 
-        songs_table.add_global_secondary_index(
-            index_name="artist-index",
-            partition_key=dynamodb.Attribute(name="artist", type=dynamodb.AttributeType.STRING),
-            projection_type=dynamodb.ProjectionType.ALL
-        )
-
-        songs_table.add_global_secondary_index(
-            index_name="genre-index",
-            partition_key=dynamodb.Attribute(name="genre", type=dynamodb.AttributeType.STRING),
-            projection_type=dynamodb.ProjectionType.ALL
-        )
-
         # ALBUMS TABLE AND GSI
         albums_table = dynamodb.Table(
             self, "Albums",
@@ -132,18 +120,6 @@ class BackendStack(Stack):
         albums_table.add_global_secondary_index(
             index_name="Id-index",
             partition_key=dynamodb.Attribute(name="Id", type=dynamodb.AttributeType.STRING),
-            projection_type=dynamodb.ProjectionType.ALL
-        )
-
-        albums_table.add_global_secondary_index(
-            index_name="artist-index",
-            partition_key=dynamodb.Attribute(name="artist", type=dynamodb.AttributeType.STRING),
-            projection_type=dynamodb.ProjectionType.ALL
-        )
-
-        albums_table.add_global_secondary_index(
-            index_name="Genre-index",
-            partition_key=dynamodb.Attribute(name="Genre", type=dynamodb.AttributeType.STRING),
             projection_type=dynamodb.ProjectionType.ALL
         )
 
@@ -232,9 +208,15 @@ class BackendStack(Stack):
         # LISTENING HISTORY TABLE
 
         listening_history_table = dynamodb.Table(
-            self, "ListeningHistory",
-            partition_key=dynamodb.Attribute(name="User", type=dynamodb.AttributeType.STRING),
-            sort_key=dynamodb.Attribute(name="TimeStamp", type=dynamodb.AttributeType.STRING),
+            self, "ListeningHistory",  
+            partition_key=dynamodb.Attribute(
+                name="User",
+                type=dynamodb.AttributeType.STRING
+            ),
+            sort_key=dynamodb.Attribute(
+                name="TimeStamp",
+                type=dynamodb.AttributeType.STRING
+            ),
             removal_policy=RemovalPolicy.DESTROY,
             stream=dynamodb.StreamViewType.NEW_IMAGE
         )
@@ -242,16 +224,22 @@ class BackendStack(Stack):
         # SCORE TABLE
 
         score_table = dynamodb.Table(
-            self, "Score",
-            partition_key=dynamodb.Attribute(name="User", type=dynamodb.AttributeType.STRING),
-            sort_key=dynamodb.Attribute(name="Content", type=dynamodb.AttributeType.STRING),
+            self, "Score", 
+            partition_key=dynamodb.Attribute(
+                name="User",
+                type=dynamodb.AttributeType.STRING
+            ),
+            sort_key=dynamodb.Attribute(
+                name="Content",
+                type=dynamodb.AttributeType.STRING
+            ),
             removal_policy=RemovalPolicy.DESTROY,
-            stream=dynamodb.StreamViewType.NEW_IMAGE
         )
 
         score_table.add_global_secondary_index(
-            index_name="User-index",
+            index_name="UserTotalScoreIndex",
             partition_key=dynamodb.Attribute(name="User", type=dynamodb.AttributeType.STRING),
+            sort_key=dynamodb.Attribute(name="TotalScore", type=dynamodb.AttributeType.NUMBER),
             projection_type=dynamodb.ProjectionType.ALL
         )
 
@@ -373,9 +361,9 @@ class BackendStack(Stack):
 
         # API constructs (sve Artists rute idu preko ArtistsConstruct!)
         ArtistsConstruct(self, "ArtistsConstruct", api, artists_table, songs_table, albums_table, artist_album_table, artist_song_table, authorizer)
-        SongsConstruct(self, "SongsConstruct", api, songs_table, albums_table, artist_song_table, music_bucket, new_content_topic, new_transcription_topic, authorizer, artists_table, rating_table, score_table)
+        SongsConstruct(self, "SongsConstruct", api, songs_table, albums_table, artist_song_table, music_bucket, new_content_topic, new_transcription_topic, authorizer, artists_table, rating_table)
         AlbumConstruct(self, "AlbumConstruct", api, songs_table, albums_table, artist_album_table, artist_song_table, artists_table, music_bucket, new_content_topic, authorizer)
-        SubscriptionsConstruct(self, "SubscriptionsConstruct", api, subscriptions_table, authorizer,score_table)
+        SubscriptionsConstruct(self, "SubscriptionsConstruct", api, subscriptions_table, authorizer)
         ListeningHistoryConstruct(self, "ListeningHistoryConstruct", api, listening_history_table, songs_table, authorizer)
         FeedConstruct(self, "FeedConstruct", api=api,score_table=score_table, songs_table=songs_table, albums_table=albums_table, artist_song_table=artist_song_table, artist_album_table=artist_album_table, authorizer=authorizer)
 
@@ -445,72 +433,67 @@ class BackendStack(Stack):
             authorization_type=apigateway.AuthorizationType.NONE
         )
 
+        # # FEED
 
+        # # ===== SCORE UPDATER LAMBDA =====
+        # score_updater_lambda = create_lambda_function(
+        #     self,
+        #     "ScoreUpdaterLambda",
+        #     "handler.handler",
+        #     "lambda/updateScore", 
+        #     [],
+        #     environment={
+        #         'SCORE_TABLE': score_table.table_name,
+        #         'RATING_TABLE': rating_table.table_name,
+        #         'SUBSCRIPTIONS_TABLE': subscriptions_table.table_name
+        #     },
+        # )
 
-        '''
+        # score_table.grant_read_write_data(score_updater_lambda)
 
-        # FEED
+        # rating_table.grant_read_data(score_updater_lambda)
+        # subscriptions_table.grant_read_data(score_updater_lambda)
+        # listening_history_table.grant_read_data(score_updater_lambda)
 
-        # ===== SCORE UPDATER LAMBDA =====
-        score_updater_lambda = create_lambda_function(
-            self,
-            "ScoreUpdaterLambda",
-            "handler.handler",
-            "lambda/updateScore", 
-            [],
-            environment={
-                'SCORE_TABLE': score_table.table_name,
-                'RATING_TABLE_NAME': rating_table.table_name,
-                'SUBSCRIPTIONS_TABLE_NAME': subscriptions_table.table_name
-            },
-        )
+        # score_updater_lambda.add_event_source(
+        #     lambda_event_sources.DynamoEventSource(
+        #         rating_table,
+        #         starting_position=_lambda.StartingPosition.LATEST,
+        #         batch_size=1
+        #     )
+        # )
+        # score_updater_lambda.add_event_source(
+        #     lambda_event_sources.DynamoEventSource(
+        #         subscriptions_table,
+        #         starting_position=_lambda.StartingPosition.LATEST,
+        #         batch_size=1
+        #     )
+        # )
+        # score_updater_lambda.add_event_source(
+        #     lambda_event_sources.DynamoEventSource(
+        #         listening_history_table,
+        #         starting_position=_lambda.StartingPosition.LATEST,
+        #         batch_size=1
+        #     )
+        # )
 
-        score_table.grant_read_write_data(score_updater_lambda)
+        # # NEW CONTENT HANLDER
+        # new_content_handler_lambda = create_lambda_function(
+        #     self,
+        #     "NewContentHandlerLambda",
+        #     "handler.lambda_handler",
+        #     "lambda/newContentHandler",
+        #     [],
+        #     {
+        #         "SUBSCRIPTIONS_TABLE": subscriptions_table.table_name,
+        #         "SCORE_TABLE": score_table.table_name,
+        #         "RATING_TABLE": rating_table.table_name
+        #     }
+        # )
 
-        rating_table.grant_read_data(score_updater_lambda)
-        subscriptions_table.grant_read_data(score_updater_lambda)
-        listening_history_table.grant_read_data(score_updater_lambda)
+        # # Poveži je na SNS temu kao triger
+        # new_content_topic.add_subscription(subs.LambdaSubscription(new_content_handler_lambda))
 
-        score_updater_lambda.add_event_source(
-            lambda_event_sources.DynamoEventSource(
-                rating_table,
-                starting_position=_lambda.StartingPosition.LATEST,
-                batch_size=1
-            )
-        )
-        score_updater_lambda.add_event_source(
-            lambda_event_sources.DynamoEventSource(
-                subscriptions_table,
-                starting_position=_lambda.StartingPosition.LATEST,
-                batch_size=1
-            )
-        )
-        score_updater_lambda.add_event_source(
-            lambda_event_sources.DynamoEventSource(
-                listening_history_table,
-                starting_position=_lambda.StartingPosition.LATEST,
-                batch_size=1
-            )
-        )
-
-        # NEW CONTENT HANLDER
-        new_content_handler_lambda = create_lambda_function(
-            self,
-            "NewContentHandlerLambda",
-            "handler.lambda_handler",
-            "lambda/newContentHandler",
-            [],
-            {
-                "SUBSCRIPTIONS_TABLE": subscriptions_table.table_name,
-                "SCORE_TABLE": score_table.table_name,
-                "RATING_TABLE": rating_table.table_name
-            }
-        )
-
-        # Poveži je na SNS temu kao triger
-        new_content_topic.add_subscription(subs.LambdaSubscription(new_content_handler_lambda))
-
-        # Daj joj potrebne dozvole
-        subscriptions_table.grant_read_data(new_content_handler_lambda)
-        score_table.grant_write_data(new_content_handler_lambda)
-        '''
+        # # Daj joj potrebne dozvole
+        # subscriptions_table.grant_read_data(new_content_handler_lambda)
+        # score_table.grant_write_data(new_content_handler_lambda)

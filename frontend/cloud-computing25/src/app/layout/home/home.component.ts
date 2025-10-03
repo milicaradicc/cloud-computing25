@@ -20,46 +20,34 @@ interface FeedResponse {
 })
 export class HomeComponent implements OnInit {
 
-  // Promenljive koje tvoj HTML template koristi
-  recommendedSongs: Song[] = [];
-  recommendedAlbums: Album[] = [];
-  isLoading = true; // Počinjemo sa učitavanjem
+  songs: Song[] = [];
+  albums: Album[] = [];
+  isLoading = true;
   error: string | null = null;
+  topArtistId: string | null = null;
 
-  // Injektujemo FeedService da bismo mogli da pozivamo API
   constructor(private feedService: FeedService) { }
 
-  /**
-   * ngOnInit se izvršava automatski kada se komponenta inicijalizuje.
-   * Ovde pozivamo naš servis da dobavi personalizovani feed.
-   */
-  ngOnInit(): void {
+  ngOnInit() {
+    this.isLoading = true;
     this.feedService.getPersonalizedFeed().subscribe({
-      // `next` se izvršava kada podaci uspešno stignu sa servera
-      next: (data: FeedResponse) => {
-        console.log('Podaci su uspešno stigli:', data);
-        this.recommendedSongs = data.recommendedSongs || [];
-        this.recommendedAlbums = data.recommendedAlbums || [];
-        this.isLoading = false; // Završili smo sa učitavanjem
+      next: (data) => {
+        this.albums = data.albums || [];
+        this.songs = data.songs || [];
+        console.log(this.albums);
+
+        if (data.topArtist?.Content) {
+          this.topArtistId = data.topArtist.Content.split('#')[1] || null;
+        }
+
+        this.isLoading = false; 
       },
-      // `error` se izvršava ako dođe do greške prilikom poziva
       error: (err) => {
-        console.error('Došlo je do greške prilikom dobavljanja feed-a:', err);
-        this.error = 'Nismo uspeli da učitamo vaše preporuke. Molimo pokušajte ponovo kasnije.';
-        this.isLoading = false; // Završili smo sa učitavanjem (iako neuspešno)
+        console.error("Greška pri dobavljanju feed-a:", err);
+        this.error = "Došlo je do greške pri dobavljanju feed-a.";
+        this.isLoading = false; 
       }
     });
   }
 
-  /**
-   * Pomoćna funkcija koju tvoj HTML poziva da formatira imena izvođača za prikaz.
-   * @param artists - Niz objekata izvođača
-   * @returns String sa imenima izvođača odvojenim zarezom, ili null.
-   */
-  getArtistNames(artists?: Artist[]): string | null {
-    if (!artists || artists.length === 0) {
-      return null;
-    }
-    return artists.map(artist => artist.name).join(', ');
-  }
 }

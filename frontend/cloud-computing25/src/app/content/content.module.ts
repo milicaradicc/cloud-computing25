@@ -33,6 +33,7 @@ import { UpdateAlbumComponent } from './update-album/update-album.component';
 import { UpdateSongComponent } from './update-song/update-song.component';
 import { DiscoverContentComponent } from './discover-content/discover-content.component';
 import { AlbumDetailsComponent } from './album-details/album-details.component';
+import { OfflineReproductionComponent } from './offline-reproduction/offline-reproduction.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import { AlbumDetailsComponent } from './album-details/album-details.component';
     UpdateAlbumComponent,
     UpdateSongComponent,
     DiscoverContentComponent,
-    AlbumDetailsComponent
+    AlbumDetailsComponent,
+    OfflineReproductionComponent
   ],
   imports: [
     CommonModule,

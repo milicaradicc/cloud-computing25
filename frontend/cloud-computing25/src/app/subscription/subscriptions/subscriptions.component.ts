@@ -7,6 +7,7 @@ import { CreateSubscriptionDto } from '../create-subscription-dto.model';
 import { SubscriptionService } from '../subscription.service';
 import { ArtistService } from '../../artists/artist.service';
 import { AuthService } from '../../infrastructure/auth/auth.service';
+import { FeedService } from '../../layout/feed.service';
 
 @Component({
   selector: 'app-subscriptions',
@@ -23,7 +24,7 @@ export class SubscriptionsComponent implements OnInit {
     private snackBar: MatSnackBar,
     private artistService: ArtistService,
     private authService: AuthService,
-    private subscriptionService: SubscriptionService
+    private subscriptionService: SubscriptionService,
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -54,6 +55,14 @@ export class SubscriptionsComponent implements OnInit {
           this.subscriptions.push(newSub);
           this.snackBar.open('Subscription successfully added!', 'Close', { duration: 2000 });
           this.loadSubscriptions(this.userId); 
+
+          // this.feedService.updateUserScore('SUBSCRIBE', {
+          //   User: this.userId,
+          //   Target: newSub.id
+          // }).subscribe({
+          //   next: () => console.log(`Score updated for subscription to: ${newSub.id}`),
+          //   error: (err) => console.error('Error updating score:', err)
+          // });
         },
         error: () => {
           this.snackBar.open('Error while adding subscription.', 'Close', { duration: 2000 });
@@ -67,6 +76,14 @@ export class SubscriptionsComponent implements OnInit {
       next: () => {
         this.subscriptions = this.subscriptions.filter(s => s.id !== sub.id);
         this.snackBar.open('Subscription deleted.', 'Close', { duration: 2000 });
+
+        // this.feedService.updateUserScore('SUBSCRIBE', {
+        //   User: this.userId,
+        //   Target: sub.id
+        // }).subscribe({
+        //   next: () => console.log(`Score updated for subscription to: ${sub.id}`),
+        //   error: (err) => console.error('Error updating score:', err)
+        // });
       },
       error: (err) => {
         console.log(err)
