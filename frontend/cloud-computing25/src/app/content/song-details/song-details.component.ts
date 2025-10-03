@@ -42,7 +42,6 @@ export class SongDetailsComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private http: HttpClient,
     private listeningHistoryService: ListeningHistoryService,
-    private feedService: FeedService
   ) {}
 
   ngOnInit(): void {
@@ -249,12 +248,6 @@ export class SongDetailsComponent implements OnInit, OnDestroy {
             Genre: genre,
             Rating: rating
           };
-
-          this.feedService.updateUserScore('RATE', details).subscribe({
-            next: () => console.log(`Score updated for rating of song: ${songTitle}`),
-            error: (err) => console.error('Error updating score:', err)
-          });
-
           this.isRatingLoading = false;
         },
         error: (error) => {

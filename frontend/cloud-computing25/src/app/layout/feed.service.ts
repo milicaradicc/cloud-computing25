@@ -8,8 +8,15 @@ import { Song } from '../content/models/song.model';
 import { Album } from '../content/models/album.model'
 
 export interface FeedResponse {
-  recommendedSongs: Song[];
-  recommendedAlbums: Album[];
+  albums: Album[];
+  songs: Song[];
+  topArtist: TopArtist;
+  topGenre: string | null;
+}
+
+export interface TopArtist {
+  Content: string; // npr. "ARTIST#b003942a-62e7-42b6-9323-970f0676c7d2"
+  Average: number;
 }
 
 export interface ScoreUpdateRequest {

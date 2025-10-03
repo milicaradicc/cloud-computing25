@@ -16,8 +16,7 @@ import { FeedService } from '../../layout/feed.service';
 })
 export class ArtistsComponent implements OnInit {
   constructor(private service:ArtistService,
-              private dialog: MatDialog,
-              private feedService: FeedService) {}
+              private dialog: MatDialog) {}
 
   dataSource: MatTableDataSource<Artist> = new MatTableDataSource<Artist>([]);
   displayedColumns: string[] = ['name', 'biography','genres','actions']; 
@@ -67,15 +66,6 @@ openEditArtistDialog(artist: Artist) {
         next: () => {
           this.refreshDataSource();
           this.snackBar.open('Artist updated successfully','OK',{duration:3000});
-
-          this.feedService.updateUserScore('SUBSCRIBE', {
-            User: 'admin',       
-            Target: artist.Id    
-          }).subscribe({
-            next: () => console.log(`Feed updated for artist: ${artist.Id}`),
-            error: (err) => console.error('Error updating feed:', err)
-          });
-
         },
         error: (err) => {
           this.snackBar.open('Error updating artist','OK',{duration:3000});
