@@ -14,7 +14,18 @@ export class AlbumCardComponent {
   @Input() songs: Song[] = [];
 
   getArtistNames(): string {
-    return this.album.artists?.map(a => a.name).join(', ') || '';
+    if (this.album.artists && this.album.artists.length > 0) {
+      return this.album.artists.map(a => a.name).join(', ');
+    }
+
+    if (this.songs && this.songs.length > 0) {
+      const artistNames = this.songs
+        .flatMap(song => song.artists?.map(a => a.name) || [])
+        .filter((v, i, a) => a.indexOf(v) === i); 
+      return artistNames.join(', ');
+    }
+
+    return '';
   }
 
   getGenres(): string {

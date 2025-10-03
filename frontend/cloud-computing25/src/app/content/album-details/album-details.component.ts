@@ -5,7 +5,7 @@ import { DownloadService } from '../download.service';
 import { firstValueFrom } from 'rxjs'; // Dodati import za Observable ako nije prisutan
 import { IndexedDbService } from '../indexed-db.service';
 import { ListeningHistoryService } from '../listening-history.service';
-import { FeedService } from '../../layout/feed.service';
+import { environment } from '../../../env/environment';
 
 @Component({
   selector: 'app-album-details',
@@ -258,6 +258,15 @@ export class AlbumDetailsComponent implements OnInit {
 
   goToSongDetails(songId: string): void {
     this.router.navigate(['/song-details', songId]);
+  }
+  getAlbumCoverUrl(): string {
+    if (!this.album.coverImage) return "assets/default-album.png"; // fallback
+    return `${environment.s3BucketLink}/${this.album.coverImage}`;
+  }
+
+  onAlbumImageError(event: Event) {
+    const img = event.target as HTMLImageElement;
+    img.src = 'assets/default-album.png';
   }
 }
 

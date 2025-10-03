@@ -16,6 +16,6 @@ export class GenreService {
 
   getFilteredContent(genre: string): Observable<FilterResult> {
     const url = `${environment.apiHost}/discover/filter?genre=${encodeURIComponent(genre)}`;
-    return this.httpClient.get<FilterResult>(url); 
+    return this.httpClient.get<any>(url); 
   }
 }

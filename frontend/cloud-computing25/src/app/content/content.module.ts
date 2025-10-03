@@ -76,7 +76,8 @@ import { OfflineReproductionComponent } from './offline-reproduction/offline-rep
     MatDivider,
     MatList,
     MatListModule,
-    MatCardModule
+    MatCardModule,
+    MatDividerModule
 ],
   exports: [UploadContentComponent, AlbumCardComponent, SongCardComponent]
 })
