@@ -74,7 +74,8 @@ import { AlbumDetailsComponent } from './album-details/album-details.component';
     MatDivider,
     MatList,
     MatListModule,
-    MatCardModule
+    MatCardModule,
+    MatDividerModule
 ],
   exports: [UploadContentComponent, AlbumCardComponent, SongCardComponent]
 })
