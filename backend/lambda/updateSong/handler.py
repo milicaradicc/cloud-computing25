@@ -6,30 +6,37 @@ from decimal import Decimal
 
 import boto3
 
-# AWS resursi
 s3 = boto3.client('s3')
 dynamodb = boto3.resource("dynamodb")
 songs_table_name = os.environ["SONGS_TABLE"]
 albums_table_name = os.environ["ALBUMS_TABLE"]
 bucket_name = os.environ["BUCKET_NAME"]
-artist_song_table_name = os.environ["ARTIST_SONG_TABLE"]
 
 SNS_NEW_TRANSCRIPTION_TOPIC_ARN = os.environ["SNS_NEW_TRANSCRIPTION_ARN"]
 sns = boto3.client("sns")
 
 songs_table = dynamodb.Table(songs_table_name)
 albums_table = dynamodb.Table(albums_table_name)
-artist_song_table = dynamodb.Table(artist_song_table_name)
 
-def convert_to_dynamodb_types(obj):
+
+def convert_to_dynamodb_types(obj, path="root"):
     if isinstance(obj, dict):
-        return {k: convert_to_dynamodb_types(v) for k, v in obj.items()}
+        return {k: convert_to_dynamodb_types(v, f"{path}.{k}") for k, v in obj.items()}
     elif isinstance(obj, list):
-        return [convert_to_dynamodb_types(v) for v in obj]
+        return [convert_to_dynamodb_types(v, f"{path}[{i}]") for i, v in enumerate(obj)]
+    elif isinstance(obj, datetime):
+        return obj.isoformat()
+    elif isinstance(obj, bool):
+        return obj
+    elif isinstance(obj, str):
+        return obj
+    elif obj is None:
+        return obj
     elif isinstance(obj, (float, int)):
         return Decimal(str(obj))
     else:
-        return obj
+        return str(obj)
+
 
 def convert_decimals(obj):
     if isinstance(obj, list):
@@ -40,6 +47,7 @@ def convert_decimals(obj):
         return float(obj) if obj % 1 != 0 else int(obj)
     else:
         return obj
+
 
 def lambda_handler(event, context):
     claims = event.get("requestContext", {}).get("authorizer", {}).get("claims", {})
@@ -53,6 +61,7 @@ def lambda_handler(event, context):
 
     try:
         body = json.loads(event.get('body', '{}'))
+        print("Received body:", json.dumps(body, default=str))
 
         if 'Id' not in body or 'Album' not in body:
             return {
@@ -62,7 +71,7 @@ def lambda_handler(event, context):
             }
 
         song_id = str(body['Id'])
-        album = str(body['Album'])
+        album = str(body['Album']['Id'])
 
         response = songs_table.get_item(Key={'Album': album, 'Id': song_id})
         item = response.get('Item')
@@ -91,6 +100,7 @@ def lambda_handler(event, context):
                     Body=file_content,
                     ContentType=content_type
                 )
+                print(f"Uploaded audio file: {filename}")
 
                 item['fileName'] = filename
                 item['fileType'] = body.get('fileType', item.get('fileType'))
@@ -143,6 +153,7 @@ def lambda_handler(event, context):
                     Body=cover_content,
                     ContentType=content_type
                 )
+                print(f"Uploaded cover image: {cover_filename}")
 
                 item['coverImage'] = cover_filename
 
@@ -163,40 +174,10 @@ def lambda_handler(event, context):
 
         item['modifiedDate'] = datetime.now().isoformat()
 
+        print("Item before conversion:", json.dumps(item, default=str))
         item = convert_to_dynamodb_types(item)
         songs_table.put_item(Item=item)
-
-        new_artists = body.get('artists')
-        if new_artists is not None:
-            try:
-                old_artists = item.get('artists', [])
-                for artist_id in old_artists:
-                    try:
-                        artist_song_table.delete_item(
-                            Key={'ArtistId': str(artist_id), 'SongId': song_id}
-                        )
-                    except Exception as e:
-                        print(f"Warning: Failed to delete artist association {artist_id}: {str(e)}")
-
-                for artist_id in new_artists:
-                    artist_song_table.put_item(Item={
-                        'ArtistId': str(artist_id),
-                        'SongId': song_id,
-                        'AlbumId': album,
-                        'createdDate': datetime.now().isoformat()
-                    })
-
-                item['artists'] = [str(a) for a in new_artists]
-                item = convert_to_dynamodb_types(item)
-                songs_table.put_item(Item=item)
-
-            except Exception as e:
-                print(f"Artist update error: {str(e)}")
-                return {
-                    "statusCode": 500,
-                    "headers": {"Access-Control-Allow-Origin": "*"},
-                    "body": json.dumps({"error": f"Artist update failed: {str(e)}"})
-                }
+        print("Item saved successfully")
 
         response_item = convert_decimals(item)
         return {

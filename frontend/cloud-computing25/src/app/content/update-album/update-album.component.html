@@ -25,19 +25,6 @@
     <input type="file" (change)="onCoverFileChange($event)" accept="image/*">
   </div>
 
-  <!-- Artists -->
-  <mat-form-field appearance="fill" class="full-width">
-    <mat-label>Artists</mat-label>
-    <mat-select formControlName="artists" multiple>
-      <mat-option *ngFor="let artist of allArtists" [value]="artist.Id">
-        {{ artist.name }}
-      </mat-option>
-    </mat-select>
-    <mat-error *ngIf="form.get('artists')?.hasError('required')">
-      At least one artist is required
-    </mat-error>
-  </mat-form-field>
-
   <!-- Genres -->
   <mat-form-field appearance="fill" class="full-width">
     <mat-label>Genres</mat-label>

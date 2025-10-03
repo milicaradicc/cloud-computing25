@@ -9,6 +9,10 @@ import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
 import {MatIcon} from '@angular/material/icon';
 import { AdminNavBarMenuComponent } from './admin-nav-bar-menu/admin-nav-bar-menu.component';
 import { UserNavBarMenuComponent } from './user-nav-bar-menu/user-nav-bar-menu.component';
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { ContentModule } from "../content/content.module";
+import { MatDivider } from "@angular/material/divider";
+import { MatCardActions } from "@angular/material/card";
 
 
 
@@ -30,6 +34,11 @@ import { UserNavBarMenuComponent } from './user-nav-bar-menu/user-nav-bar-menu.c
     MatIconButton,
     MatMenuItem,
     MatMenu,
-    MatMenuTrigger]
+    MatMenuTrigger,
+    MatProgressSpinnerModule,
+    ContentModule,
+    MatDivider,
+    MatCardActions
+]
 })
 export class LayoutModule { }

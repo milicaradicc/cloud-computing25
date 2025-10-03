@@ -1,4 +1,5 @@
 import { Artist } from "../../artists/artist.model";
+import { Album } from "./album.model";
 
 export interface Song {
   Id:string,
@@ -7,7 +8,7 @@ export interface Song {
   coverImage?: string;
   artists: Artist[];
   description?: string;
-  Album?: string;
+  Album?: Album;
   duration?:number,
   fileName:string,
   fileType:string,

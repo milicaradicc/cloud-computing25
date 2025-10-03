@@ -8,10 +8,6 @@
       <div class="artist-genres">
         <span *ngFor="let genre of artist.genres" class="genre-tag">{{ genre }}</span>
       </div>
-
-      <button class="favorite-btn" (click)="toggleFavorite(artist)">
-        <mat-icon>{{ isFavorite(artist) ? 'favorite' : 'favorite_border' }}</mat-icon>
-      </button>
     </div>
   </div>
 

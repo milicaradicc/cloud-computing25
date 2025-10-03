@@ -59,6 +59,7 @@ def lambda_handler(event, context):
         item = {
             "Genre": primary_genre,
             "Id": album_id,
+            "artist": body.get('artists', [])[0], # primary artist
             "title": album_title,
             "artists": body.get('artists', []),
             "genres": genres,

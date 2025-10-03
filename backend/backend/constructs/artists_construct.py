@@ -81,6 +81,25 @@ class ArtistsConstruct(Construct):
             authorization_type=apigateway.AuthorizationType.COGNITO
         )
 
+        # Update artist
+        update_artist_lambda = create_lambda_function(
+            self,
+            "UpdateArtistLambda",
+            "handler.lambda_handler",
+            "lambda/updateArtist",
+            [],
+            {
+                "ARTISTS_TABLE": table.table_name}
+        )
+        table.grant_read_write_data(update_artist_lambda)
+
+        artist_id_resource.add_method(
+            "PUT",
+            apigateway.LambdaIntegration(update_artist_lambda, proxy=True),
+            authorizer=authorizer,
+            authorization_type=apigateway.AuthorizationType.COGNITO
+        )
+
         # Get Artist by Id + Albums/Songs
         get_artist_lambda = create_lambda_function(
             self,

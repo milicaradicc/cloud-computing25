@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ContentService } from '../content.service';
 import { GenreService } from '../../layout/genres.service';
 import { Album } from '../models/album.model';
+import { environment } from '../../../env/environment';
 
 @Component({
   selector: 'app-discover-content',
@@ -81,9 +82,11 @@ export class DiscoverContentComponent implements OnInit {
     });
   }
 
-  getArtistNames(artistIds: string[]): string {
-    return artistIds ? artistIds.join(', ') : '';
+  getAlbumArtistNames(album: any): string {
+    if (!album.artistObjects || album.artistObjects.length === 0) return '';
+    return album.artistObjects.map((a: any) => a.name).join(', ');
   }
+
 
   getGenres(genres: string[]): string {
     return genres ? genres.join(', ') : '';
@@ -95,5 +98,10 @@ export class DiscoverContentComponent implements OnInit {
 
   onCoverError() {
     // TODO: fallback image logic
+  }
+  getAlbumCoverUrl(album: Album): string {
+    return album.coverImage 
+      ? `${environment.s3BucketLink}/${album.coverImage}`
+      : 'assets/placeholder.png'; // fallback placeholder
   }
 }

@@ -13,12 +13,15 @@ import {SongDetailsComponent} from './content/song-details/song-details.componen
 import { ContentManagementComponent } from './content/content-management/content-management.component';
 import { SubscriptionsComponent } from './subscription/subscriptions/subscriptions.component';
 import { AlbumDetailsComponent } from './content/album-details/album-details.component';
+import { OfflineReproductionComponent } from './content/offline-reproduction/offline-reproduction.component';
 
 const routes: Routes = [
-  {path: 'home', component: DiscoverContentComponent}, // ContentComponent
+  {path: 'home', component: HomeComponent}, 
   {path: 'subscriptions', component: SubscriptionsComponent, canActivate: [AuthGuard],
     data: {role: ['user']}},
   {path: 'discover', component: DiscoverContentComponent, canActivate: [AuthGuard],
+  data: {role: ['user']}},
+  {path: 'offline', component: OfflineReproductionComponent, canActivate: [AuthGuard],
   data: {role: ['user']}},
   {path: '', redirectTo: '/home', pathMatch: 'full'},
   {path: 'register', component: RegisterComponent},

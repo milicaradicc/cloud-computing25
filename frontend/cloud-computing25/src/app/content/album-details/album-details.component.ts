@@ -4,6 +4,8 @@ import { ContentService } from '../content.service';
 import { DownloadService } from '../download.service';
 import { firstValueFrom } from 'rxjs'; // Dodati import za Observable ako nije prisutan
 import { IndexedDbService } from '../indexed-db.service';
+import { ListeningHistoryService } from '../listening-history.service';
+import { environment } from '../../../env/environment';
 
 @Component({
   selector: 'app-album-details',
@@ -39,6 +41,7 @@ export class AlbumDetailsComponent implements OnInit {
     private downloadService: DownloadService, 
     private dbService: IndexedDbService,
     private router: Router,
+    private listeningHistoryService: ListeningHistoryService,
   ) {}
 
   ngOnInit(): void {
@@ -230,6 +233,10 @@ export class AlbumDetailsComponent implements OnInit {
         const objectUrl = URL.createObjectURL(blob);
         audioElement.src = objectUrl;
         audioElement.play();
+        this.listeningHistoryService.recordListen(song.Id, this.album.Id).subscribe({
+          next: () => console.log(`Beleži se slušanje za pesmu: ${song.title}`),
+          error: (err) => console.error('Greška pri beleženju slušanja:', err)
+        });
       }
     } else {
       await this.toggleOfflineStatus(song);
@@ -238,6 +245,15 @@ export class AlbumDetailsComponent implements OnInit {
 
   goToSongDetails(songId: string): void {
     this.router.navigate(['/song-details', songId]);
+  }
+  getAlbumCoverUrl(): string {
+    if (!this.album.coverImage) return "assets/default-album.png"; // fallback
+    return `${environment.s3BucketLink}/${this.album.coverImage}`;
+  }
+
+  onAlbumImageError(event: Event) {
+    const img = event.target as HTMLImageElement;
+    img.src = 'assets/default-album.png';
   }
 }
 

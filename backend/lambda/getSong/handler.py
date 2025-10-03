@@ -43,17 +43,32 @@ def lambda_handler(event, context):
 
         item = items[0]
 
-        album_id = item.get("album")
-        album_title = None
+        # Učitaj album
+        album_id = item.get("Album")
+        album_obj = None
+        print(album_id)
         if album_id:
             album_resp = albums_table.query(
                 IndexName="Id-index",
                 KeyConditionExpression=boto3.dynamodb.conditions.Key("Id").eq(album_id)
             )
+            print(album_resp)
             album_items = album_resp.get("Items", [])
             if album_items:
-                album_title = album_items[0].get("title")
+                album_item = album_items[0]
+                album_obj = {
+                    "Id": album_item.get("Id"),
+                    "title": album_item.get("title"),
+                    "description": album_item.get("description", ""),
+                    "coverImage": album_item.get("coverImage", ""),
+                    "releaseDate": album_item.get("releaseDate"),
+                    "artists": album_item.get("artists", []),
+                    "genres": album_item.get("genres", []),
+                    "Genre": album_item.get("Genre", ""),
+                    "deleted": album_item.get("deleted", False)
+                }
 
+        # Učitaj umetnike
         artist_ids = item.get("artists", [])
         artists_full = []
         for aid in artist_ids:
@@ -72,6 +87,7 @@ def lambda_handler(event, context):
                     "Genre": a.get("Genre", "")
                 })
 
+        # Sastavi song objekat
         song = {
             "id": item.get("Id"),
             "title": item.get("title"),
@@ -79,13 +95,15 @@ def lambda_handler(event, context):
             "genres": item.get("genres", []),
             "description": item.get("description", ""),
             "coverImage": item.get("coverImage"),
-            "album": album_title,
+            "album": album_obj,  # vraća ceo album objekat
             "duration": item.get("duration"),
             "releaseDate": item.get("releaseDate"),
             "type": item.get("type", "single"),
             "fileName": item.get("fileName", ""),
             "transcriptFileName": item.get("transcriptFileName", "")
         }
+
+        print(song)
 
         return {
             "statusCode": 200,

@@ -23,6 +23,7 @@ class SongsConstruct(Construct):
         authorizer,
         artists_table: dynamodb.Table,
         rating_table: dynamodb.Table,
+        score_table: dynamodb.Table,
     ):
         super().__init__(scope, id)
 
@@ -63,9 +64,14 @@ class SongsConstruct(Construct):
             "handler.lambda_handler",
             "lambda/getSongs",
             [],
-            {"SONGS_TABLE": table.table_name}
+            {"SONGS_TABLE": table.table_name,
+             "ALBUMS_TABLE": albums_table.table_name,
+             "ARTISTS_TABLE": artists_table.table_name,
+             }
         )
         table.grant_read_data(get_songs_lambda)
+        albums_table.grant_read_data(get_songs_lambda)
+        artists_table.grant_read_data(get_songs_lambda)
 
         songs_api_resource.add_method(
             "GET",
@@ -162,9 +168,13 @@ class SongsConstruct(Construct):
             [],
             {
                 "RATING_TABLE": rating_table.table_name,
+                "SCORE_TABLE": score_table.table_name,
+                "SONGS_TABLE": table.table_name,
             }
         )
         rating_table.grant_read_write_data(rate_song_lambda)
+        score_table.grant_read_write_data(rate_song_lambda)
+        table.grant_read_data(rate_song_lambda)
 
         rating_resource.add_method(
             "POST",

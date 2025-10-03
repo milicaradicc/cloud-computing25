@@ -8,6 +8,8 @@ import {environment} from '../../../env/environment';
 import { AuthService } from '../../infrastructure/auth/auth.service';
 import { Subscription } from 'rxjs';
 import {HttpClient} from '@angular/common/http';
+import { ListeningHistoryService } from '../listening-history.service';
+import { FeedService } from '../../layout/feed.service';
 
 @Component({
   selector: 'app-song-details',
@@ -39,6 +41,7 @@ export class SongDetailsComponent implements OnInit, OnDestroy {
     private contentService: ContentService,
     private authService: AuthService,
     private http: HttpClient,
+    private listeningHistoryService: ListeningHistoryService,
   ) {}
 
   ngOnInit(): void {
@@ -128,6 +131,7 @@ export class SongDetailsComponent implements OnInit, OnDestroy {
 
   getAudioUrl(): string {
     if (!this.song?.fileName) return '';
+    console.log(environment.s3BucketLink + '/' + this.song.fileName)
     return environment.s3BucketLink + '/' + this.song.fileName;
   }
 
@@ -136,6 +140,18 @@ export class SongDetailsComponent implements OnInit, OnDestroy {
 
     if (this.isPlaying) {
       this.audioPlayer.nativeElement.pause();
+      console.log(this.song)
+      let s: any = this.song;
+      if (s.id && s.album) {
+        console.log(s.id,s.album);
+        this.listeningHistoryService.recordListen(s.id, s.album
+        )
+          .subscribe({
+            next: () => console.log(`Beleži se slušanje za pesmu: ${this.song?.title}`),
+            error: (err) => console.error('Greška pri beleženju slušanja:', err)
+          });
+      }
+
     } else {
       this.audioPlayer.nativeElement.play();
     }
@@ -199,7 +215,7 @@ export class SongDetailsComponent implements OnInit, OnDestroy {
   }
 
   async onStarClick(rating: number) {
-    if (!this.song || this.isRatingLoading) return;
+    if (!this.song || this.isRatingLoading || !this.song.genres || !this.song.artists) return;
 
     this.isRatingLoading = true;
 
@@ -213,12 +229,25 @@ export class SongDetailsComponent implements OnInit, OnDestroy {
         ratedAt: Date.now()
       };
 
-      console.log(ratingData);
+      console.log('Submitting rating:', ratingData);
+
+      const songId = this.song.Id;
+      const artist = this.song.artists[0];
+      const genre = this.song.genres[0];
+      const songTitle = this.song.title;
 
       const ratingSubscription = this.contentService.rateSong(ratingData).subscribe({
         next: (response) => {
           this.currentRating = rating;
           this.snackBar.open('Rating submitted successfully!', 'OK', { duration: 3000 });
+
+          const details = {
+            User: user.userId,
+            Song: songId,
+            Artist: artist,
+            Genre: genre,
+            Rating: rating
+          };
           this.isRatingLoading = false;
         },
         error: (error) => {
@@ -229,6 +258,7 @@ export class SongDetailsComponent implements OnInit, OnDestroy {
       });
 
       this.subscriptions.add(ratingSubscription);
+
     } catch (error) {
       this.isRatingLoading = false;
       console.error("Error getting user:", error);
@@ -242,5 +272,9 @@ export class SongDetailsComponent implements OnInit, OnDestroy {
 
   getStarArray(): number[] {
     return [1, 2, 3, 4, 5];
+  }
+
+  getCoverUrl(): string {
+    return this.song?.coverImage ? `${environment.s3BucketLink}/${this.song.coverImage}` : '';
   }
 }

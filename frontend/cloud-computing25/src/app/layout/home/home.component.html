@@ -1,0 +1,71 @@
+<div class="discover-container">
+
+  <div class="page-header">
+    <h1>Your Feed</h1>
+    <button mat-icon-button class="discover-link" routerLink="/discover" title="Discover Music">
+      <mat-icon>search</mat-icon>
+    </button>
+  </div>
+  <p>Music recommendations</p>
+
+  <div *ngIf="isLoading" class="text-center loading-container">
+    <mat-spinner diameter="50" color="accent"></mat-spinner>
+    <p>Preparing recommendations...</p>
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger">
+    {{ error }}
+  </div>
+
+  <div *ngIf="!isLoading && !error" class="feed-content-container">
+
+    <div class="songs-section">
+      <div *ngIf="songs" class="songs-section">
+        <h2 class="section-title">
+            Songs for you
+            <mat-icon>music_note</mat-icon>
+        </h2>
+        <div *ngIf="songs.length > 0; else noSongs" class="content-grid">
+            <app-song-card *ngFor="let song of songs" [song]="song"></app-song-card>
+        </div>
+        <ng-template #noSongs>
+            <p class="no-content-message">No recommended songs</p>
+        </ng-template>
+        </div>
+      <ng-template #noSongs>
+        <p class="no-content-message">No recommended songs</p>
+      </ng-template>
+    </div>
+
+    <mat-divider class="section-divider"></mat-divider>
+
+    <div class="albums-section">
+        <div *ngIf="albums" class="albums-section">
+        <h2 class="section-title">
+            Albums for you
+            <mat-icon>album</mat-icon>
+        </h2>
+        <!-- <div *ngIf="albums.length > 0; else noAlbums" class="albums-list-grid">
+            <app-album-card *ngFor="let album of albums" class="album-card" [routerLink]="['/album-details', album.Id]">
+            </app-album-card>
+        </div> -->
+
+        <div *ngIf="albums.length > 0; else noAlbums" class="albums-list-grid">
+          <app-album-card 
+            *ngFor="let album of albums" 
+            [album]="album" 
+            [routerLink]="['/album-details', album.Id]"
+            class="album-card">
+          </app-album-card>
+        </div>
+
+        <ng-template #noAlbums>
+            <p class="no-content-message">No recommended albums</p>
+        </ng-template>
+        </div>
+      <ng-template #noAlbums>
+        <p class="no-content-message">No recommended albums</p>
+      </ng-template>
+    </div>
+
+  </div>
