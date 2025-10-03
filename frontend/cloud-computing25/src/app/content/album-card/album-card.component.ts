@@ -29,6 +29,7 @@ export class AlbumCardComponent {
   }
 
   getAlbumCoverUrl(): string {
+    console.log(this.album.coverImage);
     if (!this.album.coverImage) return '';
     console.log(environment.s3BucketLink + '/' + this.album.coverImage);
     return environment.s3BucketLink + '/' + this.album.coverImage;

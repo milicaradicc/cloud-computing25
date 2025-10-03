@@ -4,6 +4,7 @@ from boto3.dynamodb.conditions import Key
 from collections import defaultdict
 import json
 import traceback
+import decimal
 
 dynamodb = boto3.resource('dynamodb')
 
@@ -13,9 +14,15 @@ HEADERS = {
     "Access-Control-Allow-Methods": "OPTIONS,POST,GET,PUT,DELETE"
 }
 
+# Funkcija koja konvertuje Decimal u float prilikom JSON serijalizacije
+def default_serializer(obj):
+    if isinstance(obj, decimal.Decimal):
+        return float(obj)
+    raise TypeError
+
 def handler(event, context):
     print("=== Lambda invoked ===")
-    print("Event:", json.dumps(event))  # Loguj ceo event
+    print("Event:", json.dumps(event, default=default_serializer))  # Loguj ceo event
 
     try:
         score_table = dynamodb.Table(os.environ['SCORE_TABLE'])
@@ -51,7 +58,7 @@ def handler(event, context):
                     'songs': [],
                     'albums': [],
                     'message': 'No listening history yet'
-                })
+                }, default=default_serializer)
             }
 
         aggregated = defaultdict(lambda: {"total_sum": 0, "total_number": 0})
@@ -63,14 +70,10 @@ def handler(event, context):
             aggregated[content]["total_sum"] += float(r.get("sum", 0))
             aggregated[content]["total_number"] += int(r.get("number", 0))
         print("Aggregated scores:", aggregated)
-        print("Aggregated items: ", aggregated.items())
-        results = []
 
+        results = []
         for content, data in aggregated.items():
-            if data["total_number"] > 0:
-                avg = data["total_sum"] / data["total_number"]
-            else:
-                avg = 0
+            avg = data["total_sum"] / data["total_number"] if data["total_number"] > 0 else 0
             results.append({"Content": content, "Average": round(avg, 2)})
 
         print("Calculated averages:", results)
@@ -78,18 +81,13 @@ def handler(event, context):
         artists = [r for r in results if r["Content"][:7] == "ARTIST#"]
         genres = [r for r in results if r["Content"][:6] == "GENRE#"]
 
-        print(f"Artists found: {artists}")
-        print(f"Genres found: {genres}")
-
         top_artist = max(artists, key=lambda x: x["Average"], default=None)
         top_genre = max(genres, key=lambda x: x["Average"], default=None)
-        print("Top artist:", top_artist)
-        print("Top genre:", top_genre)
 
         top_artist_id = top_artist["Content"].replace("ARTIST#", "") if top_artist else None
         top_genre_name = top_genre["Content"].replace("GENRE#", "") if top_genre else None
 
-        # 2️⃣ Prikupljanje pesama i albuma preko GSI
+        # 2️⃣ Prikupljanje pesama i albuma
         songs_set = set()
         albums_set = set()
         songs = []
@@ -97,7 +95,6 @@ def handler(event, context):
 
         # Pesme i albumi po artistu
         if top_artist_id:
-            print(f"Querying Songs and Albums by ArtistId={top_artist_id}")
             resp_songs = songs_table.query(
                 IndexName='artist-index',
                 KeyConditionExpression=Key('artist').eq(top_artist_id)
@@ -105,7 +102,6 @@ def handler(event, context):
             for s in resp_songs.get('Items', []):
                 songs_set.add(s['Id'])
                 songs.append(s)
-            print(f"Songs by artist: {len(resp_songs.get('Items', []))}")
 
             resp_albums = albums_table.query(
                 IndexName='artist-index',
@@ -114,11 +110,9 @@ def handler(event, context):
             for a in resp_albums.get('Items', []):
                 albums_set.add(a['Id'])
                 albums.append(a)
-            print(f"Albums by artist: {len(resp_albums.get('Items', []))}")
 
         # Pesme i albumi po žanru
         if top_genre_name:
-            print(f"Querying Songs and Albums by Genre={top_genre_name}")
             resp_songs = songs_table.query(
                 IndexName='genre-index',
                 KeyConditionExpression=Key('genre').eq(top_genre_name)
@@ -127,7 +121,6 @@ def handler(event, context):
                 if s['Id'] not in songs_set:
                     songs_set.add(s['Id'])
                     songs.append(s)
-            print(f"Songs by genre: {len(resp_songs.get('Items', []))}")
 
             resp_albums = albums_table.query(
                 IndexName='Genre-index',
@@ -137,9 +130,6 @@ def handler(event, context):
                 if a['Id'] not in albums_set:
                     albums_set.add(a['Id'])
                     albums.append(a)
-            print(f"Albums by genre: {len(resp_albums.get('Items', []))}")
-
-        print(f"Total songs: {len(songs)}, Total albums: {len(albums)}")
 
         return {
             'statusCode': 200,
@@ -149,7 +139,7 @@ def handler(event, context):
                 'topGenre': top_genre,
                 'songs': songs,
                 'albums': albums
-            })
+            }, default=default_serializer)
         }
 
     except Exception as e:
@@ -158,5 +148,5 @@ def handler(event, context):
         return {
             'statusCode': 500,
             'headers': HEADERS,
-            'body': json.dumps({'error': str(e), 'type': type(e).__name__})
+            'body': json.dumps({'error': str(e), 'type': type(e).__name__}, default=default_serializer)
         }

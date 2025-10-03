@@ -6801,7 +6801,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-791096175070-eu-central-1",
-     "S3Key": "349721956ce132038a231ed8a288f69633dae3b637cac452927f63dbaee1ead0.zip"
+     "S3Key": "85fe8d51dca1638d2789aed7e7090819b8a86f9f4428612a4172b38a6b5c1e99.zip"
     },
     "Environment": {
      "Variables": {
@@ -6827,7 +6827,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "BackendStack/ArtistsConstruct/UpdateArtistLambda/Resource",
-    "aws:asset:path": "asset.349721956ce132038a231ed8a288f69633dae3b637cac452927f63dbaee1ead0",
+    "aws:asset:path": "asset.85fe8d51dca1638d2789aed7e7090819b8a86f9f4428612a4172b38a6b5c1e99",
     "aws:asset:is-bundled": true,
     "aws:asset:property": "Code"
    }
@@ -11186,7 +11186,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-791096175070-eu-central-1",
-     "S3Key": "362f59f538ebd29a99ff441ded79ecaaaaacd2e09258dde3518d762702619915.zip"
+     "S3Key": "92a26e0af90f3df573e71aa2d1a3087289265db80fcf957ee92786bff45a4f99.zip"
     },
     "Environment": {
      "Variables": {
@@ -11224,7 +11224,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "BackendStack/FeedConstruct/GetFeedLambda/Resource",
-    "aws:asset:path": "asset.362f59f538ebd29a99ff441ded79ecaaaaacd2e09258dde3518d762702619915",
+    "aws:asset:path": "asset.92a26e0af90f3df573e71aa2d1a3087289265db80fcf957ee92786bff45a4f99",
     "aws:asset:is-bundled": true,
     "aws:asset:property": "Code"
    }
