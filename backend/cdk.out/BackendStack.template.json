@@ -329,6 +329,22 @@
        "ReadCapacityUnits": 5,
        "WriteCapacityUnits": 5
       }
+     },
+     {
+      "IndexName": "Genre-index",
+      "KeySchema": [
+       {
+        "AttributeName": "Genre",
+        "KeyType": "HASH"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      },
+      "ProvisionedThroughput": {
+       "ReadCapacityUnits": 5,
+       "WriteCapacityUnits": 5
+      }
      }
     ],
     "KeySchema": [
@@ -2382,7 +2398,7 @@
     "aws:cdk:path": "BackendStack/MusicStreamingApi/Resource"
    }
   },
-  "MusicStreamingApiDeployment8B4E52562f9bf101bd5d48ea9741127e9b50164d": {
+  "MusicStreamingApiDeployment8B4E5256d176aff30cf42eee407a3431eb963c28": {
    "Type": "AWS::ApiGateway::Deployment",
    "Properties": {
     "Description": "Automatically created by the RestApi construct",
@@ -2404,6 +2420,7 @@
     "MusicStreamingApiartistsidDELETEC4A81A02",
     "MusicStreamingApiartistsidGETD723703D",
     "MusicStreamingApiartistsidOPTIONSAF662F36",
+    "MusicStreamingApiartistsidPUT945A0725",
     "MusicStreamingApiartistsid07892E02",
     "MusicStreamingApiartistsGETD6DECBB5",
     "MusicStreamingApiartistsOPTIONSC00F3232",
@@ -2460,7 +2477,7 @@
    "Type": "AWS::ApiGateway::Stage",
    "Properties": {
     "DeploymentId": {
-     "Ref": "MusicStreamingApiDeployment8B4E52562f9bf101bd5d48ea9741127e9b50164d"
+     "Ref": "MusicStreamingApiDeployment8B4E5256d176aff30cf42eee407a3431eb963c28"
     },
     "MethodSettings": [
      {
@@ -2934,6 +2951,104 @@
    },
    "Metadata": {
     "aws:cdk:path": "BackendStack/MusicStreamingApi/Default/artists/{id}/DELETE/Resource"
+   }
+  },
+  "MusicStreamingApiartistsidPUTApiPermissionBackendStackMusicStreamingApi93A5F8E3PUTartistsid517F5BD7": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "ArtistsConstructUpdateArtistLambda7D16F9D1",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:eu-central-1:791096175070:",
+       {
+        "Ref": "MusicStreamingApiC954D41A"
+       },
+       "/",
+       {
+        "Ref": "MusicStreamingApiDeploymentStagedev4D4FE2C4"
+       },
+       "/PUT/artists/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/MusicStreamingApi/Default/artists/{id}/PUT/ApiPermission.BackendStackMusicStreamingApi93A5F8E3.PUT..artists.{id}"
+   }
+  },
+  "MusicStreamingApiartistsidPUTApiPermissionTestBackendStackMusicStreamingApi93A5F8E3PUTartistsid4CDC118B": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "ArtistsConstructUpdateArtistLambda7D16F9D1",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:eu-central-1:791096175070:",
+       {
+        "Ref": "MusicStreamingApiC954D41A"
+       },
+       "/test-invoke-stage/PUT/artists/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/MusicStreamingApi/Default/artists/{id}/PUT/ApiPermission.Test.BackendStackMusicStreamingApi93A5F8E3.PUT..artists.{id}"
+   }
+  },
+  "MusicStreamingApiartistsidPUT945A0725": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "CognitoAuthorizerF3215DBC"
+    },
+    "HttpMethod": "PUT",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "ArtistsConstructUpdateArtistLambda7D16F9D1",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "MusicStreamingApiartistsid07892E02"
+    },
+    "RestApiId": {
+     "Ref": "MusicStreamingApiC954D41A"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/MusicStreamingApi/Default/artists/{id}/PUT/Resource"
    }
   },
   "MusicStreamingApiartistsidGETApiPermissionBackendStackMusicStreamingApi93A5F8E3GETartistsidF7E5942E": {
@@ -6589,6 +6704,196 @@
     "aws:cdk:path": "BackendStack/ArtistsConstruct/DeleteArtistLambda/invoke-function-url"
    }
   },
+  "ArtistsConstructUpdateArtistLambdaRole9583DC54": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/ArtistsConstruct/UpdateArtistLambdaRole/Resource"
+   }
+  },
+  "ArtistsConstructUpdateArtistLambdaRoleDefaultPolicy79D24171": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:PutItem",
+        "dynamodb:Query",
+        "dynamodb:Scan",
+        "dynamodb:UpdateItem"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "ArtistsAF1BB04E",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "ArtistsAF1BB04E",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "ArtistsConstructUpdateArtistLambdaRoleDefaultPolicy79D24171",
+    "Roles": [
+     {
+      "Ref": "ArtistsConstructUpdateArtistLambdaRole9583DC54"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/ArtistsConstruct/UpdateArtistLambdaRole/DefaultPolicy/Resource"
+   }
+  },
+  "ArtistsConstructUpdateArtistLambda7D16F9D1": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-791096175070-eu-central-1",
+     "S3Key": "349721956ce132038a231ed8a288f69633dae3b637cac452927f63dbaee1ead0.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "ARTISTS_TABLE": {
+       "Ref": "ArtistsAF1BB04E"
+      }
+     }
+    },
+    "Handler": "handler.lambda_handler",
+    "MemorySize": 128,
+    "Role": {
+     "Fn::GetAtt": [
+      "ArtistsConstructUpdateArtistLambdaRole9583DC54",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.9",
+    "Timeout": 10
+   },
+   "DependsOn": [
+    "ArtistsConstructUpdateArtistLambdaRoleDefaultPolicy79D24171",
+    "ArtistsConstructUpdateArtistLambdaRole9583DC54"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/ArtistsConstruct/UpdateArtistLambda/Resource",
+    "aws:asset:path": "asset.349721956ce132038a231ed8a288f69633dae3b637cac452927f63dbaee1ead0",
+    "aws:asset:is-bundled": true,
+    "aws:asset:property": "Code"
+   }
+  },
+  "ArtistsConstructUpdateArtistLambdaLogGroupB537D0D8": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": {
+     "Fn::Join": [
+      "",
+      [
+       "/aws/lambda/",
+       {
+        "Ref": "ArtistsConstructUpdateArtistLambda7D16F9D1"
+       }
+      ]
+     ]
+    },
+    "RetentionInDays": 731
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/ArtistsConstruct/UpdateArtistLambda/LogGroup/Resource"
+   }
+  },
+  "ArtistsConstructUpdateArtistLambdaFunctionUrlDE270B96": {
+   "Type": "AWS::Lambda::Url",
+   "Properties": {
+    "AuthType": "NONE",
+    "Cors": {
+     "AllowMethods": [
+      "*"
+     ],
+     "AllowOrigins": [
+      "*"
+     ]
+    },
+    "TargetFunctionArn": {
+     "Fn::GetAtt": [
+      "ArtistsConstructUpdateArtistLambda7D16F9D1",
+      "Arn"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/ArtistsConstruct/UpdateArtistLambda/FunctionUrl/Resource"
+   }
+  },
+  "ArtistsConstructUpdateArtistLambdainvokefunctionurlD15D8A25": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunctionUrl",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "ArtistsConstructUpdateArtistLambda7D16F9D1",
+      "Arn"
+     ]
+    },
+    "FunctionUrlAuthType": "NONE",
+    "Principal": "*"
+   },
+   "Metadata": {
+    "aws:cdk:path": "BackendStack/ArtistsConstruct/UpdateArtistLambda/invoke-function-url"
+   }
+  },
   "ArtistsConstructGetArtistByIdLambdaRole75733797": {
    "Type": "AWS::IAM::Role",
    "Properties": {
@@ -7498,7 +7803,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-791096175070-eu-central-1",
-     "S3Key": "ff93983b6b78278d0858798f4e08bdecdbf17c9c0f04b4e732741d987bfa2f47.zip"
+     "S3Key": "c27964933e36d49e45209161c9b147db229477d4c734441c04a9d31a5cbd9729.zip"
     },
     "Environment": {
      "Variables": {
@@ -7536,7 +7841,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "BackendStack/SongsConstruct/UpdateSongLambda/Resource",
-    "aws:asset:path": "asset.ff93983b6b78278d0858798f4e08bdecdbf17c9c0f04b4e732741d987bfa2f47",
+    "aws:asset:path": "asset.c27964933e36d49e45209161c9b147db229477d4c734441c04a9d31a5cbd9729",
     "aws:asset:is-bundled": true,
     "aws:asset:property": "Code"
    }
@@ -9088,7 +9393,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-791096175070-eu-central-1",
-     "S3Key": "8be39a14ae895f16a1a6d3aea4c5bf515e0dfe2d2e060927fc32f4f690f28d65.zip"
+     "S3Key": "95cc28d4868facdde742e7affdc2bd751eea1cf5fd565070ed00a305229ceb0c.zip"
     },
     "Environment": {
      "Variables": {
@@ -9120,7 +9425,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "BackendStack/AlbumConstruct/UpdateAlbumLambda/Resource",
-    "aws:asset:path": "asset.8be39a14ae895f16a1a6d3aea4c5bf515e0dfe2d2e060927fc32f4f690f28d65",
+    "aws:asset:path": "asset.95cc28d4868facdde742e7affdc2bd751eea1cf5fd565070ed00a305229ceb0c",
     "aws:asset:is-bundled": true,
     "aws:asset:property": "Code"
    }
@@ -10881,7 +11186,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-791096175070-eu-central-1",
-     "S3Key": "bd3431832162339f8d95b9ddc1a4b9b490bdf77213fed18532754ec09c29c820.zip"
+     "S3Key": "362f59f538ebd29a99ff441ded79ecaaaaacd2e09258dde3518d762702619915.zip"
     },
     "Environment": {
      "Variables": {
@@ -10919,7 +11224,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "BackendStack/FeedConstruct/GetFeedLambda/Resource",
-    "aws:asset:path": "asset.bd3431832162339f8d95b9ddc1a4b9b490bdf77213fed18532754ec09c29c820",
+    "aws:asset:path": "asset.362f59f538ebd29a99ff441ded79ecaaaaacd2e09258dde3518d762702619915",
     "aws:asset:is-bundled": true,
     "aws:asset:property": "Code"
    }
@@ -11418,7 +11723,7 @@
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {
-    "Analytics": "v2:deflate64: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"
+    "Analytics": "v2:deflate64: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"
    },
    "Metadata": {
     "aws:cdk:path": "BackendStack/CDKMetadata/Default"
