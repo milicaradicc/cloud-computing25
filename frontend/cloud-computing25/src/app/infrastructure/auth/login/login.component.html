@@ -5,14 +5,14 @@
           <h1>Login</h1>
         </div>
 
-      <mat-form-field appearance="outline">
-        <mat-label>Username</mat-label>
-        <input matInput formControlName="username" placeholder="Enter username" style="color:white;">
-      </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Username</mat-label>
+          <input matInput formControlName="username" placeholder="Enter username">
+        </mat-form-field>
 
       <mat-form-field appearance="outline">
         <mat-label>Password</mat-label>
-        <input matInput type="password" formControlName="password" placeholder="Enter password" style="color:white;">
+        <input matInput type="password" formControlName="password" placeholder="Enter password">
       </mat-form-field>
 
       <div *ngIf="loginError" class="error-message server-error">

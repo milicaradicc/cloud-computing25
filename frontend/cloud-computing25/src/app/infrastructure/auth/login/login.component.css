@@ -1,25 +1,18 @@
-body, .outer-container {
-  background-color: #121212;
-  color: #ffffff;
-  height: 100%;
-}
-
-.outer-container {
-  width: 100%;
-  height: 100vh;
-}
-
 .register-container {
   max-width: 800px;
   margin: auto;
   padding: 20px;
   border-radius: 10px;
-  background-color: #1e1e1e;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  background-color: white;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
-form {
-  margin: 0;
+.outer-container {
+  padding: 2em;
+}
+
+form{
+  margin:0;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -27,43 +20,31 @@ form {
   align-items: center;
 }
 
-form > div, .form-header {
-  color: #ffffff;
+mat-form-field {
+  width: 70%;
+}
+
+form > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.form-header {
+  text-align: center;
+  margin-bottom: 20px;
 }
 
 .form-header h1 {
   font-size: 26px;
-  color: #ffffff;
+  color: #252629;
   margin-bottom: 5px;
 }
 
-mat-form-field {
-  width: 70%;
-  color: #ffffff;
-}
-
-.mat-form-field-appearance-outline .mat-form-field-outline {
-  color: #ffffff;
-  border-color: #ffffff;
-}
-
-.mat-form-field-appearance-outline .mat-form-field-outline-thick {
-  border-color: #ffffff;
-}
-
-.mat-input-element {
-  color: #ffffff !important;
-}
-
-.mat-input-element::placeholder {
-  color: #bbbbbb !important;
-}
-
-.server-error {
-  color: #ff6b6b;
-  margin-bottom: 16px;
+.submit-section {
   text-align: center;
-  font-weight: 500;
 }
 
 .submit-btn {
@@ -73,43 +54,28 @@ mat-form-field {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #000000;
-  transition: background-color 0.3s;
-}
-
-.submit-btn:hover {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-a {
-  color: #bb86fc;
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: underline;
 }
 
 .photo-upload .upload-area {
-  background: #2a2a2a;
-  border: 2px dashed #bb86fc;
+  background: #c0bfbf;
+  border: 2px dashed #9c555d;
   border-radius: 5px;
   padding: 20px;
   text-align: center;
   cursor: pointer;
 }
 
-.photo-upload .upload-area:hover {
-  background: #3a3a3a;
+.photo-upload {
+  margin:2em;
 }
 
-.mat-form-field-label,
-.mat-form-field-label.mat-focused {
-  color: #ffffff !important;
+.upload-area:hover {
+  background: #bb9d98;
 }
 
-.mat-form-field-appearance-outline .mat-form-field-outline,
-.mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
-  border-color: #ffffff !important;
+.server-error {
+  color: red;
+  margin-bottom: 16px;
+  text-align: center;
+  font-weight: 500;
 }

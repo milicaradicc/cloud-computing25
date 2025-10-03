@@ -1,24 +1,18 @@
-body, .outer-container {
-  background-color: #121212;
-  color: #ffffff;
-  height: 100%;
+.register-container {
+  max-width: 800px;
+  margin: auto;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: white;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 .outer-container {
   padding: 2em;
 }
 
-.register-container {
-  max-width: 800px;
-  margin: auto;
-  padding: 20px;
-  border-radius: 10px;
-  background-color: #1e1e1e;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-}
-
-form {
-  margin: 0;
+form{
+  margin:0;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -28,7 +22,6 @@ form {
 
 mat-form-field {
   width: 70%;
-  color: #ffffff;
 }
 
 form > div {
@@ -46,7 +39,7 @@ form > div {
 
 .form-header h1 {
   font-size: 26px;
-  color: #ffffff;
+  color: #252629;
   margin-bottom: 5px;
 }
 
@@ -61,18 +54,11 @@ form > div {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #000000;
-  transition: background 0.3s;
-}
-
-.submit-btn:hover {
-  background: linear-gradient(135deg, #5463d6 0%, #653b94 100%);
 }
 
 .photo-upload .upload-area {
-  background: #2a2a2a;
-  border: 2px dashed #bb86fc;
+  background: #c0bfbf;
+  border: 2px dashed #9c555d;
   border-radius: 5px;
   padding: 20px;
   text-align: center;
@@ -80,48 +66,16 @@ form > div {
 }
 
 .photo-upload {
-  margin: 2em 0;
+  margin:2em;
 }
 
-.photo-upload .upload-area:hover {
-  background: #3a3a3a;
+.upload-area:hover {
+  background: #bb9d98;
 }
 
 .server-error {
-  color: #ff6b6b;
+  color: red;
   margin-bottom: 16px;
   text-align: center;
   font-weight: 500;
 }
-
-.mat-input-element {
-  color: #ffffff !important;
-}
-
-.mat-input-element::placeholder {
-  color: #bbbbbb !important;
-}
-
-.mat-form-field-label,
-.mat-form-field-label.mat-focused {
-  color: #ffffff !important;
-}
-
-.mat-form-field-appearance-outline .mat-form-field-outline,
-.mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
-  border-color: #ffffff !important;
-}
-
-.mat-checkbox .mat-checkbox-frame {
-  border-color: #ffffff;
-}
-
-.mat-checkbox-checked .mat-checkbox-background {
-  background-color: #bb86fc !important;
-}
-
-/* Labela checkbox-a (tekst "Register as Admin") */
-.mat-checkbox .mat-checkbox-label {
-  color: #ffffff !important;
-}
-
